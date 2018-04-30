@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "dev": "VUE_APP_API_URL=http://localhost:3000/v1 yarn serve",
     "serve": "bin/write-env && $(yarn bin)/vue-cli-service serve --open",
     "build": "bin/write-env && $(yarn bin)/vue-cli-service build",
     "lint": "$(yarn bin)/vue-cli-service lint",

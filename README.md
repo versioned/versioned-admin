@@ -4,7 +4,7 @@
 
 ```
 yarn install
-VUE_APP_API_URL=http://localhost:5000/v1 yarn serve
+yarn run dev
 open http://localhost:8080
 ```
 
@@ -15,6 +15,12 @@ To create a production build, run `yarn build`
 ```
 npm install -g @vue/cli
 vue create versioned-ui
+```
+
+## Heroku Deploy
+
+```
+heroku config:set VUE_APP_API_URL=https://versioned2.herokuapp.com/v1
 ```
 
 ## Resources
