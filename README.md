@@ -1,5 +1,16 @@
 # versioned-ui - A CMS Admin UI
 
+## TODO
+
+* Login broken?
+
+* Need account and scope selectors
+  Pick first for now. Allow changing on account page?
+
+* Use standard for linting
+
+* console.log?
+
 ## Starting the Development Server
 
 ```
@@ -9,6 +20,14 @@ open http://localhost:8080
 ```
 
 To create a production build, run `yarn build`
+
+## Debuggning
+
+User:
+
+```
+localStorage.getItem('user')
+```
 
 ## How this App Was Created
 

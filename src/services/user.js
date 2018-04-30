@@ -63,7 +63,7 @@ function login(email, password) {
   const url = process.env.VUE_APP_API_URL + '/login'
   return axios.post(url, {email, password})
     .then(response => {
-      const user = u.getIn(response, 'data', 'data', 'attributes')
+      const user = u.getIn(response, 'data', 'data')
       set(user)
       return user
     })
