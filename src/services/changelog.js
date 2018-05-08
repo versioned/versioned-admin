@@ -1,3 +1,7 @@
 import Api from '@/services/api'
 
-export default Api.create('changelog')
+function create (scope) {
+  return Api.create('changelog', {scope})
+}
+
+export default create

@@ -42,7 +42,7 @@ export default {
     }
   },
   methods: {
-    login: function() {
+    login: function () {
       User.login(this.user.email, this.user.password)
         .then(() => {
           router.push('/')

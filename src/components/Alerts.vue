@@ -25,7 +25,7 @@ import Alert from '@/services/alert'
 
 export default {
   computed: {
-    alert: function() {
+    alert: function () {
       return Alert.get().current
     }
   }

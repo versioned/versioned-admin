@@ -60,7 +60,7 @@ import Api from '@/services/api'
 
 const STR_LIMIT = 50
 
-function truncated(string) {
+function truncated (string) {
   if (string && string.length > STR_LIMIT) {
     return string.substring(0, STR_LIMIT) + '...'
   } else {
@@ -68,11 +68,11 @@ function truncated(string) {
   }
 }
 
-function formattedValue(property, value) {
+function formattedValue (property, value) {
   return truncated(Swagger.stringify(property, value))
 }
 
-function docsWithAttributeValues(docs, schema) {
+function docsWithAttributeValues (docs, schema) {
   const attributeKeys = Swagger.attributes(schema).map(u.property('key'))
   return docs && docs.map(doc => {
     const attributeValues = attributeKeys.map(key => formattedValue(schema.properties[key], doc[key]))
@@ -82,12 +82,12 @@ function docsWithAttributeValues(docs, schema) {
   })
 }
 
-function labels(schema) {
+function labels (schema) {
   return ['id'].concat(Swagger.attributes(schema).map(u.property('label')))
 }
 
 export default {
-  data() {
+  data () {
     return {
       contentType: null,
       contentTypes: null,
@@ -97,12 +97,12 @@ export default {
       docs: []
     }
   },
-  created() {
+  created () {
     this.getSwagger()
   },
   watch: {
     '$route': 'getSwagger',
-    contentType: function(contentType) {
+    contentType: function (contentType) {
       Api.create(contentType).list().then(docs => {
         const schema = this.schemas[contentType]
         this.labels = labels(schema)
@@ -112,12 +112,12 @@ export default {
     }
   },
   computed: {
-    count() {
+    count () {
       return this.docs ? this.docs.length : null
     }
   },
   methods: {
-    getSwagger() {
+    getSwagger () {
       Swagger.get().then(swagger => {
         this.swagger = swagger
         this.schemas = Swagger.schemas(swagger)
@@ -125,20 +125,20 @@ export default {
         this.contentType = this.$route.params.contentType || this.contentTypes[0]
       })
     },
-    editUrl(doc) {
+    editUrl (doc) {
       return `/docs/${this.contentType}/${doc.id}/edit`
     },
-    createUrl() {
+    createUrl () {
       return `/docs/${this.contentType}/new`
     },
-    canCreate() {
+    canCreate () {
       if (this.swagger && this.contentType) {
         return Swagger.canCreate(this.swagger, this.contentType)
       } else {
         return false
       }
     },
-    canUpdate() {
+    canUpdate () {
       if (this.swagger && this.contentType) {
         return Swagger.canUpdate(this.swagger, this.contentType)
       } else {

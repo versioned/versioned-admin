@@ -29,10 +29,10 @@ import JsonField from '@/components/form/JsonField'
 export default {
   props: ['doc', 'attribute'],
   methods: {
-    updateJson(value) {
+    updateJson (value) {
       this.doc[this.attribute.key] = value
     },
-    isJsonField() {
+    isJsonField () {
       return this.attribute.schema.type === 'object' || this.attribute.schema.type === 'array'
     }
   },

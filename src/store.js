@@ -5,14 +5,14 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: null,
+    login: null,
     alert: {current: {}, next: {}}
   },
   mutations: {
-    setUser(state, user) {
-      state.user = user
+    setLogin (state, login) {
+      state.login = login
     },
-    setAlert(state, alert) {
+    setAlert (state, alert) {
       state.alert = alert
     }
   }

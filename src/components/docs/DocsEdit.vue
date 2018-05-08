@@ -18,7 +18,7 @@ import Api from '@/services/api'
 import Alert from '@/services/alert'
 
 export default {
-  data: function() {
+  data: function () {
     return {
       id: null,
       contentType: null,
@@ -29,7 +29,7 @@ export default {
     }
   },
   computed: {
-    canDelete: function() {
+    canDelete: function () {
       if (this.swagger && this.contentType) {
         return Swagger.canDelete(this.swagger, this.contentType)
       } else {
@@ -40,14 +40,14 @@ export default {
   components: {
     DocsForm
   },
-  created() {
+  created () {
     this.getDoc()
   },
   watch: {
     '$route': 'getDoc'
   },
   methods: {
-    getDoc() {
+    getDoc () {
       Swagger.get().then(swagger => {
         this.id = this.$route.params.id
         this.contentType = this.$route.params.contentType
@@ -59,7 +59,7 @@ export default {
         })
       })
     },
-    save(doc) {
+    save (doc) {
       this.api.update(doc)
         .then(doc => {
           if (doc) this.doc = doc
@@ -69,7 +69,7 @@ export default {
           Alert.set('errors', {title: 'Could not save', errors: result.errors})
         })
     },
-    remove() {
+    remove () {
       if (confirm('Are you sure?')) {
         this.api.remove(this.doc)
           .then(() => {

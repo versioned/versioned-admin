@@ -11,6 +11,7 @@
     "heroku-postbuild": "yarn install --production=false && yarn build"
   },
   "dependencies": {
+    "@vue/eslint-config-standard": "^3.0.0-beta.9",
     "algoliasearch": "^3.24.11",
     "axios": "0.17.1",
     "express": "4.16.2",
@@ -31,11 +32,16 @@
   },
   "eslintConfig": {
     "root": true,
+    "env": {
+      "browser": true,
+      "node": true
+    },
     "extends": [
       "plugin:vue/essential",
-      "eslint:recommended"
+      "standard"
     ],
     "rules": {
+      "no-throw-literal": 0,
       "vue/require-v-for-key": false
     }
   },

@@ -2,83 +2,92 @@ import axios from 'axios'
 import u from '@/util'
 import store from '@/store'
 
-function getLocalStorage() {
-  const data = localStorage.getItem('user')
+function getLocalStorage (key) {
+  const data = localStorage.getItem(key)
   try {
     return data && JSON.parse(data)
   } catch (err) {
-    console.log(`Error in User.getLocalStorage JSON.parse data=${data} err=${err}`)
-    return null
+    console.log(`Error in User.getLocalStorage(${key}) JSON.parse data=${data} err=${err}`)
+    return undefined
   }
 }
 
-function setLocalStorage(user) {
-  localStorage.setItem('user', (user && JSON.stringify(user)))
+function setLocalStorage (key, data) {
+  localStorage.setItem(key, (data && JSON.stringify(data)))
 }
 
-function getStore() {
-  return store.state.user
+function getStore () {
+  return store.state.login
 }
 
-function setStore(user) {
-  store.commit('setUser', user)
+function setStore (login) {
+  store.commit('setLogin', login)
 }
 
-function authHeader() {
-  const user = get()
-  if (user) {
+function authHeader () {
+  const login = get()
+  if (login) {
     return {
-      Authorization: `Bearer ${user.access_token}`
+      Authorization: `Bearer ${login.token}`
     }
   } else {
     return {}
   }
 }
 
-function get() {
-  const user = getStore()
-  return expired(user) ? null : user
+function get () {
+  const login = getStore()
+  return expired(login) ? null : login
 }
 
-function set(user) {
-  setLocalStorage(user)
-  setStore(user)
+function set (login) {
+  setLocalStorage('login', login)
+  setStore(login)
 }
 
-function initFromLocalStorage() {
-  const user = getLocalStorage()
-  if (user && !getStore()) set(user)
+function spaceId () {
+  return u.getIn(get(), 'space', 'id')
 }
 
-function expired(user) {
-  if (!user) return true
+function accountId () {
+  return u.getIn(get(), 'account', 'id')
+}
+
+function initFromLocalStorage () {
+  const login = getLocalStorage('login')
+  if (login && !getStore()) set(login)
+}
+
+function expired (login) {
+  // TODO: check exp in JWT login.token?
+  if (!login) return true
   return false
-  // NOTE: we don't necessarily have access_token_created_at
-  // const loginDate = new Date(user.access_token_created_at)
-  // const expiryDate = loginDate.setDate(loginDate.getDate() + 10)
-  // return expiryDate < new Date()
 }
 
-function login(email, password) {
+function login (email, password) {
   const url = process.env.VUE_APP_API_URL + '/login'
   return axios.post(url, {email, password})
     .then(response => {
-      const user = u.getIn(response, 'data', 'data')
+      const data = u.getIn(response, 'data', 'data')
+      // NOTE: make it convenient to access user fields directly with fields account/space/token added
+      const user = u.merge(data, data.user)
       set(user)
-      return user
+      return data
     })
     .catch(error => {
       throw error
     })
 }
 
-function logout() {
+function logout () {
   set(null)
 }
 
 export default {
   initFromLocalStorage,
   get,
+  spaceId,
+  accountId,
   authHeader,
   login,
   logout

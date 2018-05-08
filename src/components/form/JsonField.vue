@@ -8,14 +8,14 @@ import Alert from '@/services/alert'
 
 export default {
   props: ['obj'],
-  data: function() {
+  data: function () {
     return {
       originalObj: null,
       valid: true
     }
   },
   watch: {
-    obj: function(value) {
+    obj: function (value) {
       if (!this.originalObj && value) {
         this.originalObj = value
       }
@@ -23,12 +23,12 @@ export default {
   },
   computed: {
     objJson: {
-      get() {
+      get () {
         // NOTE: Only allow the obj value to be passed once from the parent component.
         // Otherwise the circular update may mess with whitespace and cursor position during editing
         return u.prettyJson(this.originalObj)
       },
-      set(value) {
+      set (value) {
         try {
           if (value) {
             JSON.parse(value)
@@ -43,7 +43,7 @@ export default {
     }
   },
   methods: {
-    fieldInput() {
+    fieldInput () {
       if (this.valid) {
         const obj = JSON.parse(this.$refs.objJson.value)
         this.$emit('fieldInput', obj)

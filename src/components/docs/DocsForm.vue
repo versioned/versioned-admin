@@ -5,7 +5,6 @@
         <input type="submit" class="btn btn-primary" value="Spara" />
       </div>
 
-
       <div class="form-input" v-for="attribute in readAttributes">
         <label name="title">{{attribute.label}}</label>
         <div class="attribute-value">
@@ -29,14 +28,14 @@ import DocsFormField from '@/components/docs/DocsFormField'
 export default {
   props: ['doc', 'schema'],
   computed: {
-    readAttributes: function() {
+    readAttributes: function () {
       if (this.doc && this.schema) {
         return Swagger.readAttributes(this.schema, this.doc)
       } else {
         return null
       }
     },
-    writeAttributes: function() {
+    writeAttributes: function () {
       if (this.doc && this.schema) {
         return Swagger.writeAttributes(this.schema, this.doc)
       } else {
@@ -48,7 +47,7 @@ export default {
     DocsFormField
   },
   methods: {
-    formSubmit() {
+    formSubmit () {
       this.$emit('formSubmit', this.doc)
     }
   }

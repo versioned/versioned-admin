@@ -1,56 +1,68 @@
 import axios from 'axios'
 import User from '@/services/user'
-import u from '@/util'
 import router from '@/router'
+import u from '@/util'
+const {getIn, property, merge} = u
 
-function create(contentType) {
-  const listUrl = process.env.VUE_APP_API_URL + '/' + contentType
-  function getUrl(id) {
+function listPath (contentType, options = {}) {
+  const {accountId, spaceId} = (getIn(options, 'scope') || {})
+  if (spaceId) {
+    return `/data/${spaceId}/${contentType}`
+  } else if (accountId) {
+    return `/${accountId}/${contentType}`
+  } else {
+    return `/${contentType}`
+  }
+}
+
+function create (contentType, options = {}) {
+  const listUrl = process.env.VUE_APP_API_URL + listPath(contentType, options)
+  function getUrl (id) {
     return listUrl + '/' + id + '?relationships=1'
   }
-  function wrap(item) {
-    return {data: {attributes: item}}
+  function wrap (item) {
+    return {data: item}
   }
-  function responseDoc(response) {
-    return u.getIn(response, 'data', 'data', 'attributes')
+  function responseDoc (response) {
+    return getIn(response, 'data', 'data')
   }
-  function responseList(response) {
-    const data = u.getIn(response, 'data', 'data')
-    return data && data.map(u.property('attributes'))
+  function responseList (response) {
+    return getIn(response, 'data', 'data')
   }
-  function errorMessages(error) {
-    return u.getIn(error, 'response', 'data', 'errors').map(u.property('message'))
+  function errorMessages (error) {
+    return getIn(error, 'response', 'data', 'errors').map(property('message'))
   }
-  function handleSaveError(error) {
-    if (u.getIn(error, 'response', 'status') === 422) {
+  function handleSaveError (error) {
+    if (getIn(error, 'response', 'status') === 422) {
       throw {errors: errorMessages(error)}
     } else {
       throw error
     }
   }
-  function headers() {
+  function headers () {
     return User.authHeader()
   }
-  function get(id) {
+  function get (id) {
     return axios.get(getUrl(id), {headers: headers()})
       .then(responseDoc)
   }
-  function list(options = {}) {
-    const params = u.merge({'per-page': 500}, options.params)
+  function list (options = {}) {
+    const defaultParams = {}
+    const params = merge(defaultParams, options.params)
     return axios.get(listUrl, {params, headers: headers()})
       .then(responseList)
   }
-  function create(doc) {
+  function create (doc) {
     return axios.post(listUrl, wrap(doc), {headers: headers()})
       .then(responseDoc)
       .catch(handleSaveError)
   }
-  function update(doc) {
+  function update (doc) {
     return axios.put(getUrl(doc.id), wrap(doc), {headers: headers()})
       .then(responseDoc)
       .catch(handleSaveError)
   }
-  function remove(doc) {
+  function remove (doc) {
     return axios.delete(getUrl(doc.id), {headers: headers()})
       .then(responseDoc)
   }
@@ -66,10 +78,10 @@ function create(contentType) {
 // Redirect auth failures to login page
 // https://gist.github.com/yajra/5f5551649b20c8f668aec48549ef5c1f
 axios.interceptors.response.use(function (response) {
-    return response
+  return response
 }, function (error) {
-    if (error.response.status === 401) router.push('/login')
-    return Promise.reject(error)
+  if (error.response.status === 401) router.push('/login')
+  return Promise.reject(error)
 })
 
 export default {

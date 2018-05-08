@@ -3,7 +3,7 @@ import u from '@/util'
 
 let _swagger = null
 
-function get() {
+function get () {
   if (!_swagger) {
     const swaggerUrl = process.env.VUE_APP_API_URL + '/swagger.json'
     _swagger = axios.get(swaggerUrl)
@@ -14,7 +14,7 @@ function get() {
   return _swagger
 }
 
-function parseDefinitionKey(key) {
+function parseDefinitionKey (key) {
   const result = key.match(/^(.+)_(read|write)$/)
   if (result) {
     return {contentType: result[1], action: result[2]}
@@ -23,7 +23,7 @@ function parseDefinitionKey(key) {
   }
 }
 
-function contentTypes(swagger) {
+function contentTypes (swagger) {
   return Object.keys(swagger.definitions).reduce((result, key) => {
     const {contentType, action} = parseDefinitionKey(key)
     if (contentType) {
@@ -35,7 +35,7 @@ function contentTypes(swagger) {
   }, {})
 }
 
-function schemas(swagger) {
+function schemas (swagger) {
   const types = contentTypes(swagger)
   return Object.keys(types).reduce((result, contentType) => {
     result[contentType] = u.getIn(types, contentType, 'read')
@@ -43,11 +43,11 @@ function schemas(swagger) {
   }, {})
 }
 
-function listPath(contentType) {
+function listPath (contentType) {
   return `/${contentType}`
 }
 
-function getPath(contentType) {
+function getPath (contentType) {
   return `/${contentType}/{id}`
 }
 

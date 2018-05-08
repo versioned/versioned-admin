@@ -39,8 +39,8 @@ export default {
       results: []
     }
   },
-  mounted() {
-    this.$refs.query.focus();
+  mounted () {
+    this.$refs.query.focus()
     this.$watch('query', () => {
       Search.search(this.query).then((data) => {
         this.results = data.hits

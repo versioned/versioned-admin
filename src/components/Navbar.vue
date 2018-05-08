@@ -1,7 +1,6 @@
 <template lang="html">
   <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-      <router-link class="navbar-brand navbar-link" to="/">Versioned UI</router-link>
-        <!-- <a class="navbar-brand" href="#">Versioned UI</a> -->
+      <router-link class="navbar-brand navbar-link" to="/">{{brand()}}</router-link>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -43,14 +42,19 @@
 
 <script>
 import User from '@/services/user'
+import u from '@/util'
 
 export default {
   methods: {
-    userEmail() {
+    brand () {
       const user = User.get()
-      return user && user.email
+      return u.getIn(user, 'account', 'name') + ' - ' + u.getIn(user, 'space', 'name')
     },
-    logout() {
+    userEmail () {
+      const user = User.get()
+      return user && (user.email || user.user.email)
+    },
+    logout () {
       User.logout()
       setTimeout(() => {
         location.reload(true)

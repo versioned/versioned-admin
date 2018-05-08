@@ -15,7 +15,7 @@ import Api from '@/services/api'
 import Alert from '@/services/alert'
 
 export default {
-  data: function() {
+  data: function () {
     return {
       contentType: null,
       schema: null,
@@ -26,7 +26,7 @@ export default {
   components: {
     DocsForm
   },
-  created() {
+  created () {
     Swagger.get().then(swagger => {
       this.contentType = this.$route.params.contentType
       this.schema = Swagger.schemas(swagger)[this.contentType]
@@ -34,7 +34,7 @@ export default {
     })
   },
   methods: {
-    save(doc) {
+    save (doc) {
       this.api.create(doc)
         .then(doc => {
           this.doc = doc

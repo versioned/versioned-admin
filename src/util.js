@@ -1,12 +1,12 @@
-function nil(value) {
+function nil (value) {
   return value === undefined || value === null
 }
 
-function notNil(value) {
+function notNil (value) {
   return !nil(value)
 }
 
-function empty(value) {
+function empty (value) {
   if (nil(value)) {
     return true
   } else if (Array.isArray(value) || typeof value === 'string') {
@@ -18,15 +18,15 @@ function empty(value) {
   }
 }
 
-function notEmpty(value) {
+function notEmpty (value) {
   return !empty(value)
 }
 
-function envValue(key) {
+function envValue (key) {
   return process.env[key]
 }
 
-function clone(obj) {
+function clone (obj) {
   if (obj == null || typeof obj !== 'object') return obj
   var copy = obj.constructor()
   for (const attr in obj) {
@@ -35,7 +35,7 @@ function clone(obj) {
   return copy
 }
 
-function filter(obj, predicate) {
+function filter (obj, predicate) {
   if (Array.isArray(obj)) {
     return obj.filter(predicate)
   } else {
@@ -47,12 +47,12 @@ function filter(obj, predicate) {
   }
 }
 
-function compact(obj) {
+function compact (obj) {
   return filter(obj, notNil)
 }
 
 // Like: http://ramdajs.com/docs/#path
-function getIn(obj, ...path) {
+function getIn (obj, ...path) {
   let result = obj
   for (const key of path) {
     const value = (result && result[key])
@@ -66,7 +66,7 @@ function getIn(obj, ...path) {
 }
 
 // Like: http://ramdajs.com/docs/#assocPath
-function setIn(obj, path, value) {
+function setIn (obj, path, value) {
   const result = nil(obj) ? {} : clone(obj)
   let nested = result
   for (let i = 0; i < path.length - 1; ++i) {
@@ -81,14 +81,14 @@ function setIn(obj, path, value) {
   return result
 }
 
-function merge(toObj, fromObj) {
+function merge (toObj, fromObj) {
   return Object.assign({},
-                      (toObj || {}),
-                      (fromObj || {}))
+    (toObj || {}),
+    (fromObj || {}))
 }
 
-function pick(keys, obj) {
-  return keys.reduce(function(acc, key) {
+function pick (keys, obj) {
+  return keys.reduce(function (acc, key) {
     const value = obj[key]
     if (value !== undefined) {
       acc[key] = value
@@ -97,30 +97,30 @@ function pick(keys, obj) {
   }, {})
 }
 
-function property(name) {
-  return function(obj) {
+function property (name) {
+  return function (obj) {
     return obj ? obj[name] : obj
   }
 }
 
-function prettyJson(obj) {
+function prettyJson (obj) {
   return obj ? JSON.stringify(obj, null, 4) : undefined
 }
 
-function throttle(interval, fn) {
+function throttle (interval, fn) {
   let timeout = null
-  return function() {
+  return function () {
     const args = arguments
     if (timeout) clearTimeout(timeout)
     timeout = setTimeout(() => fn.apply(this, args), interval)
   }
 }
 
-function array(value) {
+function array (value) {
   return Array.isArray(value) ? value : [value]
 }
 
-function intersection(tags1, tags2) {
+function intersection (tags1, tags2) {
   return array(tags1).filter(t => array(tags2).includes(t))
 }
 
