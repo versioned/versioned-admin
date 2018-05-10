@@ -52,7 +52,7 @@ export default {
     },
     userEmail () {
       const user = User.get()
-      return user && (user.email || user.user.email)
+      return u.getIn(user, 'email') || u.getIn(user, 'user', 'email')
     },
     logout () {
       User.logout()

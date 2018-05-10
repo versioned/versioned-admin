@@ -65,13 +65,18 @@ function expired (login) {
 }
 
 function login (email, password) {
-  const url = process.env.VUE_APP_API_URL + '/login'
+  const url = process.env.VUE_APP_API_URL + '/login?getUser=1'
   return axios.post(url, {email, password})
     .then(response => {
       const data = u.getIn(response, 'data', 'data')
       // NOTE: make it convenient to access user fields directly with fields account/space/token added
-      const user = u.merge(data, data.user)
-      set(user)
+      const login = {
+        token: data.token,
+        user: data.user,
+        space: u.getIn(data, 'user', 'defaultSpace'),
+        account: u.getIn(data, 'user', 'defaultSpace', 'account')
+      }
+      set(login)
       return data
     })
     .catch(error => {

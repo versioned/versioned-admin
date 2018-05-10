@@ -2,9 +2,10 @@
 
 ## Backlog (Sprint)
 
-* Change API to return user with account/space relationships
-
 * Use the same util library as versioned2
+
+* On login - if there is no default space we need to bail out.
+  Need a filter that requires an account/space.
 
 * Registration form - users/acounts combined create
   What if you register with an account that already exists
