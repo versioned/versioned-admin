@@ -48,11 +48,13 @@ export default {
   methods: {
     brand () {
       const user = User.get()
-      return u.getIn(user, 'account', 'name') + ' - ' + u.getIn(user, 'space', 'name')
+      const accountName = u.getIn(user, 'account.name')
+      const spaceName = u.getIn(user, 'space.name')
+      return (accountName && spaceName) ? `${accountName} - ${spaceName}` : ''
     },
     userEmail () {
       const user = User.get()
-      return u.getIn(user, 'email') || u.getIn(user, 'user', 'email')
+      return u.getIn(user, 'email') || u.getIn(user, 'user.email')
     },
     logout () {
       User.logout()

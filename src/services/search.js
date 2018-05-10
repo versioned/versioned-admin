@@ -8,7 +8,7 @@ const ENV_VARIABLES = [
 ]
 
 function enabled () {
-  return ENV_VARIABLES.map(u.envValue).every(u.notEmpty)
+  return ENV_VARIABLES.map(key => process.env[key]).every(u.notEmpty)
 }
 
 var CLIENT = null

@@ -2,8 +2,6 @@
 
 ## Backlog (Sprint)
 
-* Use the same util library as versioned2
-
 * On login - if there is no default space we need to bail out.
   Need a filter that requires an account/space.
 

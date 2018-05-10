@@ -24,16 +24,16 @@ function create (contentType, options = {}) {
     return {data: item}
   }
   function responseDoc (response) {
-    return getIn(response, 'data', 'data')
+    return getIn(response, 'data.data')
   }
   function responseList (response) {
-    return getIn(response, 'data', 'data')
+    return getIn(response, 'data.data')
   }
   function errorMessages (error) {
-    return getIn(error, 'response', 'data', 'errors').map(property('message'))
+    return getIn(error, 'response.data.errors').map(property('message'))
   }
   function handleSaveError (error) {
-    if (getIn(error, 'response', 'status') === 422) {
+    if (getIn(error, 'response.status') === 422) {
       throw {errors: errorMessages(error)}
     } else {
       throw error

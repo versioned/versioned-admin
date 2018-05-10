@@ -46,11 +46,11 @@ function set (login) {
 }
 
 function spaceId () {
-  return u.getIn(get(), 'space', 'id')
+  return u.getIn(get(), 'space.id')
 }
 
 function accountId () {
-  return u.getIn(get(), 'account', 'id')
+  return u.getIn(get(), 'account.id')
 }
 
 function initFromLocalStorage () {
@@ -68,13 +68,13 @@ function login (email, password) {
   const url = process.env.VUE_APP_API_URL + '/login?getUser=1'
   return axios.post(url, {email, password})
     .then(response => {
-      const data = u.getIn(response, 'data', 'data')
+      const data = u.getIn(response, 'data.data')
       // NOTE: make it convenient to access user fields directly with fields account/space/token added
       const login = {
         token: data.token,
         user: data.user,
-        space: u.getIn(data, 'user', 'defaultSpace'),
-        account: u.getIn(data, 'user', 'defaultSpace', 'account')
+        space: u.getIn(data, 'user.defaultSpace'),
+        account: u.getIn(data, 'user.defaultSpace.account')
       }
       set(login)
       return data

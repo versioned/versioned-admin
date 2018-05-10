@@ -38,7 +38,7 @@ function contentTypes (swagger) {
 function schemas (swagger) {
   const types = contentTypes(swagger)
   return Object.keys(types).reduce((result, contentType) => {
-    result[contentType] = u.getIn(types, contentType, 'read')
+    result[contentType] = u.getIn(types, `${contentType}.read`)
     return result
   }, {})
 }
@@ -51,61 +51,61 @@ function getPath (contentType) {
   return `/${contentType}/{id}`
 }
 
-function deleteEndpoint(swagger, contentType) {
+function deleteEndpoint (swagger, contentType) {
   return u.getIn(swagger.paths[getPath(contentType)], 'delete')
 }
 
-function canDelete(swagger, contentType) {
-  const adminDelete = u.getIn(schemas(swagger)[contentType], 'x-meta', 'admin_delete')
+function canDelete (swagger, contentType) {
+  const adminDelete = u.getIn(schemas(swagger)[contentType], 'x-meta.admin_delete')
   return deleteEndpoint(swagger, contentType) && adminDelete !== false
 }
 
-function createEndpoint(swagger, contentType) {
+function createEndpoint (swagger, contentType) {
   return u.getIn(swagger.paths[listPath(contentType)], 'post')
 }
 
-function canCreate(swagger, contentType) {
-  const adminCreate = u.getIn(schemas(swagger)[contentType], 'x-meta', 'admin_create')
+function canCreate (swagger, contentType) {
+  const adminCreate = u.getIn(schemas(swagger)[contentType], 'x-meta.admin_create')
   return createEndpoint(swagger, contentType) && adminCreate !== false
 }
 
-function updateEndpoint(swagger, contentType) {
+function updateEndpoint (swagger, contentType) {
   return u.getIn(swagger.paths[getPath(contentType)], 'put')
 }
 
-function canUpdate(swagger, contentType) {
-  const adminUpdate = u.getIn(schemas(swagger)[contentType], 'x-meta', 'admin_update')
+function canUpdate (swagger, contentType) {
+  const adminUpdate = u.getIn(schemas(swagger)[contentType], 'x-meta.admin_update')
   return updateEndpoint(swagger, contentType) && adminUpdate !== false
 }
 
-function label(key, propertySchema) {
-  return u.getIn(propertySchema, 'x-meta', 'label') || key
+function label (key, propertySchema) {
+  return u.getIn(propertySchema, 'x-meta.label') || key
 }
 
-function help(key, propertySchema) {
-  return u.getIn(propertySchema, 'x-meta', 'admin_help')
+function help (key, propertySchema) {
+  return u.getIn(propertySchema, 'x-meta.admin_help')
 }
 
-function formField(key, propertySchema) {
-  return u.getIn(propertySchema, 'x-meta', 'form_field')
+function formField (key, propertySchema) {
+  return u.getIn(propertySchema, 'x-meta.form_field')
 }
 
-function canReadProperty(propertySchema) {
-  return u.getIn(propertySchema, 'x-meta', 'admin') !== false &&
-    u.getIn(propertySchema, 'x-meta', 'admin_read') !== false
+function canReadProperty (propertySchema) {
+  return u.getIn(propertySchema, 'x-meta.admin') !== false &&
+    u.getIn(propertySchema, 'x-meta.admin_read') !== false
 }
 
-function canWriteProperty(propertySchema) {
-  return u.getIn(propertySchema, 'x-meta', 'api_writable') !== false &&
-    u.getIn(propertySchema, 'x-meta', 'admin') !== false &&
-    u.getIn(propertySchema, 'x-meta', 'admin_write') !== false
+function canWriteProperty (propertySchema) {
+  return u.getIn(propertySchema, 'x-meta.api_writable') !== false &&
+    u.getIn(propertySchema, 'x-meta.admin') !== false &&
+    u.getIn(propertySchema, 'x-meta.admin_write') !== false
 }
 
-function propertyNames(schema) {
-  return u.getIn(schema, 'x-meta', 'admin_properties') || Object.keys(schema.properties)
+function propertyNames (schema) {
+  return u.getIn(schema, 'x-meta.admin_properties') || Object.keys(schema.properties)
 }
 
-function attributes(schema, doc) {
+function attributes (schema, doc) {
   return propertyNames(schema).map(key => {
     const propertySchema = schema.properties[key]
     const value = u.getIn(doc, key)
@@ -120,15 +120,15 @@ function attributes(schema, doc) {
   })
 }
 
-function writeAttributes(schema, doc) {
+function writeAttributes (schema, doc) {
   return attributes(schema, doc).filter(attribute => canWriteProperty(attribute.schema))
 }
 
-function readAttributes(schema, doc) {
+function readAttributes (schema, doc) {
   return attributes(schema, doc).filter(attribute => !canWriteProperty(attribute.schema))
 }
 
-function stringify(propertySchema, value) {
+function stringify (propertySchema, value) {
   if (u.nil(value)) {
     return ''
   } else if (propertySchema.type === 'date') {
@@ -140,8 +140,8 @@ function stringify(propertySchema, value) {
   }
 }
 
-function adminEnabledContentTypes(schemas) {
-  return Object.keys(schemas).filter(key => u.getIn(schemas[key], 'x-meta', 'admin_properties'))
+function adminEnabledContentTypes (schemas) {
+  return Object.keys(schemas).filter(key => u.getIn(schemas[key], 'x-meta.admin_properties'))
 }
 
 export default {
