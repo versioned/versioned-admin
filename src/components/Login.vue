@@ -1,7 +1,7 @@
 <template lang="html">
   <section class="login-page">
     <div class="page-title">
-      <h1>Logga in</h1>
+      <h1>Login</h1>
     </div>
 
     <form class="page-form" role="form" @submit.prevent="login">
@@ -11,7 +11,7 @@
           <input type="text" v-model="user.email" class="form-control" id="email" autofocus/>
         </div>
         <div class="form-input">
-          <label for="password">Lösenord</label>
+          <label for="password">Password</label>
           <input type="password" v-model="user.password" class="form-control" id="password"/>
         </div>
       </div>
@@ -21,8 +21,12 @@
       </div>
 
       <div class="form-group form-submit">
-        <input type="submit" class="btn btn-primary" value="Logga in" />
+        <input type="submit" class="btn btn-primary" value="Log in" />
       </div>
+
+      <p>
+        <router-link class="nav-link" to="/register">Register</router-link>
+      </p>
     </form>
   </section>
 </template>
@@ -48,7 +52,7 @@ export default {
           router.push('/')
         })
         .catch(() => {
-          this.message = 'Inloggningen misslyckades'
+          this.message = 'Login failed'
         })
     }
   }

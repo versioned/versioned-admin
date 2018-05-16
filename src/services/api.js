@@ -1,5 +1,5 @@
+import store from '@/store'
 import axios from 'axios'
-import User from '@/services/user'
 import router from '@/router'
 import u from '@/util'
 const {getIn, property, merge} = u
@@ -20,9 +20,6 @@ function create (contentType, options = {}) {
   function getUrl (id) {
     return listUrl + '/' + id + '?relationships=1'
   }
-  function wrap (item) {
-    return {data: item}
-  }
   function responseDoc (response) {
     return getIn(response, 'data.data')
   }
@@ -39,8 +36,18 @@ function create (contentType, options = {}) {
       throw error
     }
   }
+  function authHeader () {
+    const token = u.getIn(store, 'state.login.token')
+    if (token) {
+      return {
+        Authorization: `Bearer ${token}`
+      }
+    } else {
+      return {}
+    }
+  }
   function headers () {
-    return User.authHeader()
+    return authHeader()
   }
   function get (id) {
     return axios.get(getUrl(id), {headers: headers()})
@@ -53,12 +60,12 @@ function create (contentType, options = {}) {
       .then(responseList)
   }
   function create (doc) {
-    return axios.post(listUrl, wrap(doc), {headers: headers()})
+    return axios.post(listUrl, doc, {headers: headers()})
       .then(responseDoc)
       .catch(handleSaveError)
   }
   function update (doc) {
-    return axios.put(getUrl(doc.id), wrap(doc), {headers: headers()})
+    return axios.put(getUrl(doc.id), doc, {headers: headers()})
       .then(responseDoc)
       .catch(handleSaveError)
   }

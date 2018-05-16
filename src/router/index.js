@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import guards from '@/router/guards'
 import Home from '@/components/Home'
+import Register from '@/components/Register'
 import Login from '@/components/Login'
 import DocsList from '@/components/docs/DocsList'
 import DocsEdit from '@/components/docs/DocsEdit'
@@ -14,20 +15,30 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
+      name: 'Home',
       component: Home
+    },
+    {
+      path: '/register',
+      name: 'Register',
+      component: Register,
+      meta: {
+        requiresAuth: false
+      }
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: Login,
+      meta: {
+        requiresAuth: false
+      }
     },
     {
       path: '/search',
       name: 'Search',
       component: SearchPage
     },
-    {
-      path: '/login',
-      name: 'Login',
-      component: Login
-    },
-
     {
       path: '/docs/:contentType?',
       name: 'Docs List',

@@ -24,17 +24,6 @@ function setStore (login) {
   store.commit('setLogin', login)
 }
 
-function authHeader () {
-  const login = get()
-  if (login) {
-    return {
-      Authorization: `Bearer ${login.token}`
-    }
-  } else {
-    return {}
-  }
-}
-
 function get () {
   const login = getStore()
   return expired(login) ? null : login
@@ -91,9 +80,9 @@ function logout () {
 export default {
   initFromLocalStorage,
   get,
+  set,
   spaceId,
   accountId,
-  authHeader,
   login,
   logout
 }

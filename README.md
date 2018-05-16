@@ -2,13 +2,16 @@
 
 ## Backlog (Sprint)
 
-* On login - if there is no default space we need to bail out.
-  Need a filter that requires an account/space.
-
-* Registration form - users/acounts combined create
+* Registration form
+  * Create user
+  * Login
+  * Create account
+  * Get user defaultSpace
   What if you register with an account that already exists
   The name should be unique
   An invitation request should be emailed to admins of account
+
+* Try using async/await?
 
 ## Epics (Major Features)
 
