@@ -26,6 +26,7 @@
       </div>
 
       <input type="submit" class="btn btn-primary" value="Register" />
+      <img v-if="$store.state.loading" src="/ajax-loader.gif">
 
       <p>
         <router-link class="nav-link" to="/login">Login</router-link>

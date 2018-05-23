@@ -10,10 +10,9 @@
             <!-- <li class="nav-item active">
               <router-link class="nav-link" to="/">Home</router-link>
             </li> -->
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <router-link class="nav-link" to="/docs">Browse</router-link>
-              <!-- <a class="nav-link" href="#">Link</a> -->
-            </li>
+            </li> -->
             <!-- <li class="nav-item">
               <a class="nav-link disabled" href="#">Disabled</a>
             </li>
@@ -31,6 +30,10 @@
             <a href="#" data-toggle="tooltip" title="Logga ut" @click="logout">
               logout
             </a>
+          </li>
+
+          <li v-if="$store.state.loading">
+            <img src="/ajax-loader.gif">
           </li>
 
           <!-- <form class="form-inline my-2 my-lg-0">
@@ -63,7 +66,7 @@ export default {
       User.logout()
       setTimeout(() => {
         location.reload(true)
-      }, 100)
+      }, 50)
     }
   }
 }

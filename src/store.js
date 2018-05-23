@@ -5,6 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    loading: false,
     login: null,
     alert: {current: {}, next: {}}
   },
@@ -14,6 +15,9 @@ export default new Vuex.Store({
     },
     setAlert (state, alert) {
       state.alert = alert
+    },
+    setLoading (state, loading) {
+      state.loading = loading
     }
   }
 })

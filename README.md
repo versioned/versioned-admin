@@ -2,39 +2,15 @@
 
 ## Backlog (Sprint)
 
-* Spinner?
-
-* Forms checklist
-  * form novalidate ?
-  * autofocus
-  * required
-  * Use proper type (number, email, url, time, date, datetime-local etc.)
-  * Help texts (x-meta.description):
-      <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-  Placeholder:
-        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-  Checkbox:
-    <div class="form-check">
-      <input type="checkbox" class="form-check-input" id="exampleCheck1">
-      <label class="form-check-label" for="exampleCheck1">Check me out</label>
-    </div>
-
-
-
-* Registration form
-  * Create user
-  * Login
-  * Create account
-  * Get user defaultSpace
-  What if you register with an account that already exists
-  The name should be unique
-  An invitation request should be emailed to admins of account
-
 * Try using async/await?
 
 ## Epics (Major Features)
 
 ## Ice Box (For Later Consideration)
+
+* Registration form
+  What if you register with an account that already exists
+  An invitation request should be emailed to admins of account
 
 * handle console.log in all browsers?
 
@@ -47,6 +23,23 @@
 
 * Need account and scope selectors
   Pick first for now. Allow settind users.defaultSpaceId on profile page or keep track of last used?
+
+## Forms checklist
+
+* form novalidate ?
+* autofocus
+* required
+* Ajax loader next to submit
+* Use proper type (number, email, url, time, date, datetime-local etc.)
+* Help texts (x-meta.description):
+    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+Placeholder:
+      <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+Checkbox:
+  <div class="form-check">
+    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+    <label class="form-check-label" for="exampleCheck1">Check me out</label>
+  </div>
 
 ## Data Types
 
