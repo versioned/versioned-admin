@@ -1,15 +1,17 @@
-import User from '@/services/user'
+import session from '@/services/session'
 import Alert from '@/services/alert'
 import u from '@/util'
 
 function initUserFromLocalStorage (to, from, next) {
-  User.initFromLocalStorage()
+  session.initFromLocalStorage()
   next()
 }
 
 function redirectToLogin (router) {
   return (to, from, next) => {
-    if (u.getIn(to, 'meta.requiresAuth') !== false && !User.get()) router.push('/login')
+    if (u.getIn(to, 'meta.requiresAuth') !== false && !session.get()) {
+      router.push('/login')
+    }
     next()
   }
 }

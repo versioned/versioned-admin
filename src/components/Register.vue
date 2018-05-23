@@ -89,9 +89,9 @@ export default {
                 return acc
               }, {})
             }
-            Alert.set('warning', `Registration failed. Please fix the erorrs in the form and try again!`)
+            Alert.set('warning', `Registration failed. Please fix the erorrs in the form and try again`)
           } else {
-            Alert.set('warning', `Registration failed. Please try again! (status=${error.status})`)
+            Alert.set('warning', `Registration failed. Please try again (status=${error.status})`)
           }
         })
     }

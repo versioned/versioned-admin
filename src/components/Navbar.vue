@@ -27,8 +27,9 @@
             </li> -->
           </ul>
           <li class="logged-in-user">
+            <a href="#">{{userEmail()}}</a> |
             <a href="#" data-toggle="tooltip" title="Logga ut" @click="logout">
-              {{userEmail()}}
+              logout
             </a>
           </li>
 
@@ -50,7 +51,9 @@ export default {
       const user = User.get()
       const accountName = u.getIn(user, 'account.name')
       const spaceName = u.getIn(user, 'space.name')
-      return (accountName && spaceName) ? `${accountName} - ${spaceName}` : ''
+      if (accountName && spaceName) {
+        return accountName !== spaceName ? `${accountName} - ${spaceName}` : accountName
+      }
     },
     userEmail () {
       const user = User.get()

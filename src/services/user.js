@@ -1,56 +1,13 @@
 import axios from 'axios'
 import u from '@/util'
-import store from '@/store'
-
-function getLocalStorage (key) {
-  const data = localStorage.getItem(key)
-  try {
-    return data && JSON.parse(data)
-  } catch (err) {
-    console.log(`Error in User.getLocalStorage(${key}) JSON.parse data=${data} err=${err}`)
-    return undefined
-  }
-}
-
-function setLocalStorage (key, data) {
-  localStorage.setItem(key, (data && JSON.stringify(data)))
-}
-
-function getStore () {
-  return store.state.login
-}
-
-function setStore (login) {
-  store.commit('setLogin', login)
-}
-
-function get () {
-  const login = getStore()
-  return expired(login) ? null : login
-}
-
-function set (login) {
-  setLocalStorage('login', login)
-  setStore(login)
-}
+import session from '@/services/session'
 
 function spaceId () {
-  return u.getIn(get(), 'space.id')
+  return u.getIn(session.get(), 'space.id')
 }
 
 function accountId () {
-  return u.getIn(get(), 'account.id')
-}
-
-function initFromLocalStorage () {
-  const login = getLocalStorage('login')
-  if (login && !getStore()) set(login)
-}
-
-function expired (login) {
-  // TODO: check exp in JWT login.token?
-  if (!login) return true
-  return false
+  return u.getIn(session.get(), 'account.id')
 }
 
 function login (email, password) {
@@ -59,13 +16,13 @@ function login (email, password) {
     .then(response => {
       const data = u.getIn(response, 'data.data')
       // NOTE: make it convenient to access user fields directly with fields account/space/token added
-      const login = {
+      const loginData = {
         token: data.token,
         user: data.user,
         space: u.getIn(data, 'user.defaultSpace'),
         account: u.getIn(data, 'user.defaultSpace.account')
       }
-      set(login)
+      session.set(loginData)
       return data
     })
     .catch(error => {
@@ -74,13 +31,12 @@ function login (email, password) {
 }
 
 function logout () {
-  set(null)
+  session.set(null)
 }
 
 export default {
-  initFromLocalStorage,
-  get,
-  set,
+  get: session.get,
+  set: session.set,
   spaceId,
   accountId,
   login,

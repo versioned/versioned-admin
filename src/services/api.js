@@ -1,4 +1,4 @@
-import store from '@/store'
+import session from '@/services/session'
 import axios from 'axios'
 import router from '@/router'
 import u from '@/util'
@@ -30,7 +30,7 @@ function create (contentType, options = {}) {
     throw getIn(error, 'response.data')
   }
   function authHeader () {
-    const token = u.getIn(store, 'state.login.token')
+    const token = session.getToken()
     if (token) {
       return {
         Authorization: `Bearer ${token}`
@@ -80,7 +80,10 @@ function create (contentType, options = {}) {
 axios.interceptors.response.use(function (response) {
   return response
 }, function (error) {
-  if (error.response.status === 401) router.push('/login')
+  if (error.response.status === 401) {
+    session.set(null)
+    router.push('/login')
+  }
   return Promise.reject(error)
 })
 
