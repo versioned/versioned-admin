@@ -2,6 +2,25 @@
 
 ## Backlog (Sprint)
 
+* Spinner?
+
+* Forms checklist
+  * form novalidate ?
+  * autofocus
+  * required
+  * Use proper type (number, email, url, time, date, datetime-local etc.)
+  * Help texts (x-meta.description):
+      <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+  Placeholder:
+        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+  Checkbox:
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" id="exampleCheck1">
+      <label class="form-check-label" for="exampleCheck1">Check me out</label>
+    </div>
+
+
+
 * Registration form
   * Create user
   * Login

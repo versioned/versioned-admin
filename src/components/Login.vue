@@ -4,25 +4,20 @@
       <h1>Login</h1>
     </div>
 
-    <form class="page-form" role="form" @submit.prevent="login">
+    <form @submit.prevent="login">
       <div class="form-group">
-        <div class="form-input">
-          <label for="email">Email</label>
-          <input type="text" v-model="user.email" class="form-control" id="email" autofocus/>
-        </div>
-        <div class="form-input">
-          <label for="password">Password</label>
-          <input type="password" v-model="user.password" class="form-control" id="password"/>
-        </div>
+        <label for="email">Email</label>
+        <input type="email" v-model="user.email" class="form-control" id="email" autofocus required/>
+
+        <label for="password">Password</label>
+        <input type="password" v-model="user.password" class="form-control" id="password" required/>
       </div>
 
       <div class="form-group">
         {{ message }}
       </div>
 
-      <div class="form-group form-submit">
-        <input type="submit" class="btn btn-primary" value="Log in" />
-      </div>
+      <input type="submit" class="btn btn-primary" value="Log in" />
 
       <p>
         <router-link class="nav-link" to="/register">Register</router-link>
@@ -33,6 +28,7 @@
 
 <script>
 import User from '@/services/user'
+import Alert from '@/services/alert'
 import router from '@/router'
 
 export default {
@@ -52,7 +48,7 @@ export default {
           router.push('/')
         })
         .catch(() => {
-          this.message = 'Login failed'
+          Alert.set('warning', 'Could not log you in. Please try again!')
         })
     }
   }

@@ -2,7 +2,7 @@ import store from '@/store'
 import axios from 'axios'
 import router from '@/router'
 import u from '@/util'
-const {getIn, property, merge} = u
+const {getIn, merge} = u
 
 function listPath (contentType, options = {}) {
   const {accountId, spaceId} = (getIn(options, 'scope') || {})
@@ -18,7 +18,7 @@ function listPath (contentType, options = {}) {
 function create (contentType, options = {}) {
   const listUrl = process.env.VUE_APP_API_URL + listPath(contentType, options)
   function getUrl (id) {
-    return listUrl + '/' + id + '?relationships=1'
+    return listUrl + '/' + id + '?relationshipLevels=1'
   }
   function responseDoc (response) {
     return getIn(response, 'data.data')
@@ -26,15 +26,8 @@ function create (contentType, options = {}) {
   function responseList (response) {
     return getIn(response, 'data.data')
   }
-  function errorMessages (error) {
-    return getIn(error, 'response.data.errors').map(property('message'))
-  }
   function handleSaveError (error) {
-    if (getIn(error, 'response.status') === 422) {
-      throw {errors: errorMessages(error)}
-    } else {
-      throw error
-    }
+    throw getIn(error, 'response.data')
   }
   function authHeader () {
     const token = u.getIn(store, 'state.login.token')

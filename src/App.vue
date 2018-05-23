@@ -5,8 +5,10 @@
     <main role="main">
       <div class="container">
         <router-view></router-view>
-        <alerts></alerts>
       </div>
+      <!-- <footer class="footer">
+        <alerts></alerts>
+      </footer> -->
     </main>
   </div>
 </template>
