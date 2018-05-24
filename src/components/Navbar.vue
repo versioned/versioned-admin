@@ -25,7 +25,7 @@
               </div>
             </li> -->
           </ul>
-          <li class="logged-in-user">
+          <li v-if="$store.state.login" class="logged-in-user">
             <a href="#">{{userEmail()}}</a> |
             <a href="#" data-toggle="tooltip" title="Logga ut" @click="logout">
               logout
@@ -45,8 +45,8 @@
 </template>
 
 <script>
-import User from '@/services/user'
 import u from '@/util'
+import User from '@/services/user'
 
 export default {
   methods: {
@@ -56,6 +56,8 @@ export default {
       const spaceName = u.getIn(user, 'space.name')
       if (accountName && spaceName) {
         return accountName !== spaceName ? `${accountName} - ${spaceName}` : accountName
+      } else {
+        return process.env.VUE_APP_NAME
       }
     },
     userEmail () {

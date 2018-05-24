@@ -59,42 +59,35 @@ export default {
     }
   },
   methods: {
-    register: function () {
-      UserApi.create(this.user)
-        .then((user) => {
-          return User.login(this.user.email, this.user.password)
-        })
-        .then((result) => {
-          return Account.create(this.account)
-        })
-        .then((account) => {
-          User.set(u.merge(User.get(), {account}))
-          return Space(account.id).get(account.spaces[0])
-        })
-        .then((space) => {
-          User.set(u.merge(User.get(), {space}))
-          Alert.setNext('Registration successful')
-          router.push('/')
-        })
-        .catch((error) => {
-          if (error.status === 500) {
-            Alert.set('danger', 'We are having technical difficulties. Please try again!')
-          } else if (error.status === 422) {
-            if (u.notEmpty(error.errors)) {
-              this.baseErrors = u.filter(error.errors, e => u.nil(e.field))
-              this.errors = error.errors.reduce((acc, error) => {
-                if (error.field) {
-                  const name = (error.field === 'name' ? 'accountName' : error.field)
-                  acc[name] = error.message
-                }
-                return acc
-              }, {})
-            }
-            Alert.set('warning', `Registration failed. Please fix the erorrs in the form and try again`)
-          } else {
-            Alert.set('warning', `Registration failed. Please try again (status=${error.status})`)
+    register: async function () {
+      try {
+        await UserApi.create(this.user)
+        await User.login(this.user.email, this.user.password)
+        const account = await Account.create(this.account)
+        User.set(u.merge(User.get(), {account}))
+        const space = await Space(account.id).get(account.spaces[0])
+        User.set(u.merge(User.get(), {space}))
+        Alert.setNext('Registration successful')
+        router.push('/')
+      } catch (error) {
+        if (error.status === 500) {
+          Alert.set('danger', 'We are having technical difficulties. Please try again!')
+        } else if (error.status === 422) {
+          if (u.notEmpty(error.errors)) {
+            this.baseErrors = u.filter(error.errors, e => u.nil(e.field))
+            this.errors = error.errors.reduce((acc, error) => {
+              if (error.field) {
+                const name = (error.field === 'name' ? 'accountName' : error.field)
+                acc[name] = error.message
+              }
+              return acc
+            }, {})
           }
-        })
+          Alert.set('warning', `Registration failed. Please fix the erorrs in the form and try again`)
+        } else {
+          Alert.set('warning', `Registration failed. Please try again (status=${error.status})`)
+        }
+      }
     }
   }
 }
