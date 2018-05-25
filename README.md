@@ -133,7 +133,7 @@ Setup:
 vue add @vue/unit-jest
 ```
 
-Added files:
+Updated/added files:
 
 ```
 jest.config.js
@@ -149,6 +149,33 @@ Running:
 yarn test:unit
 ```
 
+## End-to-End/Integration Tests
+
+Setup:
+
+```
+vue add @vue/e2e-cypress
+```
+
+Updated/added files:
+
+```
+cypress.json
+tests/e2e/.eslintrc
+tests/e2e/plugins/index.js
+tests/e2e/specs/test.js
+tests/e2e/support/commands.js
+tests/e2e/support/index.js
+package.json
+yarn.lock
+```
+
+Running:
+
+```
+yarn test:e2e
+```
+
 ## Resources
 
 * [vue-cli Documentation](https://github.com/vuejs/vue-cli/blob/dev/docs/README.md)
@@ -156,3 +183,5 @@ yarn test:unit
 * [Algolia Search JavaScript Client](https://www.algolia.com/doc/api-client/javascript/getting-started)
 * [Top 5 Vue Admin Templates](https://ourcodeworld.com/articles/read/699/top-5-best-free-vue-js-admin-templates)
 * [Awesome Vue - Curated List](https://github.com/vuejs/awesome-vue#validation)
+* [Cypress Testing Examples](https://github.com/cypress-io/cypress-example-kitchensink)
+* [Cypress Docs - Assertions](https://docs.cypress.io/guides/references/assertions.html)
