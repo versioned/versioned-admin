@@ -18,7 +18,7 @@
       </div>
 
       <input type="submit" class="btn btn-primary" value="Log in" />
-      <img v-if="$store.state.loading" src="/ajax-loader.gif">
+      <img v-if="loading" src="/ajax-loader.gif">
 
       <p>
         <router-link class="nav-link" to="/register">Register</router-link>
@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import store from '@/store'
+import u from '@/util'
 import User from '@/services/user'
 import Alert from '@/services/alert'
 import router from '@/router'
@@ -35,6 +37,7 @@ import router from '@/router'
 export default {
   data: () => {
     return {
+      loading: u.getIn(store, 'state.loading'),
       user: {
         email: '',
         password: ''
