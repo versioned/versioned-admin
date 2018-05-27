@@ -12,6 +12,7 @@
     "dev": "VUE_APP_API_URL=http://localhost:3000/v1 yarn serve",
     "start": "node server.js",
     "heroku-postbuild": "yarn install --production=false && yarn build",
+    "test": "yarn test:unit && yarn test:e2e --headless",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e"
   },

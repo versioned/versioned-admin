@@ -2,7 +2,7 @@
 
 ## Backlog (Sprint)
 
-* Try using async/await?
+* Write a complete Register + Login Cypress test case
 
 ## Epics (Major Features)
 
@@ -127,7 +127,7 @@ heroku config:set VUE_APP_API_URL=https://versioned2.herokuapp.com/v1
 
 ## Unit Tests
 
-Setup:
+Setting up with Jest:
 
 ```
 vue add @vue/unit-jest
@@ -146,8 +146,10 @@ yarn.lock
 Running:
 
 ```
-yarn test:unit
+yarn test:unit --watch
 ```
+
+See [@vue/cli-plugin-unit-jest](https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-unit-jest)
 
 ## End-to-End/Integration Tests
 
@@ -173,7 +175,7 @@ yarn.lock
 Running:
 
 ```
-yarn test:e2e
+yarn test:e2e --headless
 ```
 
 ## Resources
@@ -185,3 +187,4 @@ yarn test:e2e
 * [Awesome Vue - Curated List](https://github.com/vuejs/awesome-vue#validation)
 * [Cypress Testing Examples](https://github.com/cypress-io/cypress-example-kitchensink)
 * [Cypress Docs - Assertions](https://docs.cypress.io/guides/references/assertions.html)
+* [Cypress Vue Example](https://github.com/cypress-io/cypress-example-recipes/tree/master/examples/blogs__vue-vuex-rest)

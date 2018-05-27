@@ -4,7 +4,7 @@
       <h1>Login</h1>
     </div>
 
-    <form @submit.prevent="login">
+    <form class="login-form" @submit.prevent="login">
       <div class="form-group">
         <label for="email">Email</label>
         <input type="email" v-model="user.email" class="form-control" id="email" autofocus required/>
@@ -21,7 +21,7 @@
       <img v-if="loading" src="/ajax-loader.gif">
 
       <p>
-        <router-link class="nav-link" to="/register">Register</router-link>
+        <router-link id="register-link" class="nav-link" to="/register">Register</router-link>
       </p>
     </form>
   </section>

@@ -1,6 +1,6 @@
 <template lang="html">
   <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-      <router-link class="navbar-brand navbar-link" to="/">{{brand()}}</router-link>
+      <router-link class="navbar-brand navbar-link brand" to="/">{{brand()}}</router-link>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -26,8 +26,8 @@
             </li> -->
           </ul>
           <li v-if="$store.state.login" class="logged-in-user">
-            <a href="#">{{userEmail()}}</a> |
-            <a href="#" data-toggle="tooltip" title="Logga ut" @click="logout">
+            <a href="#" class="user-email">{{userEmail()}}</a> |
+            <a href="#" class="logout" data-toggle="tooltip" title="Logga ut" @click="logout">
               logout
             </a>
           </li>
