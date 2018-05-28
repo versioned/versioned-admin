@@ -1,5 +1,5 @@
 <template lang="html">
-  <textarea type="text" ref="objJson" v-model="objJson" class="form-control" @input="fieldInput" rows="20"/>
+  <textarea type="text" :id="id" ref="objJson" v-model="objJson" class="form-control" @input="fieldInput" rows="20"/>
 </template>
 
 <script>
@@ -7,18 +7,10 @@ import u from '@/util'
 import Alert from '@/services/alert'
 
 export default {
-  props: ['obj'],
+  props: ['id', 'obj'],
   data: function () {
     return {
-      originalObj: null,
       valid: true
-    }
-  },
-  watch: {
-    obj: function (value) {
-      if (!this.originalObj && value) {
-        this.originalObj = value
-      }
     }
   },
   computed: {
@@ -26,7 +18,7 @@ export default {
       get () {
         // NOTE: Only allow the obj value to be passed once from the parent component.
         // Otherwise the circular update may mess with whitespace and cursor position during editing
-        return u.prettyJson(this.originalObj)
+        return u.prettyJson(this.obj)
       },
       set (value) {
         try {
@@ -36,7 +28,7 @@ export default {
             this.valid = true
           }
         } catch (e) {
-          Alert.set('errors', {title: `Ogiltig JSON: ${e}`})
+          Alert.set('errors', {title: `Invalid JSON: ${e}`})
           this.valid = false
         }
       }

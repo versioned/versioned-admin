@@ -4,10 +4,9 @@ import guards from '@/router/guards'
 import Home from '@/components/Home'
 import Register from '@/components/Register'
 import Login from '@/components/Login'
-import DocsList from '@/components/docs/DocsList'
-import DocsEdit from '@/components/docs/DocsEdit'
-import DocsNew from '@/components/docs/DocsNew'
-import SearchPage from '@/components/SearchPage'
+import ModelsList from '@/components/models/ModelsList'
+import ModelsNew from '@/components/models/ModelsNew'
+import ModelsEdit from '@/components/models/ModelsEdit'
 
 Vue.use(Router)
 
@@ -35,25 +34,35 @@ const router = new Router({
       }
     },
     {
-      path: '/search',
-      name: 'Search',
-      component: SearchPage
+      path: '/models',
+      name: 'Models',
+      component: ModelsList
     },
     {
-      path: '/docs/:contentType?',
-      name: 'Docs List',
-      component: DocsList
+      path: '/models/new',
+      name: 'New Model',
+      component: ModelsNew
     },
     {
-      path: '/docs/:contentType/:id/edit',
-      name: 'Docs Edit',
-      component: DocsEdit
-    },
-    {
-      path: '/docs/:contentType/new',
-      name: 'Docs New',
-      component: DocsNew
+      path: '/models/:id/edit',
+      name: 'Edit Model',
+      component: ModelsEdit
     }
+    // {
+    //   path: '/docs/:contentType?',
+    //   name: 'Docs List',
+    //   component: DocsList
+    // },
+    // {
+    //   path: '/docs/:contentType/:id/edit',
+    //   name: 'Docs Edit',
+    //   component: DocsEdit
+    // },
+    // {
+    //   path: '/docs/:contentType/new',
+    //   name: 'Docs New',
+    //   component: DocsNew
+    // }
   ]
 })
 

@@ -33,7 +33,7 @@
     </div>
     <div class="row" v-else>
       <p>
-        Welcome! Get started by creating models for your data.
+        Welcome! Get started by <router-link to="/models/new">creating models</router-link> for your data.
       </p>
     </div>
 </template>

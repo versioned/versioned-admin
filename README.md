@@ -2,7 +2,21 @@
 
 ## Backlog (Sprint)
 
-* Write a complete Register + Login Cypress test case
+* Generic handling of:
+  * status 5xx http responses
+  * status 4xx http responses
+
+* Display form baseErrors
+
+* API test models CRUD
+
+* Models validation API test
+
+* Generic form error handling?
+
+* More E2E Tests
+  * login_validation.js
+  * register_validation.js
 
 ## Epics (Major Features)
 

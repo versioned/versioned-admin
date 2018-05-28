@@ -19,7 +19,7 @@ function listPath (contentType, options = {}) {
 function create (contentType, options = {}) {
   const listUrl = process.env.VUE_APP_API_URL + listPath(contentType, options)
   function getUrl (id) {
-    return listUrl + '/' + id + '?relationshipLevels=1'
+    return listUrl + '/' + id
   }
   function responseDoc (response) {
     return getIn(response, 'data.data')
@@ -44,7 +44,8 @@ function create (contentType, options = {}) {
     return authHeader()
   }
   function get (id) {
-    return axios.get(getUrl(id), {headers: headers()})
+    const url = getUrl(id) + '?relationshipLevels=1'
+    return axios.get(url, {headers: headers()})
       .then(responseDoc)
   }
   function list (options = {}) {

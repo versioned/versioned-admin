@@ -1,6 +1,6 @@
 // From: https://github.com/Shangbinbin/vue-date-filter
 
-function padStart(value, length, char) {
+function padStart (value, length, char) {
   value = value + ''
   var len = length - value.length
   if (len <= 0) {
@@ -10,7 +10,7 @@ function padStart(value, length, char) {
   }
 }
 
-export function filter(date, format = 'YYYY-MM-DD hh:mm') {
+export function filter (date, format = 'YYYY-MM-DD hh:mm') {
   var _date = date
   var splitArr = format.split(/(YYYY|MM|DD|hh|mm|ss)+/)
   if (typeof date !== 'object') {
