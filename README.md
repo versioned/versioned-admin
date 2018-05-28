@@ -6,6 +6,8 @@
   * status 5xx http responses
   * status 4xx http responses
 
+* Need user name/email in changelog
+
 * Display form baseErrors
 
 * API test models CRUD

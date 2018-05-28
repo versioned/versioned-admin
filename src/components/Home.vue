@@ -25,7 +25,7 @@
             </td>
             <td>{{item.doc.name || item.doc.title}}</td>
             <td>{{item.action}}</td>
-            <td>{{item.createdBy}}</td>
+            <td>{{item.createdBy.email}}</td>
             <td>{{item.createdAt | date('YYYY-MM-DD hh:mm') }}</td>
           </tr>
         </tbody>
