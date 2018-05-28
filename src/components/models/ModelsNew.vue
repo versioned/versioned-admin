@@ -1,5 +1,5 @@
 <template lang="html">
-  <section class="content-item-page">
+  <section>
     <div class="page-title">
         <h1>New Model</h1>
     </div>
@@ -14,6 +14,7 @@ import User from '@/services/user'
 import Model from '@/services/model'
 import ModelsForm from '@/components/models/ModelsForm'
 import router from '@/router'
+import Alert from '@/services/alert'
 
 export default {
   data () {
@@ -40,6 +41,7 @@ export default {
         const accountId = u.getIn(User.get(), 'account.id')
         const createdModel = await Model(accountId).create(model)
         router.push(`/models/${createdModel.id}/edit`)
+        Alert.set('Saved')
       } catch (error) {
         this.$refs.modelsForm.handleError(error)
       }

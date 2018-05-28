@@ -5,10 +5,18 @@ function get () {
 }
 
 function set (alertType, message) {
+  if (!message) {
+    message = alertType
+    alertType = 'success'
+  }
   store.commit('setAlert', {current: {[alertType]: message}})
 }
 
 function setNext (alertType, message) {
+  if (!message) {
+    message = alertType
+    alertType = 'success'
+  }
   store.commit('setAlert', {next: {[alertType]: message}})
 }
 

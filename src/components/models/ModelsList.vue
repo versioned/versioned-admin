@@ -15,7 +15,7 @@
     </div>
 
     <div class="row">
-      <table class="table table-striped">
+      <table v-if="models.length > 0" class="table table-striped">
         <thead>
           <tr>
             <th>Name</th>
@@ -31,6 +31,9 @@
           </tr>
         </tbody>
       </table>
+      <div v-else>
+        No models
+      </div>
     </div>
   </div>
 </template>

@@ -1,15 +1,16 @@
 <template lang="html">
-  <section class="content-item-page">
+  <section>
     <div class="page-title">
         <h1>Edit Model</h1>
     </div>
 
-    <models-form ref="modelsForm" :model="model" @submit="save($event)"/>
+    <models-form ref="modelsForm" :model="model" @submit="save($event)" @remove="remove($event)"/>
   </section>
 </template>
 
 <script>
 import u from '@/util'
+import router from '@/router'
 import User from '@/services/user'
 import Model from '@/services/model'
 import Alert from '@/services/alert'
@@ -40,6 +41,12 @@ export default {
       } catch (error) {
         this.$refs.modelsForm.handleError(error)
       }
+    },
+    remove: async function (model) {
+      const accountId = u.getIn(User.get(), 'account.id')
+      await Model(accountId).remove(model.id)
+      Alert.setNext('Deleted')
+      router.push(`/models`)
     }
   },
   components: {

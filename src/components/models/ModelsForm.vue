@@ -18,6 +18,7 @@
     </div>
 
     <input type="submit" class="btn btn-primary" value="Save" />
+    <a v-if="model.id" href="#" @click="remove()">Delete</a>
     <img v-if="$store.state.loading" src="/ajax-loader.gif">
   </form>
 </template>
@@ -40,6 +41,9 @@ export default {
     },
     submit () {
       this.$emit('submit', this.model)
+    },
+    remove () {
+      this.$emit('remove', this.model)
     },
     handleError (error) {
       if (error.status === 422) {

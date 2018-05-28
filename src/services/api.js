@@ -64,8 +64,8 @@ function create (contentType, options = {}) {
       .then(responseDoc)
       .catch(handleSaveError)
   }
-  function remove (doc) {
-    return axios.delete(getUrl(doc.id), {headers: headers()})
+  function remove (id) {
+    return axios.delete(getUrl(id), {headers: headers()})
       .then(responseDoc)
   }
   return {
