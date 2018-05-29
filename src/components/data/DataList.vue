@@ -2,7 +2,7 @@
   <section>
     <div v-if="models.length > 0">
       <div class="page-title">
-        <h1>Data: {{model}}</h1>
+        <h1>List {{model}}</h1>
       </div>
 
       <form class="page-form" @submit.prevent="formSubmit" role="form">
@@ -20,7 +20,7 @@
 
       <div class="create-new">
         <router-link v-if="canCreate()" class="btn btn-primary" :to="createUrl()">
-          Create data
+          Create {{model}}
         </router-link>
       </div>
 
@@ -28,7 +28,7 @@
         Number of rows: {{count}}
       </div>
 
-      <div class="row">
+      <div class="row" v-if="count">
         <table class="table table-striped">
           <thead>
             <tr>
@@ -60,11 +60,11 @@
 <script>
 import u from '@/util'
 import User from '@/services/user'
+import Data from '@/services/data'
 import {truncated} from '@/client_util'
 import router from '@/router'
-// import Swagger from '@/services/swagger'
-import Api from '@/services/api'
 import Model from '@/services/model'
+import Swagger from '@/services/swagger'
 import Welcome from '@/components/Welcome'
 
 function formattedValue (property, value) {
@@ -90,8 +90,6 @@ export default {
     return {
       model: null,
       models: [],
-      swagger: null,
-      schemas: [],
       labels: [],
       docs: []
     }
@@ -102,12 +100,7 @@ export default {
   watch: {
     '$route': 'getModels',
     model: function (model) {
-      Api.create(model).list().then(docs => {
-        const schema = this.schemas[model]
-        this.labels = labels(schema)
-        this.docs = docsWithAttributeValues(docs, schema)
-        router.push(`/docs/${model}`)
-      })
+      this.getData(model)
     }
   },
   computed: {
@@ -123,6 +116,16 @@ export default {
         // this.schemas = Swagger.schemas(swagger)
         this.models = models
         this.model = this.$route.params.model || u.getIn(this.models, '0.coll')
+      })
+    },
+    getData (model) {
+      const modelSpec = this.models.find(m => m.coll === model)
+      const schema = u.getIn(modelSpec, 'model.schema')
+      Data(model).list().then(docs => {
+        this.schema = schema
+        this.labels = labels(schema)
+        this.docs = docsWithAttributeValues(docs, schema)
+        router.push(`/data/${model}`)
       })
     },
     editUrl (doc) {
@@ -160,5 +163,8 @@ export default {
   div.rows-count {
     margin-top: 10px;
     margin-bottom: 20px;
+  }
+  table.table {
+    margin-top: 20px;
   }
 </style>

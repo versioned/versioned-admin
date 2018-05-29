@@ -1,7 +1,7 @@
 <template lang="html">
   <section v-if="model">
     <div class="page-title">
-        <h1>Create {{model}} data</h1>
+        <h1>Create {{model}}</h1>
     </div>
     <data-form :doc="doc" :schema="schema" @formSubmit="save($event)"></data-form>
   </section>
@@ -12,7 +12,7 @@ import u from '@/util'
 import User from '@/services/user'
 import router from '@/router'
 import DataForm from '@/components/data/DataForm'
-import Api from '@/services/api'
+import Data from '@/services/data'
 import Model from '@/services/model'
 import Alert from '@/services/alert'
 
@@ -21,7 +21,6 @@ export default {
     return {
       model: null,
       schema: null,
-      api: null,
       doc: {}
     }
   },
@@ -36,7 +35,6 @@ export default {
         const model = models[0]
         this.model = model.coll
         this.schema = u.getIn(model, 'model.schema')
-        this.api = Api.create(this.model)
       } else {
         Alert.set('error', `Could not find model ${this.$route.params.model}`)
       }
@@ -44,11 +42,11 @@ export default {
   },
   methods: {
     save (doc) {
-      this.api.create(doc)
+      Data(this.model).create(doc)
         .then(doc => {
           this.doc = doc
           Alert.setNext('success', 'Saved')
-          router.push(`/docs/${this.contentType}/${doc.id}/edit`)
+          router.push(`/data/${this.model}/${doc.id}/edit`)
         })
         .catch(result => {
           Alert.set('errors', {title: 'Could not save', errors: result.errors})

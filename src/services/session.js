@@ -43,10 +43,20 @@ function getToken () {
   return u.getIn(getStore(), 'token')
 }
 
+function spaceId () {
+  return u.getIn(get(), 'space.id')
+}
+
+function accountId () {
+  return u.getIn(get(), 'account.id')
+}
+
 export default {
   initFromLocalStorage,
   getStore,
   get,
   set,
-  getToken
+  getToken,
+  spaceId,
+  accountId
 }

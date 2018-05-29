@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import guards from '@/router/guards'
+import PageNotFound from '@/components/PageNotFound'
 import Home from '@/components/Home'
 import Register from '@/components/Register'
 import Login from '@/components/Login'
@@ -65,6 +66,10 @@ const router = new Router({
       path: '/data/:model/:id/edit',
       name: 'Data Edit',
       component: DataEdit
+    },
+    {
+      path: '*',
+      component: PageNotFound
     }
   ]
 })

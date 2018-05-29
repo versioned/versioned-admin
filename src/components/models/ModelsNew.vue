@@ -1,7 +1,7 @@
 <template lang="html">
   <section>
     <div class="page-title">
-        <h1>New Model</h1>
+        <h1>Create Model</h1>
     </div>
 
     <models-form ref="modelsForm" :model="model" @submit="save($event)"/>

@@ -66,7 +66,7 @@ export default {
       return `${item.doc.type}:${item.doc.id}`
     },
     editUrl (item) {
-      return `/docs/${item.doc.type}/${item.doc.id}/edit`
+      return `/data/${item.doc.type}/${item.doc.id}/edit`
     }
   },
   components: {

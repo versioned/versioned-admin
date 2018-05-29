@@ -1,66 +1,74 @@
 <template lang="html">
   <section class="content-item-page">
     <div class="page-title">
-        <h1>Edit {{contentType}} {{id}}</h1>
+        <h1>Edit {{model}}</h1>
     </div>
-    <docs-form :doc="doc" :schema="schema" @formSubmit="save($event)"></docs-form>
+    <data-form :doc="doc" :schema="schema" @formSubmit="save($event)"></data-form>
     <div v-if="canDelete">
-      <a href="#" @click="remove">Ta bort</a>
+      <a href="#" @click="remove">Delete</a>
     </div>
   </section>
 </template>
 
 <script>
+import u from '@/util'
+import User from '@/services/user'
 import router from '@/router'
 import DataForm from '@/components/data/DataForm'
-import Swagger from '@/services/swagger'
-import Api from '@/services/api'
+import Data from '@/services/data'
+import Model from '@/services/model'
 import Alert from '@/services/alert'
 
 export default {
   data: function () {
     return {
       id: null,
-      contentType: null,
-      swagger: null,
+      model: null,
       schema: null,
-      api: null,
       doc: {}
     }
   },
   computed: {
     canDelete: function () {
-      if (this.swagger && this.contentType) {
-        return Swagger.canDelete(this.swagger, this.contentType)
-      } else {
-        return null
-      }
+      // TODO
+      return true
+      // if (this.swagger && this.contentType) {
+      //   return Swagger.canDelete(this.swagger, this.contentType)
+      // } else {
+      //   return null
+      // }
     }
   },
   components: {
     DataForm
   },
   created () {
-    this.getDoc()
+    this.getData()
   },
   watch: {
-    '$route': 'getDoc'
+    '$route': 'getData'
   },
   methods: {
-    getDoc () {
-      Swagger.get().then(swagger => {
-        this.id = this.$route.params.id
-        this.contentType = this.$route.params.contentType
-        this.swagger = swagger
-        this.schema = Swagger.schemas(swagger)[this.contentType]
-        this.api = Api.create(this.contentType)
-        this.api.get(this.id).then(doc => {
-          this.doc = doc
-        })
+    getData () {
+      this.id = this.$route.params.id
+      console.log('pm debug getData', this.$route.params)
+      const accountId = u.getIn(User.get(), 'account.id')
+      const params = {'filter.coll': this.$route.params.model}
+      Model(accountId).list({params}).then(models => {
+        if (models.length > 0) {
+          const model = models[0]
+          this.model = model.coll
+          this.schema = u.getIn(model, 'model.schema')
+          Data(this.model).get(this.id).then(doc => {
+            this.doc = doc
+          })
+        } else {
+          Alert.set('error', `Could not find model ${this.$route.params.model}`)
+        }
       })
     },
     save (doc) {
-      this.api.update(doc)
+      Data(this.model).update(doc)
         .then(doc => {
           if (doc) this.doc = doc
           Alert.set('success', 'Saved')
@@ -71,9 +79,9 @@ export default {
     },
     remove () {
       if (confirm('Are you sure?')) {
-        this.api.remove(this.doc)
+        Data(this.model).remove(this.doc.id)
           .then(() => {
-            router.push(`/docs/${this.contentType}`)
+            router.push(`/data/${this.model}`)
           })
       }
     }
