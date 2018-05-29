@@ -7,7 +7,7 @@
     <div v-show="alert.warning" class="alert alert-warning" role="alert" v-html="alert.warning">
     </div>
     <div v-if="alert.errors" class="alert alert-danger" role="alert">
-      <span v-class="alert.errors.title"></span>
+      <span v-class="alert.errors.title">{{alert.errors.title}}</span>
       <ul>
         <li v-for="error in alert.errors.errors" v-bind:key="error">
           {{error}}

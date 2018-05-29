@@ -12,7 +12,7 @@
         </div>
       </div>
 
-      <docs-form-field v-for="attribute in writeAttributes" :doc="doc" :attribute="attribute" :key="attribute.key"></docs-form-field>
+      <data-form-field v-for="attribute in writeAttributes" :doc="doc" :attribute="attribute" :key="attribute.key"></data-form-field>
 
       <div class="form-group buttons">
         <input type="submit" class="btn btn-primary" value="Spara" />
@@ -23,7 +23,7 @@
 
 <script>
 import Swagger from '@/services/swagger'
-import DocsFormField from '@/components/docs/DocsFormField'
+import DataFormField from '@/components/data/DataFormField'
 
 export default {
   props: ['doc', 'schema'],
@@ -44,7 +44,7 @@ export default {
     }
   },
   components: {
-    DocsFormField
+    DataFormField
   },
   methods: {
     formSubmit () {

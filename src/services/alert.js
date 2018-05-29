@@ -4,20 +4,24 @@ function get () {
   return store.state.alert
 }
 
-function set (alertType, message) {
+function makeAlert (alertType, message) {
   if (!message) {
     message = alertType
     alertType = 'success'
   }
-  store.commit('setAlert', {current: {[alertType]: message}})
+  if (alertType === 'error') {
+    alertType = 'errors'
+    message = {title: message}
+  }
+  return {[alertType]: message}
+}
+
+function set (alertType, message) {
+  store.commit('setAlert', {current: makeAlert(alertType, message)})
 }
 
 function setNext (alertType, message) {
-  if (!message) {
-    message = alertType
-    alertType = 'success'
-  }
-  store.commit('setAlert', {next: {[alertType]: message}})
+  store.commit('setAlert', {next: makeAlert(alertType, message)})
 }
 
 function clear () {

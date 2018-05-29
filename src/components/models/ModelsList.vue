@@ -31,9 +31,6 @@
           </tr>
         </tbody>
       </table>
-      <div v-else>
-        No models
-      </div>
     </div>
   </div>
 </template>

@@ -7,6 +7,9 @@ import Login from '@/components/Login'
 import ModelsList from '@/components/models/ModelsList'
 import ModelsNew from '@/components/models/ModelsNew'
 import ModelsEdit from '@/components/models/ModelsEdit'
+import DataList from '@/components/data/DataList'
+import DataNew from '@/components/data/DataNew'
+import DataEdit from '@/components/data/DataEdit'
 
 Vue.use(Router)
 
@@ -47,22 +50,22 @@ const router = new Router({
       path: '/models/:id/edit',
       name: 'Edit Model',
       component: ModelsEdit
+    },
+    {
+      path: '/data/:model?',
+      name: 'Data List',
+      component: DataList
+    },
+    {
+      path: '/data/:model/new',
+      name: 'Data New',
+      component: DataNew
+    },
+    {
+      path: '/data/:model/:id/edit',
+      name: 'Data Edit',
+      component: DataEdit
     }
-    // {
-    //   path: '/docs/:contentType?',
-    //   name: 'Docs List',
-    //   component: DocsList
-    // },
-    // {
-    //   path: '/docs/:contentType/:id/edit',
-    //   name: 'Docs Edit',
-    //   component: DocsEdit
-    // },
-    // {
-    //   path: '/docs/:contentType/new',
-    //   name: 'Docs New',
-    //   component: DocsNew
-    // }
   ]
 })
 

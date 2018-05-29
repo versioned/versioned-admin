@@ -10,6 +10,9 @@
             <li class="nav-item">
               <router-link class="nav-link" to="/models">Models</router-link>
             </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/data">Data</router-link>
+            </li>
             <!-- <li class="nav-item active">
               <router-link class="nav-link" to="/docs">Browse</router-link>
             </li> -->

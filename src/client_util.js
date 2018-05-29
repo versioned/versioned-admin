@@ -1,4 +1,4 @@
-function throttle (interval, fn) {
+export function throttle (interval, fn) {
   let timeout = null
   return function () {
     const args = arguments
@@ -7,6 +7,15 @@ function throttle (interval, fn) {
   }
 }
 
+export function truncated (string, limit = 50) {
+  if (string && string.length > limit) {
+    return string.substring(0, limit) + '...'
+  } else {
+    return string
+  }
+}
+
 export default {
-  throttle
+  throttle,
+  truncated
 }

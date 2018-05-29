@@ -12,7 +12,7 @@
 
 <script>
 import router from '@/router'
-import DocsForm from '@/components/docs/DocsForm'
+import DataForm from '@/components/data/DataForm'
 import Swagger from '@/services/swagger'
 import Api from '@/services/api'
 import Alert from '@/services/alert'
@@ -38,7 +38,7 @@ export default {
     }
   },
   components: {
-    DocsForm
+    DataForm
   },
   created () {
     this.getDoc()

@@ -140,7 +140,7 @@ function stringify (propertySchema, value) {
   }
 }
 
-function adminEnabledContentTypes (schemas) {
+function adminEnabledModels (schemas) {
   return Object.keys(schemas).filter(key => u.getIn(schemas[key], 'x-meta.admin_properties'))
 }
 
@@ -156,5 +156,5 @@ export default {
   writeAttributes,
   readAttributes,
   stringify,
-  adminEnabledContentTypes
+  adminEnabledModels
 }
