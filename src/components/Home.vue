@@ -78,8 +78,12 @@ export default {
     },
     editUrl (item) {
       const key = [item.model.type, item.doc.id].join('.')
-      if (!this.deleted[key] && u.getIn(item, 'model.schema.x-meta.dataModel')) {
-        return `/data/${item.doc.type}/${item.doc.id}/edit`
+      if (!this.deleted[key]) {
+        if (u.getIn(item, 'model.schema.x-meta.dataModel')) {
+          return `/data/${item.doc.type}/${item.doc.id}/edit`
+        } else if (item.model.type === 'models') {
+          return `/models/${item.doc.id}/edit`
+        }
       }
     }
   },
