@@ -5,11 +5,11 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>Time</th>
+            <th>Action</th>
             <th>Type</th>
             <th>Name</th>
-            <th>Action</th>
             <th>User</th>
+            <th>Time</th>
           </tr>
         </thead>
         <tbody>
@@ -22,13 +22,13 @@
                 {{item.doc.id}}
               </span>
             </td>
-            <td>{{item.createdAt | date('YYYY-MM-DD hh:mm') }}</td>
+            <td>{{item.action}}</td>
             <td>
               {{item.model.type}}
             </td>
             <td>{{item.doc.name || item.doc.title}}</td>
-            <td>{{item.action}}</td>
             <td>{{item.createdBy.email}}</td>
+            <td>{{item.createdAt | date('YYYY-MM-DD hh:mm') }}</td>
           </tr>
         </tbody>
       </table>
