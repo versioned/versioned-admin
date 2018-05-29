@@ -4,6 +4,7 @@
       <table class="table table-striped">
         <thead>
           <tr>
+            <th>ID</th>
             <th>Time</th>
             <th>Type</th>
             <th>Name</th>
@@ -14,15 +15,16 @@
         <tbody>
           <tr v-for="item in changelog" v-bind:key="item.id">
             <td>
-              <router-link v-if="item.action !== 'delete'" :to="editUrl(item)">
-                {{item.createdAt | date('YYYY-MM-DD hh:mm') }}
+              <router-link v-if="editUrl(item)" :to="editUrl(item)">
+                {{item.doc.id}}
               </router-link>
               <span v-else>
-                {{item.createdAt | date('YYYY-MM-DD hh:mm') }}
+                {{item.doc.id}}
               </span>
             </td>
+            <td>{{item.createdAt | date('YYYY-MM-DD hh:mm') }}</td>
             <td>
-              {{item.doc.type}}
+              {{item.model.type}}
             </td>
             <td>{{item.doc.name || item.doc.title}}</td>
             <td>{{item.action}}</td>
@@ -37,6 +39,7 @@
 </template>
 
 <script>
+import u from '@/util'
 import User from '@/services/user'
 import Changelog from '@/services/changelog'
 import Welcome from '@/components/Welcome'
@@ -44,7 +47,8 @@ import Welcome from '@/components/Welcome'
 export default {
   data () {
     return {
-      changelog: []
+      changelog: [],
+      deleted: {}
     }
   },
   created () {
@@ -57,6 +61,13 @@ export default {
       changelog.list({params})
         .then(changelog => {
           this.changelog = changelog
+          this.deleted = changelog.reduce((acc, item) => {
+            if (item.action === 'delete') {
+              const key = [item.model.type, item.doc.id].join('.')
+              acc[key] = true
+            }
+            return acc
+          }, {})
         })
         .catch(err => {
           console.log('Changelog.list error', err)
@@ -66,7 +77,10 @@ export default {
       return `${item.doc.type}:${item.doc.id}`
     },
     editUrl (item) {
-      return `/data/${item.doc.type}/${item.doc.id}/edit`
+      const key = [item.model.type, item.doc.id].join('.')
+      if (!this.deleted[key] && u.getIn(item, 'model.schema.x-meta.dataModel')) {
+        return `/data/${item.doc.type}/${item.doc.id}/edit`
+      }
     }
   },
   components: {

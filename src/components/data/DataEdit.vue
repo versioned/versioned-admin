@@ -1,5 +1,5 @@
 <template lang="html">
-  <section class="content-item-page">
+  <section v-if="doc">
     <div class="page-title">
         <h1>Edit {{model}}</h1>
     </div>
@@ -25,7 +25,7 @@ export default {
       id: null,
       model: null,
       schema: null,
-      doc: {}
+      doc: null
     }
   },
   computed: {
@@ -61,6 +61,8 @@ export default {
           this.schema = u.getIn(model, 'model.schema')
           Data(this.model).get(this.id).then(doc => {
             this.doc = doc
+          }).catch(error => {
+            Alert.set('error', 'Could not find data')
           })
         } else {
           Alert.set('error', `Could not find model ${this.$route.params.model}`)

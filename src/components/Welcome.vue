@@ -2,7 +2,7 @@
   <div class="welcome alert alert-success">
     <h1>Welcome!</h1>
     <p>
-      Get started by <router-link to="/models/new">creating models</router-link> for your data.
+      Get started by <router-link to="/models/new">creating models</router-link> and <router-link to="/data">data</router-link>.
     </p>
   </div>
 </template>
