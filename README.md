@@ -2,19 +2,27 @@
 
 ## Backlog (Sprint)
 
+* Proper UX for ModelsForm:
+  * models.coll is renamed to models.key. Use dbFriendly via a watch to set key based on name, only if name is not different from auto generated
+  * models.fields field. Remove the model and have it be generated instead - getModel().
+    * {name, type, validation, relationship}
+    * Figure out data types here based on contentful
+    * Do as much validation as possible in the client
+    * Support validations
+    * Support relationships
+    * Consider the approach of doing the fields transformation in the UI before you go all in and refactor the backend (fairly big change)
+
+* Figure out consistent page layout Bootstrap markup
+
 * Generic handling of:
   * status 5xx http responses
   * status 4xx http responses
-
-* Need user name/email in changelog
-
-* Display form baseErrors
 
 * API test models CRUD
 
 * Models validation API test
 
-* Generic form error handling?
+* Consistent form error handling?
 
 * More E2E Tests
   * login_validation.js

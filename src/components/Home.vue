@@ -28,7 +28,10 @@
             </td>
             <td>{{item.doc.name || item.doc.title}}</td>
             <td>{{item.createdBy.email}}</td>
-            <td>{{item.createdAt | date('YYYY-MM-DD hh:mm') }}</td>
+            <td>
+              {{item.createdAt | date('YYYY-MM-DD hh:mm') }}<br />
+              ({{item.createdAt | timeAgo}})
+            </td>
           </tr>
         </tbody>
       </table>

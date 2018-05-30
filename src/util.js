@@ -15,6 +15,10 @@ function isDate (value) {
   return value instanceof Date && !isNaN(value.valueOf())
 }
 
+function isRegExp (value) {
+  return value instanceof RegExp
+}
+
 function keys (objOrArray) {
   if (!objOrArray) return []
   if (isArray(objOrArray)) {
@@ -388,27 +392,63 @@ function unique (array) {
 }
 
 // NOTE: could use https://www.npmjs.com/package/mime
-// const mimeTypes = {
-//   '.html': 'text/html',
-//   '.jpeg': 'image/jpeg',
-//   '.jpg': 'image/jpeg',
-//   '.png': 'image/png',
-//   '.gif': 'image/gif',
-//   '.js': 'text/javascript',
-//   '.css': 'text/css',
-//   '.ico': 'image/x-icon',
-//   '.xml': 'application/xml'
-// }
+const mimeTypes = {
+  '.html': 'text/html',
+  '.jpeg': 'image/jpeg',
+  '.jpg': 'image/jpeg',
+  '.png': 'image/png',
+  '.gif': 'image/gif',
+  '.js': 'text/javascript',
+  '.css': 'text/css',
+  '.ico': 'image/x-icon',
+  '.xml': 'application/xml'
+}
 
-// function mimeType (path) {
-//   return mimeTypes[extname(path)]
-// }
+function extname (filename) {
+  return filename && filename.split('.').pop()
+}
 
-// function uuid (length = 6) {
-//   const time = (new Date()).valueOf().toString()
-//   const random = Math.random().toString()
-//   return require('crypto').createHash('sha1').update(time + random).digest('hex').substring(0, length)
-// }
+function mimeType (path) {
+  return mimeTypes[extname(path)]
+}
+
+// https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+function uuid (length = 6) {
+  function s4 () {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1)
+  }
+  const result = []
+  const s4Length = Math.floor(length / 4) + 1
+  for (let i = 0; i < s4Length; ++i) {
+    result.push(s4())
+  }
+  return result.join('').substring(0, length)
+}
+
+// From: https://gist.github.com/codeguy/6684588
+function urlFriendly (value, length = 100) {
+  if (empty(value)) return undefined
+  let result = value.toString().replace(/^\s+|\s+$/g, '').toLowerCase()
+  const from = 'åàáäâèéëêìíïîòóöôùúüûñç·/_,:;'
+  const to = 'aaaaaeeeeiiiioooouuuunc------'
+  for (let i = 0; i < from.length; i++) {
+    result = result.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i))
+  }
+  result = result.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+    .replace(/\s+/g, '-') // collapse whitespace and replace by -
+    .replace(/-+/g, '-') // collapse dashes
+    .replace(/^-+|-+$/g, '') // trim dashes
+    .substring(0, length)
+    .replace(/^-+|-+$/g, '') // trim dashes after substring too
+  return result
+}
+
+function dbFriendly (value, length = 20) {
+  let result = urlFriendly(value, length)
+  return result && result.replace(/-/g, '_')
+}
 
 function json (value) {
   return JSON.stringify(value)
@@ -440,6 +480,7 @@ export default {
   isArray,
   isObject,
   isDate,
+  isRegExp,
   keys,
   values,
   set,
@@ -487,6 +528,10 @@ export default {
   intersection,
   difference,
   unique,
+  mimeType,
+  uuid,
+  urlFriendly,
+  dbFriendly,
   json,
   parseJson,
   safeJsonParse,

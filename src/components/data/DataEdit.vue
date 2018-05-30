@@ -61,7 +61,7 @@ export default {
           this.schema = u.getIn(model, 'model.schema')
           Data(this.model).get(this.id).then(doc => {
             this.doc = doc
-          }).catch(error => {
+          }).catch(() => {
             Alert.set('error', 'Could not find data')
           })
         } else {

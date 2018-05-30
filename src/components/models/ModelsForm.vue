@@ -5,9 +5,15 @@
     </ul>
     <div class="form-group">
       <label for="name">Name</label>
-      <input type="name" v-model="model.name" class="form-control" id="name" v-bind:class="{ 'is-invalid': errors.name}" autofocus required/>
+      <input type="text" v-model="model.name" class="form-control" id="name" v-bind:class="{ 'is-invalid': errors.name}" autofocus required/>
       <div class="invalid-feedback">
         {{errors.name}}
+      </div>
+
+      <label for="coll">Key</label>
+      <input type="text" v-model="model.coll" class="form-control" id="coll" v-bind:class="{ 'is-invalid': errors.coll}" required/>
+      <div class="invalid-feedback">
+        {{errors.coll}}
       </div>
 
       <label for="schema">Schema</label>
