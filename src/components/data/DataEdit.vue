@@ -51,7 +51,6 @@ export default {
   methods: {
     getData () {
       this.id = this.$route.params.id
-      console.log('pm debug getData', this.$route.params)
       const accountId = u.getIn(User.get(), 'account.id')
       const params = {'filter.coll': this.$route.params.model}
       Model(accountId).list({params}).then(models => {

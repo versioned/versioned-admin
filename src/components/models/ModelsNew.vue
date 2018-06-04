@@ -22,16 +22,8 @@ export default {
     return {
       model: {
         spaceId,
-        model: {
-          schema: {
-            type: 'object',
-            properties: {
-              name: {type: 'string'}
-            },
-            additionalProperties: false,
-            required: ['name']
-          }
-        }
+        fields: [ModelsForm.methods.makeField({name: 'Title', unique: true})],
+        model: {}
       }
     }
   },

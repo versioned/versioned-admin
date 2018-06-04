@@ -19,7 +19,7 @@ import ModelsForm from '@/components/models/ModelsForm'
 export default {
   data () {
     return {
-      model: {model: {}}
+      model: {fields: [], model: {}}
     }
   },
   created () {
@@ -31,7 +31,9 @@ export default {
   methods: {
     getModel: async function () {
       const accountId = u.getIn(User.get(), 'account.id')
-      this.model = await Model(accountId).get(this.$route.params.id)
+      const model = await Model(accountId).get(this.$route.params.id)
+      const fields = ModelsForm.methods.getFields(model)
+      this.model = u.merge(model, {fields})
     },
     save: async function (model) {
       try {

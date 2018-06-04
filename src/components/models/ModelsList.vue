@@ -6,7 +6,7 @@
 
     <div class="create-new">
       <router-link v-if="canCreate()" class="btn btn-primary" :to="createUrl()">
-        Create model
+        Create Model
       </router-link>
     </div>
 

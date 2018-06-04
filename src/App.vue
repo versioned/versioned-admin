@@ -35,4 +35,9 @@ export default {
     margin-top: 10px;
     margin-bottom: 20px;
   }
+
+  .form-group.required label:after {
+    content:"*";
+    color:red;
+  }
 </style>

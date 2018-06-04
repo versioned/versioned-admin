@@ -3,14 +3,72 @@
 ## Backlog (Sprint)
 
 * Proper UX for ModelsForm:
-  * models.coll is renamed to models.key. Use dbFriendly via a watch to set key based on name, only if name is not different from auto generated
+  * Figure out when unique can be applied
+  * Validate at least one field server side and client side (don't show)
+  * Help texts for data types etc.
   * models.fields field. Remove the model and have it be generated instead - getModel().
-    * {name, type, validation, relationship}
+    * {name, key, type, validation, relationship}
     * Figure out data types here based on contentful
+      https://www.contentful.com/developers/docs/concepts/data-model
+      * Short Text (Single line, length 256)
+      * Long Text (Multiline, length 50k)
+      * Slug. Can be updated?
+      * Integer Number
+      * Decimal Number (Float)
+      * Boolean (true or false)
+      * Enumeration
+      * Relationship ()
+      * Location
+      * JSON
+      * Date and time ("2015-11-06T09:45:27" ISO 8601)
+      * Asset
+    * Support Array Type like contentful does?
+    * Need title field indicator like Contentful? Why?
     * Do as much validation as possible in the client
     * Support validations
+      Required
+      Unique
+      Limit character count
+      Match pattern
+      Accept only specific values
     * Support relationships
+    * Unique
+    * Required (migration?)
     * Consider the approach of doing the fields transformation in the UI before you go all in and refactor the backend (fairly big change)
+    * Use proper models.model.schema validation in the backend instead or before swagger validation
+
+* Account Plans with GraphCMS
+  Basic 29 USD per project per month (webhooks)
+  Growth 99 USD per project per month (localization)
+  Business 349 USD (premium support)
+
+  GraphCMS show length of text inputs
+  "Save and Close" and "Save and Publish" buttons
+  GraphCMS has Algolia integration
+  When your trial expires, you won't have access to the features Webhooks and Localization anymore.
+  The Webhooks feature is available on Basic and higher plans.
+  The Localization feature is available on Growth and higher plans.
+
+* Account Plans with Contentful
+  Developer Edition - 39 USD per month (5 users, 2 spaces, 10k records, 1M requests)
+  Team Edition - 249 USD per month (15 users, 3 spaces, 25k records, 3M requests)
+  Professional - 949 USD per month (50k records, 6M requests)
+
+  Models List
+  Name | Description | Fields | Updated | By
+
+  ModelsEdit
+  "displayField": "title",
+
+  Not able to leave organization?
+
+* Cosmic JS
+  Starter - 29 USD (3 GB files, 25k requests, 5 users)
+  Pro - 99 USD (15 GB files, 150k requests, 10 users)
+  Categorize users by "Developer" and "Content Editor"
+  All content by default has title/slug/content. Then you can add meta fields in addition.
+  On the DataEdit page there is a link to the API endpoint. Very nice!
+  There is also a link to a JavaScript code snippet for fetching the content. Awesome.
 
 * Figure out consistent page layout Bootstrap markup
 
