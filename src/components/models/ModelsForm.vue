@@ -378,7 +378,7 @@ export default {
         unique: field.unique,
         field: {
           name: field.name,
-          type: (fieldType !== property.type ? fieldType : undefined)
+          type: fieldType
         },
         relationship: (field.category === 'data' ? undefined : field.relationship)
       })
@@ -390,7 +390,7 @@ export default {
       }))
     },
     propertyToField (key, property, required) {
-      const type = (property.type === 'array' ? property.items.type : u.getIn(property, 'x-meta.field.type', property.type))
+      const type = u.getIn(property, 'x-meta.field.type', property.type)
       const defaults = FIELD_TYPES_PROPERTIES[type] || {}
       const relationship = u.getIn(property, 'x-meta.relationship')
       let category = 'data'
