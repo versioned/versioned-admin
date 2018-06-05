@@ -26,12 +26,14 @@
 
     <div class="form-group" v-for="(field, index) in model.fields">
       <h2>
-        <span v-if="!field.name">Field {{index + 1}}</span>
-        <span v-else>{{field.name}}: {{field.type}}</span>
-        <span v-if="field.relationship.toType">(relationship)</span>
-        <a href="#" class="small" v-show="field.key && collapsed[field.key]" @click.prevent="toggleCollapsed(field.key)">show</a>
-        <a href="#" class="small" v-show="field.key && !collapsed[field.key]" @click.prevent="toggleCollapsed(field.key)">hide</a>
-        <a href="#" class="small" v-show="index> 0" @click.prevent="removeField(index)">| remove</a>
+        <a href="#" @click.prevent="toggleCollapsed(field.key)">
+          <span v-if="!field.name">Field {{index + 1}}</span>
+          <span v-else>{{field.name}}: {{field.type}}</span>
+          <span v-if="field.relationship.toType">(relationship)</span>
+        </a>
+        <!-- <a href="#" class="small" v-show="field.key && collapsed[field.key]" @click.prevent="toggleCollapsed(field.key)">show</a>
+        <a href="#" class="small" v-show="field.key && !collapsed[field.key]" @click.prevent="toggleCollapsed(field.key)">hide</a> -->
+        <a href="#" class="small" v-show="index> 0" @click.prevent="removeField(index)">[remove]</a>
       </h2>
 
       <div v-show="!collapsed[field.key]" class="fields">
