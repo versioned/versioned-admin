@@ -4,10 +4,12 @@
       <h1>Models</h1>
     </div>
 
-    <div class="create-new">
-      <router-link v-if="canCreate()" class="btn btn-primary" :to="createUrl()">
-        Create Model
-      </router-link>
+    <div class="row">
+      <div class="create-new">
+        <router-link v-if="canCreate()" class="btn btn-primary" :to="createUrl()">
+          Create Model
+        </router-link>
+      </div>
     </div>
 
     <div class="rows-count" v-if="count && count > 20">
@@ -19,6 +21,10 @@
         <thead>
           <tr>
             <th>Name</th>
+            <th>Fields</th>
+            <th>Relationships</th>
+            <th>Updated</th>
+            <th>By</th>
           </tr>
         </thead>
         <tbody>
@@ -27,6 +33,19 @@
               <router-link v-if="canUpdate()" :to="editUrl(model)">
                 {{model.name}}
               </router-link>
+            </td>
+            <td>
+              {{fields(model).join(', ')}}
+            </td>
+            <td>
+              {{relationships(model).join(', ')}}
+            </td>
+            <td>
+              {{(model.updatedAt || model.createdAt) | date('YYYY-MM-DD hh:mm') }}<br />
+              ({{(model.updatedAt || model.createdAt) | timeAgo}})
+            </td>
+            <td>
+              {{(model.updatedBy || model.createdBy).email}}
             </td>
           </tr>
         </tbody>
@@ -78,6 +97,15 @@ export default {
     canUpdate () {
       // TODO :check if user can update
       return true
+    },
+    fields (model) {
+      return model.propertiesOrder.filter(p => !this.isRelationship(model, p))
+    },
+    relationships (model) {
+      return model.propertiesOrder.filter(p => this.isRelationship(model, p))
+    },
+    isRelationship (model, property) {
+      return u.getIn(model, `model.schema.properties.${property}.x-meta.relationship`)
     }
   }
 }

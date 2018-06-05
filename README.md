@@ -2,6 +2,12 @@
 
 ## Backlog (Sprint)
 
+* Support relationships in DataForm
+
+* Support JSON object field with schema?
+
+* Make Data select last edited Model (via localStorage)?
+
 * Proper UX for ModelsForm:
   * Figure out when unique can be applied
   * Validate at least one field server side and client side (don't show)

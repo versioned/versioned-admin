@@ -79,15 +79,11 @@ function canUpdate (swagger, contentType) {
 }
 
 function label (key, propertySchema) {
-  return u.getIn(propertySchema, 'x-meta.label') || key
+  return u.getIn(propertySchema, 'x-meta.field.name') || key
 }
 
 function help (key, propertySchema) {
-  return u.getIn(propertySchema, 'x-meta.admin_help')
-}
-
-function formField (key, propertySchema) {
-  return u.getIn(propertySchema, 'x-meta.form_field')
+  return u.getIn(propertySchema, 'x-meta.field.help')
 }
 
 function canReadProperty (propertySchema) {
@@ -108,12 +104,15 @@ function propertyNames (schema) {
 function attributes (schema, doc) {
   return propertyNames(schema).map(key => {
     const propertySchema = schema.properties[key]
+    const field = u.getIn(propertySchema, 'x-meta.field', {})
+    const relationship = u.getIn(propertySchema, 'x-meta.relationship')
     const value = u.getIn(doc, key)
     return {
       key,
       label: label(key, propertySchema),
       help: help(key, propertySchema),
-      form_field: formField(key, propertySchema),
+      field,
+      relationship,
       schema: propertySchema,
       value
     }

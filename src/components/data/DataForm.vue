@@ -5,7 +5,7 @@
         <input type="submit" class="btn btn-primary" value="Spara" />
       </div>
 
-      <div class="form-input" v-for="attribute in readAttributes">
+      <div class="form-group" v-for="attribute in readAttributes">
         <label name="title">{{attribute.label}}</label>
         <div class="attribute-value">
           {{attribute.value}}

@@ -25,153 +25,174 @@
     </div>
 
     <div class="form-group" v-for="(field, index) in model.fields">
-      <h2>Field {{index + 1}} <a href="#" class="small" v-if="index> 0" @click.prevent="removeField(index)">(Remove)</a></h2>
+      <h2>
+        <span v-if="!field.name">Field {{index + 1}}</span>
+        <span v-else>{{field.name}}: {{field.type}}</span>
+        <span v-if="field.relationship.toType">(relationship)</span>
+        <a href="#" class="small" v-show="field.key && collapsed[field.key]" @click.prevent="toggleCollapsed(field.key)">show</a>
+        <a href="#" class="small" v-show="field.key && !collapsed[field.key]" @click.prevent="toggleCollapsed(field.key)">hide</a>
+        <a href="#" class="small" v-show="index> 0" @click.prevent="removeField(index)">| remove</a>
+      </h2>
 
-      <div class="form-group required">
-        <label>Name</label>
-        <input type="text" v-model="field.name" :maxlength="NAME_LENGTH" @input="fieldNameChange(field)" ref="fieldName" class="form-control" required/>
-      </div>
-
-      <div class="form-group required">
-        <label>Key</label>
-        <input type="text" v-model="field.key" :maxlength="KEY_LENGTH" @change="makeDbFriendly(field, 'key')" class="form-control" required/>
-      </div>
-
-      <div class="form-group">
-        <div class="form-check">
-          <input v-model="field.category" class="form-check-input" type="radio" value="data">
-          <label class="form-check-label">
-            Data field
-          </label>
+      <div v-show="!collapsed[field.key]" class="fields">
+        <div class="form-group required">
+          <label>Name</label>
+          <input type="text" v-model="field.name" :maxlength="NAME_LENGTH" @input="fieldNameChange(field)" ref="fieldName" class="form-control" required/>
         </div>
 
-        <div class="form-check">
-          <input v-model="field.category" class="form-check-input" type="radio" value="oneWayRelationship">
-          <label class="form-check-label">
-            One-way Relationship
-          </label>
+        <div class="form-group required">
+          <label>Key</label>
+          <input type="text" v-model="field.key" :maxlength="KEY_LENGTH" @change="makeDbFriendly(field, 'key')" class="form-control" required/>
         </div>
 
-        <div class="form-check">
-          <input v-model="field.category" class="form-check-input" type="radio" value="twoWayRelationship">
-          <label class="form-check-label">
-            Two-way Relationship
-          </label>
-        </div>
-      </div>
-
-      <div v-if="field.category === 'data'" class="form-group">
-        <label class="form-check-label">
-          Data type
-        </label>
-        <select v-if="field.category === 'data'" v-model="field.type">
-          <option v-for="type in FIELD_TYPES" v-bind:value="type.key">
-            {{type.name}}
-          </option>
-        </select>
-      </div>
-
-      <div v-if="field.category !== 'data'" class="form-group required">
-        <label>Target model (key)</label>
-        <input type="text" v-model="field.relationship.toType" :maxlength="COLL_LENGTH" @change="makeDbFriendly(field.relationship, 'toType')" class="form-control" required/>
-      </div>
-
-      <div v-if="field.category === 'twoWayRelationship'" class="form-group required">
-        <label>Target field (key)</label>
-        <input type="text" v-model="field.relationship.toField" :maxlength="FIELD_LENGTH" @change="makeDbFriendly(field.relationship, 'toField')" class="form-control" required/>
-      </div>
-
-      <div v-if="field.category === 'oneWayRelationship'" class="form-group">
-        <div class="form-check">
-          <input class="form-check-input" type="radio" v-model="field.relationship.type" value="one-to-many">
-          <label class="form-check-label">
-            Multiple ID references ("has many" relationship, i.e. an array of string IDs)
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="radio" v-model="field.relationship.type" value="many-to-one">
-          <label class="form-check-label">
-            Single ID reference ("belongs to" relationship, i.e. a single string ID)
-          </label>
-        </div>
-      </div>
-
-      <div v-if="field.category === 'twoWayRelationship'" class="form-group">
-        <div class="form-check">
-          <input class="form-check-input" type="radio" v-model="field.relationship.type" value="one-to-many">
-          <label class="form-check-label">
-            One to Many - multiple ID references (array of string IDs in this model, single string ID in target model)
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="radio" v-model="field.relationship.type" value="many-to-many">
-          <label class="form-check-label">
-            Many to Many - multiple ID references (array of string IDs in this model, array of string IDs in target model)
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="radio" v-model="field.relationship.type" value="many-to-one">
-          <label class="form-check-label">
-            Many to one - single ID reference (single string ID in this model, array of string IDs in target model)
-          </label>
-        </div>
-      </div>
-
-      <div v-if="field.category !== 'data'" class="form-group">
-        <label>Relationship name (if field key is "userId" then a good relationship name might be "user" - optional)</label>
-        <input type="text" v-model="field.relationship.name" :maxlength="KEY_LENGTH" @change="makeDbFriendly(field.relationship, 'name')" class="form-control"/>
-      </div>
-
-      <div class="form-group">
-        <div v-if="field.category === 'data' && field.type !== 'text'" class="form-check">
-          <input v-model="field.array" class="form-check-input" type="checkbox">
-          <label class="form-check-label">
-            array (multiple {{field.type}} values)
-          </label>
-        </div>
-        <div class="form-check">
-          <input v-model="field.required" class="form-check-input" type="checkbox">
-          <label class="form-check-label">
-            required
-          </label>
-        </div>
-
-        <div v-if="enabledField('unique', field)" class="form-check">
-          <input v-model="field.unique" class="form-check-input" type="checkbox">
-          <label class="form-check-label">
-            unique
-          </label>
-        </div>
-
-        <div v-if="enabledField('validation', field)" class="form-check">
-          <input v-model="field.hasValidation" class="form-check-input" type="checkbox" value="true">
-          <label class="form-check-label">
-            validation
-          </label>
-        </div>
-
-        <div v-if="enabledField('validation', field) && field.hasValidation" class="form-group">
-          <div v-if="enabledField('validation.minLength', field)" class="form-group">
-            <label>Minimum Length</label>
-            <input type="number" v-model="field.validation.minLength" class="form-control"/>
+        <div class="form-group">
+          <div class="form-check">
+            <input v-model="field.category" class="form-check-input" type="radio" value="data">
+            <label class="form-check-label">
+              Data field
+            </label>
           </div>
 
-          <div v-if="enabledField('validation.maxLength', field)" class="form-group">
-            <label>Maximum Length</label>
-            <input type="number" v-model="field.validation.maxLength" class="form-control"/>
+          <div class="form-check">
+            <input v-model="field.category" class="form-check-input" type="radio" value="oneWayRelationship">
+            <label class="form-check-label">
+              One-way Relationship
+            </label>
           </div>
 
-          <div v-if="enabledField('validation.pattern', field)" class="form-group">
-            <label>Pattern (regular expression)</label>
-            <input type="text" v-model="field.validation.pattern" @input="validatePattern(field)" v-bind:class="{ 'is-invalid': field.errors.pattern}" class="form-control"/>
-            <div class="invalid-feedback">
-              {{field.errors.pattern}}
+          <div class="form-check">
+            <input v-model="field.category" class="form-check-input" type="radio" value="twoWayRelationship">
+            <label class="form-check-label">
+              Two-way Relationship
+            </label>
+          </div>
+        </div>
+
+        <div v-if="field.category === 'data'" class="form-group">
+          <label class="form-check-label">
+            Data type
+          </label>
+          <select v-if="field.category === 'data'" v-model="field.type">
+            <option v-for="type in FIELD_TYPES" v-bind:value="type.key">
+              {{type.name}}
+            </option>
+          </select>
+        </div>
+
+        <div v-if="field.category !== 'data'" class="form-group required">
+          <label>Target model (key)</label>
+          <input type="text" v-model="field.relationship.toType" :maxlength="COLL_LENGTH" @change="makeDbFriendly(field.relationship, 'toType')" class="form-control" required/>
+        </div>
+
+        <div v-if="field.category === 'twoWayRelationship'" class="form-group required">
+          <label>Target field (key)</label>
+          <input type="text" v-model="field.relationship.toField" :maxlength="FIELD_LENGTH" @change="makeDbFriendly(field.relationship, 'toField')" class="form-control" required/>
+        </div>
+
+        <div v-if="field.category === 'oneWayRelationship'" class="form-group">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" v-model="field.relationship.type" value="one-to-many">
+            <label class="form-check-label">
+              Multiple ID references ("has many" relationship, i.e. an array of string IDs)
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" v-model="field.relationship.type" value="many-to-one">
+            <label class="form-check-label">
+              Single ID reference ("belongs to" relationship, i.e. a single string ID)
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" v-model="field.relationship.type" value="one-to-one">
+            <label class="form-check-label">
+              Single Unique ID reference ("belongs to" relationship, i.e. a single string ID)
+            </label>
+          </div>
+        </div>
+
+        <div v-if="field.category === 'twoWayRelationship'" class="form-group">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" v-model="field.relationship.type" value="one-to-many">
+            <label class="form-check-label">
+              One to Many - multiple ID references (array of string IDs in this model, single string ID in target model)
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" v-model="field.relationship.type" value="many-to-many">
+            <label class="form-check-label">
+              Many to Many - multiple ID references (array of string IDs in this model, array of string IDs in target model)
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" v-model="field.relationship.type" value="many-to-one">
+            <label class="form-check-label">
+              Many to One - single ID reference (single string ID in this model, array of string IDs in target model)
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" v-model="field.relationship.type" value="one-to-one">
+            <label class="form-check-label">
+              One to One - single unique ID reference (single unique string ID in this model, single unique string ID in target model)
+            </label>
+          </div>
+        </div>
+
+        <div v-if="field.category !== 'data'" class="form-group">
+          <label>Relationship name (if field key is "userId" then a good relationship name might be "user" - optional)</label>
+          <input type="text" v-model="field.relationship.name" :maxlength="KEY_LENGTH" @change="makeDbFriendly(field.relationship, 'name')" class="form-control"/>
+        </div>
+
+        <div class="form-group">
+          <div v-if="field.category === 'data' && field.type !== 'text'" class="form-check">
+            <input v-model="field.array" class="form-check-input" type="checkbox">
+            <label class="form-check-label">
+              array (multiple {{field.type}} values)
+            </label>
+          </div>
+          <div class="form-check">
+            <input v-model="field.required" class="form-check-input" type="checkbox">
+            <label class="form-check-label">
+              required
+            </label>
+          </div>
+
+          <div v-if="enabledField('unique', field)" class="form-check">
+            <input v-model="field.unique" class="form-check-input" type="checkbox">
+            <label class="form-check-label">
+              unique
+            </label>
+          </div>
+
+          <div v-if="enabledField('validation', field)" class="form-check">
+            <input v-model="field.hasValidation" class="form-check-input" type="checkbox" value="true">
+            <label class="form-check-label">
+              validation
+            </label>
+          </div>
+
+          <div v-if="enabledField('validation', field) && field.hasValidation" class="form-group">
+            <div v-if="enabledField('validation.minLength', field)" class="form-group">
+              <label>Minimum Length</label>
+              <input type="number" v-model="field.validation.minLength" class="form-control"/>
             </div>
-          </div>
 
-          <div v-if="enabledField('validation.enum', field)" class="form-group">
-            <label>Only allow certain values (enumeration, comma separated)</label>
-            <input type="text" v-model="field.validation.enum" class="form-control"/>
+            <div v-if="enabledField('validation.maxLength', field)" class="form-group">
+              <label>Maximum Length</label>
+              <input type="number" v-model="field.validation.maxLength" class="form-control"/>
+            </div>
+
+            <div v-if="enabledField('validation.pattern', field)" class="form-group">
+              <label>Pattern (regular expression)</label>
+              <input type="text" v-model="field.validation.pattern" @input="validatePattern(field)" v-bind:class="{ 'is-invalid': field.errors.pattern}" class="form-control"/>
+              <div class="invalid-feedback">
+                {{field.errors.pattern}}
+              </div>
+            </div>
+
+            <div v-if="enabledField('validation.enum', field)" class="form-group">
+              <label>Only allow certain values (enumeration, comma separated)</label>
+              <input type="text" v-model="field.validation.enum" class="form-control"/>
+            </div>
           </div>
         </div>
       </div>
@@ -243,7 +264,15 @@ export default {
       COLL_LENGTH,
       FIELD_TYPES,
       errors: {},
-      allErrors: []
+      allErrors: [],
+      collapsed: {}
+    }
+  },
+  watch: {
+    model (model) {
+      for (let key of model.fields.map(u.property('key'))) {
+        this.collapsed[key] = true
+      }
     }
   },
   methods: {
@@ -255,7 +284,7 @@ export default {
         key: dbFriendly(field.name),
         category: 'data',
         type: 'string',
-        required: true,
+        required: false,
         relationship: {type: 'one-to-many'},
         validation: {},
         errors: {}
@@ -316,6 +345,9 @@ export default {
         field.errors.pattern = 'regular expression is invalid'
       }
     },
+    toggleCollapsed (key) {
+      this.collapsed = u.merge(this.collapsed, {[key]: this.collapsed[key] ? false : true})
+    },
     handleError (error) {
       if (error.status === 422) {
         if (u.notEmpty(error.errors)) {
@@ -347,7 +379,11 @@ export default {
     getFields (model) {
       const schema = u.getIn(model, 'model.schema', {})
       if (u.empty(schema.properties)) return []
-      const keys = model.propertiesOrder || Object.keys(schema.properties)
+      let keys = Object.keys(schema.properties)
+      if (model.propertiesOrder) {
+        const missingKeys = u.difference(Object.keys(schema.properties), model.propertiesOrder)
+        keys = model.propertiesOrder.concat(missingKeys)
+      }
       const required = schema.required || []
       return keys.map((key) => {
         return this.makeField(this.propertyToField(key, schema.properties[key], required.includes(key)))
@@ -371,11 +407,11 @@ export default {
       } else {
         // Relationship
         property.type = 'string'
-        isArray = (field.relationship.type !== 'many-to-one')
+        isArray = ['many-to-one', 'one-to-many'].includes(field.relationship.type)
         field.relationship.oneWay = (field.category === 'oneWayRelationship')
       }
       const xMeta = u.compact({
-        unique: field.unique,
+        unique: (u.getIn(field, 'relationship.type') === 'one-to-one' || field.unique),
         field: {
           name: field.name,
           type: fieldType
@@ -391,6 +427,7 @@ export default {
     },
     propertyToField (key, property, required) {
       const type = u.getIn(property, 'x-meta.field.type', property.type)
+      const name = u.getIn(property, 'x-meta.field.name', key)
       const defaults = FIELD_TYPES_PROPERTIES[type] || {}
       const relationship = u.getIn(property, 'x-meta.relationship')
       let category = 'data'
@@ -398,7 +435,7 @@ export default {
         category = relationship.oneWay ? 'oneWayRelationship' : 'twoWayRelationship'
       }
       return u.compact({
-        name: u.getIn(property, 'x-meta.field.name'),
+        name,
         key,
         category,
         array: (property.type === 'array'),
