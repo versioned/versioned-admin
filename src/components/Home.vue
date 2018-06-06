@@ -5,8 +5,8 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>Action</th>
             <th>Type</th>
+            <th>Action</th>
             <th>Name</th>
             <th>User</th>
             <th>Time</th>
@@ -22,10 +22,10 @@
                 {{item.doc.id}}
               </span>
             </td>
-            <td>{{item.action}}</td>
             <td>
               {{item.model.type}}
             </td>
+            <td>{{item.action}}</td>
             <td>{{item.doc.name || item.doc.title}}</td>
             <td>{{item.createdBy.email}}</td>
             <td>
@@ -62,8 +62,8 @@ export default {
       const params = {}
       const changelog = Changelog({accountId: User.accountId()})
       changelog.list({params})
-        .then(changelog => {
-          this.changelog = changelog
+        .then(({data}) => {
+          this.changelog = data
           this.deleted = changelog.reduce((acc, item) => {
             if (item.action === 'delete') {
               const key = [item.model.type, item.doc.id].join('.')

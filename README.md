@@ -2,7 +2,14 @@
 
 ## Backlog (Sprint)
 
+* ModelsList
+  * Move to homepage?
+
+* Pagination for DataList
+
 * Support relationships in DataForm
+  Need search for this?
+  Check out contentful and others
 
 * Support JSON object field with schema?
 

@@ -2,14 +2,14 @@
   <section>
     <div v-if="models.length > 0">
       <div class="page-title">
-        <h1>List {{model}}</h1>
+        <h1>{{model.name}} Data</h1>
       </div>
 
       <form class="page-form" @submit.prevent="formSubmit" role="form">
         <div class="form-group">
           <div class="form-input">
             <label name="site">Model</label>
-            <select v-model="model">
+            <select v-model="coll">
               <option v-for="model in models" v-bind:value="model.coll">
                 {{model.coll}}
               </option>
@@ -20,12 +20,12 @@
 
       <div class="create-new">
         <router-link v-if="canCreate()" class="btn btn-primary" :to="createUrl()">
-          Create {{model}}
+          Create {{model.name}}
         </router-link>
       </div>
 
-      <div class="rows-count" v-if="count && count > 20">
-        Number of rows: {{count}}
+      <div class="rows-count" v-if="count">
+        Number of documents: {{count}}
       </div>
 
       <div class="row" v-if="count">
@@ -33,6 +33,8 @@
           <thead>
             <tr>
               <th v-for="label in labels">{{label}}</th>
+              <th>Updated</th>
+              <th>By</th>
             </tr>
           </thead>
           <tbody>
@@ -45,6 +47,13 @@
               </td>
               <td v-for="attributeValue in doc.attributeValues">
                 {{attributeValue}}
+              </td>
+              <td>
+                {{(doc.updatedAt || doc.createdAt) | date('YYYY-MM-DD hh:mm') }}<br />
+                ({{(doc.updatedAt || doc.createdAt) | timeAgo}})
+              </td>
+              <td>
+                {{(doc.updatedBy || doc.createdBy).email}}
               </td>
             </tr>
           </tbody>
@@ -88,10 +97,11 @@ function labels (schema) {
 export default {
   data () {
     return {
-      model: null,
+      coll: null,
       models: [],
       labels: [],
-      docs: []
+      docs: [],
+      count: 0
     }
   },
   created () {
@@ -99,40 +109,44 @@ export default {
   },
   watch: {
     '$route': 'getModels',
-    model: function (model) {
-      this.getData(model)
+    coll: function (coll) {
+      this.getData(coll)
     }
   },
   computed: {
-    count () {
-      return this.docs ? this.docs.length : null
+    model () {
+      return this.lookupModel(this.coll)
     }
   },
   methods: {
     getModels () {
       const accountId = u.getIn(User.get(), 'account.id')
-      Model(accountId).list().then(models => {
+      Model(accountId).list().then(body => {
         // this.swagger = swagger
         // this.schemas = Swagger.schemas(swagger)
-        this.models = models
-        this.model = this.$route.params.model || u.getIn(this.models, '0.coll')
+        this.models = body.data
+        this.coll = this.$route.params.model || u.getIn(this.models, '0.coll')
       })
     },
-    getData (model) {
-      const modelSpec = this.models.find(m => m.coll === model)
-      const schema = u.getIn(modelSpec, 'model.schema')
-      Data(model).list().then(docs => {
+    lookupModel (coll) {
+      return this.models.find(m => m.coll === coll)
+    },
+    getData (coll) {
+      const schema = u.getIn(this.lookupModel(coll), 'model.schema')
+      Data(coll).list().then(body => {
+        console.log('pm debug body', body)
         this.schema = schema
         this.labels = labels(schema)
-        this.docs = docsWithAttributeValues(docs, schema)
-        router.push(`/data/${model}`)
+        this.docs = docsWithAttributeValues(body.data, schema)
+        this.count = body.count
+        router.push(`/data/${coll}`)
       })
     },
     editUrl (doc) {
-      return `/data/${this.model}/${doc.id}/edit`
+      return `/data/${this.coll}/${doc.id}/edit`
     },
     createUrl () {
-      return `/data/${this.model}/new`
+      return `/data/${this.coll}/new`
     },
     canCreate () {
       // TODO

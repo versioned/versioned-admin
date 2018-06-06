@@ -21,6 +21,7 @@
         <thead>
           <tr>
             <th>Name</th>
+            <th>Data</th>
             <th>Fields</th>
             <th>Relationships</th>
             <th>Updated</th>
@@ -33,6 +34,9 @@
               <router-link v-if="canUpdate()" :to="editUrl(model)">
                 {{model.name}}
               </router-link>
+            </td>
+            <td>
+              <router-link :to="dataUrl(model)">data</router-link>
             </td>
             <td>
               {{fields(model).join(', ')}}
@@ -80,8 +84,9 @@ export default {
   methods: {
     getModels () {
       const accountId = u.getIn(User.get(), 'account.id')
-      Model(accountId).list().then(models => {
-        this.models = models
+      const params = {sort: 'name'}
+      Model(accountId).list({params}).then(({data}) => {
+        this.models = data
       })
     },
     editUrl (model) {
@@ -89,6 +94,9 @@ export default {
     },
     createUrl () {
       return `/models/new`
+    },
+    dataUrl (model) {
+      return `/data/${model.coll}`
     },
     canCreate () {
       // TODO: check if user can create

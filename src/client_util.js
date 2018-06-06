@@ -1,3 +1,10 @@
+import u from '@/util'
+
+export function capitalize (string) {
+  if (u.empty(string)) return string
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
 export function timeAgo (time) {
   if (!time) return undefined
   const date = (typeof time === 'string' ? new Date(time) : time)
@@ -37,6 +44,7 @@ export function truncated (string, limit = 50) {
 }
 
 export default {
+  capitalize,
   timeAgo,
   throttle,
   truncated

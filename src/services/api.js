@@ -25,7 +25,7 @@ function create (contentType, options = {}) {
     return getIn(response, 'data.data')
   }
   function responseList (response) {
-    return getIn(response, 'data.data')
+    return getIn(response, 'data')
   }
   function handleSaveError (error) {
     throw getIn(error, 'response.data')

@@ -25,12 +25,17 @@
     </div>
 
     <div class="form-group" v-for="(field, index) in model.fields">
-      <h2>
+      <h2 :class="{'field-heading': true, 'required': field.required}">
         <a href="#" @click.prevent="toggleCollapsed(field.key)">
           <span v-if="!field.name">Field {{index + 1}}</span>
-          <span v-else>{{field.name}}: {{field.type}}</span>
-          <span v-if="field.relationship.toType">(relationship)</span>
+          <span v-else-if="field.category !== 'data'">
+            {{field.name}} relationship
+          </span>
+          <span v-else>
+            {{field.name}}
+          </span>
         </a>
+        <span v-if="field.category === 'data'" class="small">[{{field.type}}]</span>
         <!-- <a href="#" class="small" v-show="field.key && collapsed[field.key]" @click.prevent="toggleCollapsed(field.key)">show</a>
         <a href="#" class="small" v-show="field.key && !collapsed[field.key]" @click.prevent="toggleCollapsed(field.key)">hide</a> -->
         <a href="#" class="small" v-show="index> 0" @click.prevent="removeField(index)">[remove]</a>
@@ -213,6 +218,7 @@
 <script>
 import Vue from 'vue'
 import u from '@/util'
+import {capitalize} from '@/client_util'
 import JsonField from '@/components/form/JsonField'
 
 const FIELD_TYPES = [
@@ -267,17 +273,18 @@ export default {
       FIELD_TYPES,
       errors: {},
       allErrors: [],
-      collapsed: {}
+      collapsed: this.getCollapsed(this.model.fields)
     }
   },
   watch: {
     model (model) {
-      for (let key of model.fields.map(u.property('key'))) {
-        this.collapsed[key] = true
-      }
+      this.collapsed = this.getCollapsed(model.fields)
     }
   },
   methods: {
+    getCollapsed (fields) {
+      return u.makeObj(fields.map(u.property('key')), () => true)
+    },
     setProperty (obj, property, value) {
       obj[property] = value
     },
@@ -348,7 +355,7 @@ export default {
       }
     },
     toggleCollapsed (key) {
-      this.collapsed = u.merge(this.collapsed, {[key]: this.collapsed[key] ? false : true})
+      this.collapsed = u.merge(this.collapsed, {[key]: !this.collapsed[key]})
     },
     handleError (error) {
       if (error.status === 422) {
@@ -429,7 +436,7 @@ export default {
     },
     propertyToField (key, property, required) {
       const type = u.getIn(property, 'x-meta.field.type', property.type)
-      const name = u.getIn(property, 'x-meta.field.name', key)
+      const name = u.getIn(property, 'x-meta.field.name', capitalize(key))
       const defaults = FIELD_TYPES_PROPERTIES[type] || {}
       const relationship = u.getIn(property, 'x-meta.relationship')
       let category = 'data'
@@ -459,3 +466,9 @@ export default {
   }
 }
 </script>
+
+<style media="screen">
+  .field-heading a:hover {
+    text-decoration: none;
+  }
+</style>
