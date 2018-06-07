@@ -16,13 +16,33 @@ function listPath (contentType, options = {}) {
   }
 }
 
+function authHeader () {
+  const token = session.getToken()
+  if (token) {
+    return {
+      Authorization: `Bearer ${token}`
+    }
+  } else {
+    return {}
+  }
+}
+function headers () {
+  return authHeader()
+}
+
+function responseDoc (response) {
+  return getIn(response, 'data.data')
+}
+
+function getRequest (url) {
+  return axios.get(url, {headers: headers()})
+    .then(responseDoc)
+}
+
 function create (contentType, options = {}) {
   const listUrl = process.env.VUE_APP_API_URL + listPath(contentType, options)
   function getUrl (id) {
     return listUrl + '/' + id
-  }
-  function responseDoc (response) {
-    return getIn(response, 'data.data')
   }
   function responseList (response) {
     return getIn(response, 'data')
@@ -30,23 +50,10 @@ function create (contentType, options = {}) {
   function handleSaveError (error) {
     throw getIn(error, 'response.data')
   }
-  function authHeader () {
-    const token = session.getToken()
-    if (token) {
-      return {
-        Authorization: `Bearer ${token}`
-      }
-    } else {
-      return {}
-    }
-  }
-  function headers () {
-    return authHeader()
-  }
-  function get (id) {
-    const url = getUrl(id) + '?relationshipLevels=1'
-    return axios.get(url, {headers: headers()})
-      .then(responseDoc)
+  function get (id, options = {}) {
+    const relationshipLevels = options.relationshipLevels === undefined ? 1 : options.relationshipLevels
+    const url = getUrl(id) + `?relationshipLevels=${relationshipLevels}`
+    return getRequest(url)
   }
   function list (options = {}) {
     const defaultParams = {}
@@ -97,5 +104,8 @@ axios.interceptors.response.use(function (response) {
 })
 
 export default {
-  create
+  create,
+  headers,
+  responseDoc,
+  getRequest
 }

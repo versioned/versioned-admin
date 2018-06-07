@@ -1,5 +1,8 @@
 <template lang="html">
-  <form class="page-form" @submit.prevent="formSubmit" role="form">
+  <form @submit.prevent="formSubmit" role="form">
+    <ul v-if="allErrors.length > 0" class="errors alert alert-danger">
+      <li v-for="error in allErrors">{{error.field}} - {{error.message}}</li>
+    </ul>
     <div class="form-group">
       <div class="form-group buttons">
         <input type="submit" class="btn btn-primary" value="Spara" />
@@ -22,11 +25,17 @@
 </template>
 
 <script>
+import u from '@/util'
 import Swagger from '@/services/swagger'
 import DataFormField from '@/components/data/DataFormField'
 
 export default {
   props: ['doc', 'schema'],
+  data: function () {
+    return {
+      allErrors: []
+    }
+  },
   computed: {
     readAttributes: function () {
       if (this.doc && this.schema) {
@@ -49,6 +58,15 @@ export default {
   methods: {
     formSubmit () {
       this.$emit('formSubmit', this.doc)
+    },
+    handleError (error) {
+      if (error.status === 422) {
+        if (u.notEmpty(error.errors)) {
+          this.allErrors = error.errors
+        }
+      } else {
+        throw error
+      }
     }
   }
 }

@@ -80,8 +80,14 @@ function formattedValue (property, value) {
   return truncated(Swagger.stringify(property, value))
 }
 
+const ATTRIBUTES_LIMIT = 10
+
+function getAttributes (schema) {
+  return Swagger.attributes(schema).slice(0, ATTRIBUTES_LIMIT)
+}
+
 function docsWithAttributeValues (docs, schema) {
-  const attributeKeys = Swagger.attributes(schema).map(u.property('key'))
+  const attributeKeys = getAttributes(schema).map(u.property('key'))
   return docs && docs.map(doc => {
     const attributeValues = attributeKeys.map(key => formattedValue(schema.properties[key], doc[key]))
     return u.merge(doc, {
@@ -91,7 +97,7 @@ function docsWithAttributeValues (docs, schema) {
 }
 
 function labels (schema) {
-  return ['id'].concat(Swagger.attributes(schema).map(u.property('label')))
+  return ['id'].concat(getAttributes(schema).map(u.property('label')))
 }
 
 export default {
@@ -134,7 +140,6 @@ export default {
     getData (coll) {
       const schema = u.getIn(this.lookupModel(coll), 'model.schema')
       Data(coll).list().then(body => {
-        console.log('pm debug body', body)
         this.schema = schema
         this.labels = labels(schema)
         this.docs = docsWithAttributeValues(body.data, schema)

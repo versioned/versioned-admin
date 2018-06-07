@@ -2,14 +2,16 @@
 
 ## Backlog (Sprint)
 
-* ModelsList
-  * Move to homepage?
-
-* Pagination for DataList
+* Same error message handling in DataForm as in ModelsForm
 
 * Support relationships in DataForm
   Need search for this?
   Check out contentful and others
+
+* ModelsList
+  * Move to homepage?
+
+* Pagination for DataList
 
 * Support JSON object field with schema?
 

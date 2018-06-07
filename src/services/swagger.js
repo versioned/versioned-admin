@@ -134,8 +134,10 @@ function stringify (propertySchema, value) {
     return new Date(value).toString()
   // } else if (u.getIn(propertySchema, 'x-meta', 'translated')) {
   //   return LANGUAGES.map(site => value[site]).find(u.notNil)
-  } else {
+  } else if (typeof value === 'object') {
     return JSON.stringify(value, null, 4)
+  } else {
+    return value.toString()
   }
 }
 

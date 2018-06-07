@@ -36,7 +36,9 @@
               </router-link>
             </td>
             <td>
-              <router-link :to="dataUrl(model)">data</router-link>
+              <router-link :to="dataUrl(model)">
+                docs: {{documentCount(model)}}
+              </router-link>
             </td>
             <td>
               {{fields(model).join(', ')}}
@@ -63,11 +65,13 @@ import u from '@/util'
 // import router from '@/router'
 import User from '@/services/user'
 import Model from '@/services/model'
+import DbStats from '@/services/db_stats'
 
 export default {
   data () {
     return {
-      models: []
+      models: [],
+      dbStats: {}
     }
   },
   created () {
@@ -84,9 +88,13 @@ export default {
   methods: {
     getModels () {
       const accountId = u.getIn(User.get(), 'account.id')
+      const spaceId = u.getIn(User.get(), 'space.id')
       const params = {sort: 'name'}
       Model(accountId).list({params}).then(({data}) => {
         this.models = data
+        DbStats(spaceId).get().then((data) => {
+          this.dbStats = data
+        })
       })
     },
     editUrl (model) {
@@ -114,6 +122,9 @@ export default {
     },
     isRelationship (model, property) {
       return u.getIn(model, `model.schema.properties.${property}.x-meta.relationship`)
+    },
+    documentCount (model) {
+      return u.getIn(this.dbStats, `${model.coll}.count`)
     }
   }
 }

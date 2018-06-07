@@ -1,5 +1,5 @@
 <template lang="html">
-  <form class="models-form" @submit.prevent="submit">
+  <form @submit.prevent="submit">
     <ul v-if="allErrors.length > 0" class="errors alert alert-danger">
       <li v-for="error in allErrors">{{error.field}} {{error.message}}</li>
     </ul>
@@ -22,6 +22,21 @@
       <div class="invalid-feedback">
         {{errors.schema}}
       </div> -->
+    </div>
+
+    <div class="form-group">
+      <div class="form-check">
+        <input v-model="features.published" class="form-check-input" type="checkbox">
+        <label class="form-check-label">
+          Published and versioned
+        </label>
+      </div>
+      <div class="form-check">
+        <input v-model="features.search" class="form-check-input" type="checkbox">
+        <label class="form-check-label">
+          Searchable
+        </label>
+      </div>
     </div>
 
     <div class="form-group" v-for="(field, index) in model.fields">
@@ -273,12 +288,14 @@ export default {
       FIELD_TYPES,
       errors: {},
       allErrors: [],
+      features: {},
       collapsed: this.getCollapsed(this.model.fields)
     }
   },
   watch: {
     model (model) {
       this.collapsed = this.getCollapsed(model.fields)
+      this.features = u.makeObj(this.model.features || [], () => true)
     }
   },
   methods: {
@@ -328,6 +345,7 @@ export default {
         this.model.model = {schema: this.getSchema(this.model.fields)}
         this.model.propertiesOrder = this.model.fields.map(u.property('key'))
       }
+      this.model.features = u.keys(u.filter(this.features, (v) => true))
       this.$emit('submit', this.model)
     },
     remove () {
@@ -420,7 +438,7 @@ export default {
         field.relationship.oneWay = (field.category === 'oneWayRelationship')
       }
       const xMeta = u.compact({
-        unique: (u.getIn(field, 'relationship.type') === 'one-to-one' || field.unique),
+        unique: field.unique,
         field: {
           name: field.name,
           type: fieldType

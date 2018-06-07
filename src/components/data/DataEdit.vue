@@ -3,7 +3,7 @@
     <div class="page-title">
         <h1>Edit {{model}}</h1>
     </div>
-    <data-form :doc="doc" :schema="schema" @formSubmit="save($event)"></data-form>
+    <data-form ref="dataForm" :doc="doc" :schema="schema" @formSubmit="save($event)"></data-form>
     <div v-if="canDelete">
       <a href="#" @click="remove">Delete</a>
     </div>
@@ -58,7 +58,7 @@ export default {
           const model = data[0]
           this.model = model.coll
           this.schema = u.getIn(model, 'model.schema')
-          Data(this.model).get(this.id).then(doc => {
+          Data(this.model).get(this.id, {relationshipLevels: 0}).then(doc => {
             this.doc = doc
           }).catch(() => {
             Alert.set('error', 'Could not find data')
@@ -74,8 +74,8 @@ export default {
           if (doc) this.doc = doc
           Alert.set('success', 'Saved')
         })
-        .catch(result => {
-          Alert.set('errors', {title: 'Could not save', errors: result.errors})
+        .catch(error => {
+          this.$refs.dataForm.handleError(error)
         })
     },
     remove () {
@@ -83,6 +83,9 @@ export default {
         Data(this.model).remove(this.doc.id)
           .then(() => {
             router.push(`/data/${this.model}`)
+          })
+          .catch(error => {
+            this.$refs.dataForm.handleError(error)
           })
       }
     }

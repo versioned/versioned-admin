@@ -3,7 +3,7 @@
     <div class="page-title">
         <h1>Create {{model}}</h1>
     </div>
-    <data-form :doc="doc" :schema="schema" @formSubmit="save($event)"></data-form>
+    <data-form ref="dataForm" :doc="doc" :schema="schema" @formSubmit="save($event)"></data-form>
   </section>
 </template>
 
@@ -48,8 +48,8 @@ export default {
           Alert.setNext('success', 'Saved')
           router.push(`/data/${this.model}/${doc.id}/edit`)
         })
-        .catch(result => {
-          Alert.set('errors', {title: 'Could not save', errors: result.errors})
+        .catch(error => {
+          this.$refs.dataForm.handleError(error)
         })
     }
   }
