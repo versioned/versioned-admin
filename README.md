@@ -4,6 +4,8 @@
 
 * Same error message handling in DataForm as in ModelsForm
 
+* Fetch and show relationships in DataList
+
 * Support relationships in DataForm
   Need search for this?
   Check out contentful and others

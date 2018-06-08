@@ -39,6 +39,9 @@
               <router-link :to="dataUrl(model)">
                 docs: {{documentCount(model)}}
               </router-link>
+              <router-link :to="createDataUrl(model)">
+                [+]
+              </router-link>
             </td>
             <td>
               {{fields(model).join(', ')}}
@@ -105,6 +108,9 @@ export default {
     },
     dataUrl (model) {
       return `/data/${model.coll}`
+    },
+    createDataUrl (model) {
+      return `/data/${model.coll}/new`
     },
     canCreate () {
       // TODO: check if user can create
