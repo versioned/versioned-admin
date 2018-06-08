@@ -2,13 +2,15 @@
 
 ## Backlog (Sprint)
 
-* Same error message handling in DataForm as in ModelsForm
-
-* Fetch and show relationships in DataList
-
 * Support relationships in DataForm
   Need search for this?
   Check out contentful and others
+
+* Show version history or changelog on the DataEdit page
+
+* Same error message handling in DataForm as in ModelsForm
+
+* Fetch and show relationships in DataList
 
 * ModelsList
   * Move to homepage?

@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import guards from '@/router/guards'
 import PageNotFound from '@/components/PageNotFound'
 import Home from '@/components/Home'
+import Changelog from '@/components/Changelog'
 import Register from '@/components/Register'
 import Login from '@/components/Login'
 import ModelsList from '@/components/models/ModelsList'
@@ -20,6 +21,11 @@ const router = new Router({
       path: '/',
       name: 'Home',
       component: Home
+    },
+    {
+      path: '/changelog',
+      name: 'Changelog',
+      component: Changelog
     },
     {
       path: '/register',
