@@ -15,7 +15,7 @@
         </div>
       </div>
 
-      <data-form-field v-for="attribute in writeAttributes" :doc="doc" :attribute="attribute" :key="attribute.key"></data-form-field>
+      <data-form-field v-for="attribute in writeAttributes" :doc="doc" :attribute="attribute" :model="model" :key="attribute.key"></data-form-field>
 
       <div class="form-group buttons">
         <input type="submit" class="btn btn-primary" value="Spara" />
@@ -30,7 +30,7 @@ import Swagger from '@/services/swagger'
 import DataFormField from '@/components/data/DataFormField'
 
 export default {
-  props: ['doc', 'schema'],
+  props: ['model', 'doc', 'schema'],
   data: function () {
     return {
       allErrors: []

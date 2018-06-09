@@ -3,7 +3,7 @@
     <div class="page-title">
         <h1>Edit {{model}}</h1>
     </div>
-    <data-form ref="dataForm" :doc="doc" :schema="schema" @formSubmit="save($event)"></data-form>
+    <data-form ref="dataForm" :doc="doc" :schema="schema" :model="model" @formSubmit="save($event)"></data-form>
     <div v-if="canDelete">
       <a href="#" @click="remove">Delete</a>
     </div>

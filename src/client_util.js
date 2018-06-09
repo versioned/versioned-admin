@@ -26,7 +26,7 @@ export function timeAgo (time) {
   }
 }
 
-export function throttle (interval, fn) {
+export function debounce (fn, interval) {
   let timeout = null
   return function () {
     const args = arguments
@@ -46,6 +46,6 @@ export function truncated (string, limit = 50) {
 export default {
   capitalize,
   timeAgo,
-  throttle,
+  debounce,
   truncated
 }

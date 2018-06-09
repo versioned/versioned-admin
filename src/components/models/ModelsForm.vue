@@ -31,12 +31,12 @@
           Published and versioned
         </label>
       </div>
-      <div class="form-check">
+      <!-- <div class="form-check">
         <input v-model="features.search" class="form-check-input" type="checkbox">
         <label class="form-check-label">
           Searchable
         </label>
-      </div>
+      </div> -->
     </div>
 
     <div class="form-group" v-for="(field, index) in model.fields">
@@ -288,17 +288,20 @@ export default {
       FIELD_TYPES,
       errors: {},
       allErrors: [],
-      features: {},
+      features: this.makeFeatures(this.model),
       collapsed: this.getCollapsed(this.model.fields)
     }
   },
   watch: {
     model (model) {
       this.collapsed = this.getCollapsed(model.fields)
-      this.features = u.makeObj(this.model.features || [], () => true)
+      this.features = this.makeFeatures(model)
     }
   },
   methods: {
+    makeFeatures (model) {
+      return u.makeObj(model.features || [], () => true)
+    },
     getCollapsed (fields) {
       return u.makeObj(fields.map(u.property('key')), () => true)
     },

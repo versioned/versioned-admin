@@ -19,7 +19,8 @@
 
     <textarea v-else-if="attribute.field.type === 'text'" type="text" v-model="doc[attribute.key]" class="form-control" rows="5"/>
 
-    <json-field v-else-if="attribute.relationship" :obj="doc[attribute.key]" @fieldInput="updateJson($event)"></json-field>
+    <data-rel-field v-else-if="attribute.relationship" :attribute="attribute"></data-rel-field>
+    <!-- <json-field v-else-if="attribute.relationship" :obj="doc[attribute.key]" @fieldInput="updateJson($event)"></json-field> -->
 
     <input v-else type="text" v-model="doc[attribute.key]" class="form-control" />
   </div>
@@ -27,9 +28,10 @@
 
 <script>
 import JsonField from '@/components/form/JsonField'
+import DataRelField from '@/components/data/DataRelField'
 
 export default {
-  props: ['doc', 'attribute'],
+  props: ['doc', 'attribute', 'model'],
   methods: {
     updateJson (value) {
       this.doc[this.attribute.key] = value
@@ -39,7 +41,8 @@ export default {
     }
   },
   components: {
-    JsonField
+    JsonField,
+    DataRelField
   }
 }
 </script>

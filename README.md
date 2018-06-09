@@ -2,8 +2,10 @@
 
 ## Backlog (Sprint)
 
+* Make sure localStorage data doesn't get too stale
+
 * Support relationships in DataForm
-  Need search for this?
+  Restrict search by type
   Check out contentful and others
 
 * Show version history or changelog on the DataEdit page
