@@ -127,6 +127,12 @@ function readAttributes (schema, doc) {
   return attributes(schema, doc).filter(attribute => !canWriteProperty(attribute.schema))
 }
 
+function getTitle (value) {
+  if (u.empty(value)) return ''
+  if (typeof value === 'string') return value
+  return value.title || value.name || value.id
+}
+
 function stringify (propertySchema, value) {
   if (u.nil(value)) {
     return ''
@@ -134,6 +140,10 @@ function stringify (propertySchema, value) {
     return new Date(value).toString()
   // } else if (u.getIn(propertySchema, 'x-meta', 'translated')) {
   //   return LANGUAGES.map(site => value[site]).find(u.notNil)
+  } else if (u.isArray(value)) {
+    return value.map(getTitle).join(', ')
+  } else if (typeof value === 'object' && u.getIn(propertySchema, 'x-meta.relationship')) {
+    return getTitle(value)
   } else if (typeof value === 'object') {
     return JSON.stringify(value, null, 4)
   } else {

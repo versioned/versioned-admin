@@ -136,7 +136,8 @@ export default {
     },
     getData (coll) {
       const schema = u.getIn(this.lookupModel(coll), 'model.schema')
-      Data(coll).list().then(body => {
+      const params = {relationshipLevels: 1}
+      Data(coll).list({params}).then(body => {
         this.schema = schema
         this.labels = labels(schema)
         this.docs = docsWithAttributeValues(body.data, schema)

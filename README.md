@@ -2,13 +2,9 @@
 
 ## Backlog (Sprint)
 
-* Get rid of ID from changelog
-
 * Cannot remove single relationship
 
 * Debounce rel search
-
-* Fetch relationships in DataList
 
 * Clear errors on save (DataEdit, ModelsEdit)
 
