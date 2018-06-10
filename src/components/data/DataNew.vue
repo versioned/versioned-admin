@@ -1,7 +1,7 @@
 <template lang="html">
   <section v-if="model">
     <div class="page-title">
-        <h1>Create {{model}}</h1>
+        <h1>New {{modelName}}</h1>
     </div>
     <data-form ref="dataForm" :doc="doc" :schema="schema" :model="model" @formSubmit="save($event)"></data-form>
   </section>
@@ -20,6 +20,7 @@ export default {
   data: function () {
     return {
       model: null,
+      modelName: null,
       schema: null,
       doc: {}
     }
@@ -34,6 +35,7 @@ export default {
       if (data.length > 0) {
         const model = data[0]
         this.model = model.coll
+        this.modelName = model.name
         this.schema = u.getIn(model, 'model.schema')
       } else {
         Alert.set('error', `Could not find model ${this.$route.params.model}`)

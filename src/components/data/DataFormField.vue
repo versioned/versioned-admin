@@ -13,13 +13,13 @@
       </option>
     </select>
 
-    <json-field v-else-if="isJsonField()" :obj="doc[attribute.key]" @fieldInput="updateJson($event)"></json-field>
+    <json-field v-else-if="isJsonField()" :obj="doc[attribute.key]" @fieldInput="updateValue($event)"></json-field>
 
     <input v-else-if="attribute.schema.type === 'boolean'" type="checkbox" v-model="doc[attribute.key]" value="1" />
 
     <textarea v-else-if="attribute.field.type === 'text'" type="text" v-model="doc[attribute.key]" class="form-control" rows="5"/>
 
-    <data-rel-field v-else-if="attribute.relationship" :attribute="attribute"></data-rel-field>
+    <data-rel-field v-else-if="attribute.relationship" :attribute="attribute" @fieldInput="updateValue($event)"></data-rel-field>
     <!-- <json-field v-else-if="attribute.relationship" :obj="doc[attribute.key]" @fieldInput="updateJson($event)"></json-field> -->
 
     <input v-else type="text" v-model="doc[attribute.key]" class="form-control" />
@@ -33,7 +33,7 @@ import DataRelField from '@/components/data/DataRelField'
 export default {
   props: ['doc', 'attribute', 'model'],
   methods: {
-    updateJson (value) {
+    updateValue (value) {
       this.doc[this.attribute.key] = value
     },
     isJsonField () {

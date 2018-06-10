@@ -7,7 +7,7 @@
     <div class="row">
       <div class="create-new">
         <router-link v-if="canCreate()" class="btn btn-primary" :to="createUrl()">
-          Create Model
+          New Model
         </router-link>
       </div>
     </div>

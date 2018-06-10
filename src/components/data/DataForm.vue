@@ -57,6 +57,7 @@ export default {
   },
   methods: {
     formSubmit () {
+      this.allErrors = []
       this.$emit('formSubmit', this.doc)
     },
     handleError (error) {

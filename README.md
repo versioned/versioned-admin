@@ -2,6 +2,20 @@
 
 ## Backlog (Sprint)
 
+* Get rid of ID from changelog
+
+* Cannot remove single relationship
+
+* Debounce rel search
+
+* Fetch relationships in DataList
+
+* Clear errors on save (DataEdit, ModelsEdit)
+
+* Gotcha: forgetting prevent in @click.prevent
+
+* Need to indicate which field is the title field (or use title || name || id)
+
 * Make sure localStorage data doesn't get too stale
 
 * Support relationships in DataForm

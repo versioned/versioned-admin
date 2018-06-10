@@ -98,7 +98,7 @@ function canWriteProperty (propertySchema) {
 }
 
 function propertyNames (schema) {
-  return u.getIn(schema, 'x-meta.admin_properties') || Object.keys(schema.properties)
+  return u.getIn(schema, 'x-meta.propertiesOrder') || Object.keys(schema.properties)
 }
 
 function attributes (schema, doc) {

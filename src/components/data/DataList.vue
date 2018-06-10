@@ -20,7 +20,7 @@
 
       <div class="create-new">
         <router-link v-if="canCreate()" class="btn btn-primary" :to="createUrl()">
-          Create {{model.name}}
+          New {{model.name}}
         </router-link>
       </div>
 
@@ -39,14 +39,11 @@
           </thead>
           <tbody>
             <tr v-for="doc in docs">
-              <td>
-                <router-link v-if="canUpdate()" :to="editUrl(doc)">
-                  {{doc.id}}
+              <td v-for="(attributeValue, index) in doc.attributeValues">
+                <router-link v-if="canUpdate() && index === 0" :to="editUrl(doc)">
+                  {{attributeValue || '[edit]'}}
                 </router-link>
-                <span v-else>{{doc.id}}</span>
-              </td>
-              <td v-for="attributeValue in doc.attributeValues">
-                {{attributeValue}}
+                <span v-else>{{attributeValue}}</span>
               </td>
               <td>
                 {{(doc.updatedAt || doc.createdAt) | date('YYYY-MM-DD hh:mm') }}<br />
@@ -97,7 +94,7 @@ function docsWithAttributeValues (docs, schema) {
 }
 
 function labels (schema) {
-  return ['id'].concat(getAttributes(schema).map(u.property('label')))
+  return getAttributes(schema).map(u.property('label'))
 }
 
 export default {

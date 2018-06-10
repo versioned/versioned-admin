@@ -33,7 +33,7 @@
           </ul>
           <li v-if="$store.state.login" class="logged-in-user">
             <a href="#" class="user-email">{{userEmail()}}</a> |
-            <a href="#" class="logout" data-toggle="tooltip" title="Logga ut" @click="logout">
+            <a href="#" class="logout" data-toggle="tooltip" title="Logga ut" @click.prevent="logout">
               logout
             </a>
           </li>

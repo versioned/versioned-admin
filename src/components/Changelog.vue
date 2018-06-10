@@ -4,8 +4,6 @@
       <table class="table table-striped">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Type</th>
             <th>Action</th>
             <th>Name</th>
             <th>User</th>
@@ -15,18 +13,14 @@
         <tbody>
           <tr v-for="item in changelog" v-bind:key="item.id">
             <td>
-              <router-link v-if="editUrl(item)" :to="editUrl(item)">
-                {{item.doc.id}}
-              </router-link>
-              <span v-else>
-                {{item.doc.id}}
-              </span>
+              {{item.model.type}}
+              {{item.action}}
             </td>
             <td>
-              {{item.model.type}}
+              <router-link v-if="editUrl(item)" :to="editUrl(item)">
+                {{item.doc.title || item.doc.name || item.doc.id}}
+              </router-link>
             </td>
-            <td>{{item.action}}</td>
-            <td>{{item.doc.name || item.doc.title}}</td>
             <td>{{item.createdBy.email}}</td>
             <td>
               {{item.createdAt | date('YYYY-MM-DD hh:mm') }}<br />

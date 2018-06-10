@@ -1,11 +1,11 @@
 <template lang="html">
   <section v-if="doc">
     <div class="page-title">
-        <h1>Edit {{model}}</h1>
+        <h1>Edit {{modelName}}</h1>
     </div>
     <data-form ref="dataForm" :doc="doc" :schema="schema" :model="model" @formSubmit="save($event)"></data-form>
     <div v-if="canDelete">
-      <a href="#" @click="remove">Delete</a>
+      <a href="#" @click.prevent="remove">Delete</a>
     </div>
   </section>
 </template>
@@ -24,6 +24,7 @@ export default {
     return {
       id: null,
       model: null,
+      modelName: null,
       schema: null,
       doc: null
     }
@@ -57,8 +58,9 @@ export default {
         if (data.length > 0) {
           const model = data[0]
           this.model = model.coll
+          this.modelName = model.name
           this.schema = u.getIn(model, 'model.schema')
-          Data(this.model).get(this.id, {relationshipLevels: 0}).then(doc => {
+          Data(this.model).get(this.id).then(doc => {
             this.doc = doc
           }).catch(() => {
             Alert.set('error', 'Could not find data')
