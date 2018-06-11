@@ -2,6 +2,8 @@
 
 ## Backlog (Sprint)
 
+* Add JSON Data to DataEdit
+
 * Link relationships in DataList
 
 * Cannot remove single relationship

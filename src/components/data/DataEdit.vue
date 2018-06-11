@@ -3,6 +3,11 @@
     <div class="page-title">
         <h1>Edit {{modelName}}</h1>
     </div>
+
+    <div class="json-data">
+      <a :href="apiUrl()" target="_blank">JSON Data</a>
+    </div>
+
     <data-form ref="dataForm" :doc="doc" :schema="schema" :model="model" @formSubmit="save($event)" @remove="remove($event)"></data-form>
     <div>
       <router-link :to="listUrl()">Return to {{modelName}} list</router-link>
@@ -12,6 +17,7 @@
 
 <script>
 import u from '@/util'
+import session from '@/services/session'
 import User from '@/services/user'
 import router from '@/router'
 import DataForm from '@/components/data/DataForm'
@@ -90,6 +96,11 @@ export default {
             this.$refs.dataForm.handleError(error)
           })
       }
+    },
+    apiUrl () {
+      const spaceId = u.getIn(User.get(), 'space.id')
+      const token = session.getToken()
+      return `${process.env.VUE_APP_API_URL}/data/${spaceId}/${this.model}/${this.doc.id}?token=${token}&relationshipLevels=1`
     },
     listUrl () {
       return `/data/${this.model}`
