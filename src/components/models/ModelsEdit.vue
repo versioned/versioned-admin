@@ -39,16 +39,18 @@ export default {
       try {
         const accountId = u.getIn(User.get(), 'account.id')
         await Model(accountId).update(model)
-        Alert.set('Saved')
+        Alert.setBoth('Saved')
       } catch (error) {
         this.$refs.modelsForm.handleError(error)
       }
     },
     remove: async function (model) {
-      const accountId = u.getIn(User.get(), 'account.id')
-      await Model(accountId).remove(model.id)
-      Alert.setNext('Deleted')
-      router.push(`/models`)
+      if (confirm('Are you sure?')) {
+        const accountId = u.getIn(User.get(), 'account.id')
+        await Model(accountId).remove(model.id)
+        Alert.setNext('Deleted')
+        router.push(`/models`)
+      }
     }
   },
   components: {

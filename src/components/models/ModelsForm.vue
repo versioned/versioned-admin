@@ -336,6 +336,8 @@ export default {
     },
     fieldNameChange (field) {
       field.key = dbFriendly(field.name)
+      field.relationship.toType = field.key
+      field.relationship.toField = this.model.coll
     },
     makeDbFriendly (obj, prop) {
       obj[prop] = dbFriendly(obj[prop])
@@ -437,7 +439,7 @@ export default {
       } else {
         // Relationship
         property.type = 'string'
-        isArray = ['many-to-one', 'one-to-many'].includes(field.relationship.type)
+        isArray = ['many-to-many', 'one-to-many'].includes(field.relationship.type)
         field.relationship.oneWay = (field.category === 'oneWayRelationship')
       }
       const xMeta = u.compact({

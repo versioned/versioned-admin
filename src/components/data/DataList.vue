@@ -11,7 +11,7 @@
             <label name="site">Model</label>
             <select v-model="coll">
               <option v-for="model in models" v-bind:value="model.coll">
-                {{model.coll}}
+                {{model.name}}
               </option>
             </select>
           </div>
@@ -32,19 +32,24 @@
         <table class="table table-striped">
           <thead>
             <tr>
-              <th v-for="label in labels">{{label}}</th>
+              <th v-for="attribute in attributes">{{attribute.label}}</th>
               <th>Updated</th>
               <th>By</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="doc in docs">
-              <td v-for="(attributeValue, index) in doc.attributeValues">
+              <td v-for="(attribute, index) in attributes">
                 <router-link v-if="canUpdate() && index === 0" :to="editUrl(doc)">
-                  {{attributeValue || '[edit]'}}
+                  {{stringify(attribute, doc[attribute.key]) || '[edit]'}}
                 </router-link>
-                <span v-else>{{attributeValue}}</span>
+                <span v-else-if="attribute.meta.relationship" v-html="relationshipLinks(attribute, doc)">
+                </span>
+                <span v-else>
+                  {{stringify(attribute, doc[attribute.key])}}
+                </span>
               </td>
+
               <td>
                 {{(doc.updatedAt || doc.createdAt) | date('YYYY-MM-DD hh:mm') }}<br />
                 ({{(doc.updatedAt || doc.createdAt) | timeAgo}})
@@ -73,34 +78,15 @@ import Model from '@/services/model'
 import Swagger from '@/services/swagger'
 import Welcome from '@/components/Welcome'
 
-function formattedValue (property, value) {
-  return truncated(Swagger.stringify(property, value))
-}
-
 const ATTRIBUTES_LIMIT = 10
-
-function getAttributes (schema) {
-  return Swagger.attributes(schema).slice(0, ATTRIBUTES_LIMIT)
-}
-
-function docsWithAttributeValues (docs, schema) {
-  const attributeKeys = getAttributes(schema).map(u.property('key'))
-  return docs && docs.map(doc => {
-    const attributeValues = attributeKeys.map(key => formattedValue(schema.properties[key], doc[key]))
-    return u.merge(doc, {
-      attributeValues
-    })
-  })
-}
-
-function labels (schema) {
-  return getAttributes(schema).map(u.property('label'))
-}
+const ARRAY_LIMIT = 10
 
 export default {
   data () {
     return {
       coll: null,
+      schema: null,
+      attributes: [],
       models: [],
       labels: [],
       docs: [],
@@ -139,14 +125,38 @@ export default {
       const params = {relationshipLevels: 1}
       Data(coll).list({params}).then(body => {
         this.schema = schema
-        this.labels = labels(schema)
-        this.docs = docsWithAttributeValues(body.data, schema)
+        this.attributes = this.getAttributes(schema)
+        this.docs = body.data
         this.count = body.count
         router.push(`/data/${coll}`)
       })
     },
+    array (value) {
+      if (u.empty(value)) return []
+      return u.array(value).slice(0, ARRAY_LIMIT)
+    },
+    relationshipLinks (attribute, doc) {
+      const value = doc[attribute.key]
+      if (u.empty(value)) return undefined
+      let links = u.array(value).map((doc) => {
+        const label = doc.title || doc.name || doc.id
+        return `<a href="/#/data/${doc.type}/${doc.id}/edit">${label}</a>`
+      })
+      if (links.length > ARRAY_LIMIT) {
+        links = links.slice(0, ARRAY_LIMIT)
+        links.push('...')
+      }
+      return links.join(', ')
+    },
+    stringify (attribute, value) {
+      if (u.empty(value)) return undefined
+      return truncated(Swagger.stringify(attribute.schema, value))
+    },
+    getAttributes (schema) {
+      return Swagger.attributes(schema).slice(0, ATTRIBUTES_LIMIT)
+    },
     editUrl (doc) {
-      return `/data/${this.coll}/${doc.id}/edit`
+      return `/data/${doc.type}/${doc.id}/edit`
     },
     createUrl () {
       return `/data/${this.coll}/new`

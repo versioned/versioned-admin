@@ -49,6 +49,7 @@ export default {
     login: function () {
       User.login(this.user.email, this.user.password)
         .then(() => {
+          Alert.setNext('Logged in')
           router.push('/')
         })
         .catch(() => {

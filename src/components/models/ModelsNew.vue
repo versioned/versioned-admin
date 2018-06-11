@@ -34,7 +34,7 @@ export default {
         const accountId = u.getIn(User.get(), 'account.id')
         const createdModel = await Model(accountId).create(model)
         router.push(`/models/${createdModel.id}/edit`)
-        Alert.set('Saved')
+        Alert.setBoth('Saved')
       } catch (error) {
         this.$refs.modelsForm.handleError(error)
       }

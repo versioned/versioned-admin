@@ -1,15 +1,13 @@
 <template>
   <div id="app">
     <navbar></navbar>
-    <alerts></alerts>
+    <alerts position="top"></alerts>
     <main role="main">
       <div class="container">
         <router-view></router-view>
       </div>
-      <!-- <footer class="footer">
-        <alerts></alerts>
-      </footer> -->
     </main>
+    <alerts position="bottom"></alerts>
   </div>
 </template>
 
@@ -27,6 +25,9 @@ export default {
 </script>
 
 <style>
+  main {
+    margin-bottom: 20px;
+  }
   .form-group.buttons {
     margin-top: 10px;
   }

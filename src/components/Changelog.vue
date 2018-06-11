@@ -4,6 +4,7 @@
       <table class="table table-striped">
         <thead>
           <tr>
+            <th>Type</th>
             <th>Action</th>
             <th>Name</th>
             <th>User</th>
@@ -12,14 +13,13 @@
         </thead>
         <tbody>
           <tr v-for="item in changelog" v-bind:key="item.id">
-            <td>
-              {{item.model.type}}
-              {{item.action}}
-            </td>
+            <td>{{item.model.type}}</td>
+            <td>{{item.action}}</td>
             <td>
               <router-link v-if="editUrl(item)" :to="editUrl(item)">
-                {{item.doc.title || item.doc.name || item.doc.id}}
+                {{title(item)}}
               </router-link>
+              <span v-else>{{title(item)}}</span>
             </td>
             <td>{{item.createdBy.email}}</td>
             <td>
@@ -58,7 +58,7 @@ export default {
       changelog.list({params})
         .then(({data}) => {
           this.changelog = data
-          this.deleted = changelog.reduce((acc, item) => {
+          this.deleted = data.reduce((acc, item) => {
             if (item.action === 'delete') {
               const key = [item.model.type, item.doc.id].join('.')
               acc[key] = true
@@ -72,6 +72,9 @@ export default {
     },
     objectName (item) {
       return `${item.doc.type}:${item.doc.id}`
+    },
+    title (item) {
+      return item.doc.title || item.doc.name || item.doc.id
     },
     editUrl (item) {
       const key = [item.model.type, item.doc.id].join('.')

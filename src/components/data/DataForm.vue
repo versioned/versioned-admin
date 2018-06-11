@@ -5,7 +5,7 @@
     </ul>
     <div class="form-group">
       <div class="form-group buttons">
-        <input type="submit" class="btn btn-primary" value="Spara" />
+        <input type="submit" class="btn btn-primary" value="Save" />
       </div>
 
       <div class="form-group" v-for="attribute in readAttributes">
@@ -18,7 +18,9 @@
       <data-form-field v-for="attribute in writeAttributes" :doc="doc" :attribute="attribute" :model="model" :key="attribute.key"></data-form-field>
 
       <div class="form-group buttons">
-        <input type="submit" class="btn btn-primary" value="Spara" />
+        <input type="submit" class="btn btn-primary" value="Save" />
+        <a v-if="doc.id" href="#" @click.prevent="remove()">Delete</a>
+        <img v-if="$store.state.loading" src="/ajax-loader.gif">
       </div>
     </div>
   </form>
@@ -59,6 +61,9 @@ export default {
     formSubmit () {
       this.allErrors = []
       this.$emit('formSubmit', this.doc)
+    },
+    remove () {
+      this.$emit('remove', this.doc)
     },
     handleError (error) {
       if (error.status === 422) {

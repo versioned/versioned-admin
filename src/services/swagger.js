@@ -104,6 +104,7 @@ function propertyNames (schema) {
 function attributes (schema, doc) {
   return propertyNames(schema).map(key => {
     const propertySchema = schema.properties[key]
+    const meta = propertySchema['x-meta']
     const field = u.getIn(propertySchema, 'x-meta.field', {})
     const relationship = u.getIn(propertySchema, 'x-meta.relationship')
     const value = u.getIn(doc, key)
@@ -114,6 +115,7 @@ function attributes (schema, doc) {
       field,
       relationship,
       schema: propertySchema,
+      meta,
       value
     }
   })

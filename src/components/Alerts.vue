@@ -1,5 +1,5 @@
 <template lang="html">
-  <div>
+  <div class="alert-container">
     <div v-show="alert.success" class="alert alert-success" role="alert" v-html="alert.success">
     </div>
     <div v-show="alert.info" class="alert alert-info" role="alert" v-html="alert.info">
@@ -22,9 +22,10 @@ import u from '@/util'
 import Alert from '@/services/alert'
 
 export default {
+  props: ['position'],
   computed: {
     alert: function () {
-      return u.getIn(Alert.get(), 'current', {})
+      return u.getIn(Alert.get(), `${this.position}.current`, {})
     }
   }
 }

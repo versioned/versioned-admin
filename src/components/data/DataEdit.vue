@@ -3,9 +3,9 @@
     <div class="page-title">
         <h1>Edit {{modelName}}</h1>
     </div>
-    <data-form ref="dataForm" :doc="doc" :schema="schema" :model="model" @formSubmit="save($event)"></data-form>
-    <div v-if="canDelete">
-      <a href="#" @click.prevent="remove">Delete</a>
+    <data-form ref="dataForm" :doc="doc" :schema="schema" :model="model" @formSubmit="save($event)" @remove="remove($event)"></data-form>
+    <div>
+      <router-link :to="listUrl()">Return to {{modelName}} list</router-link>
     </div>
   </section>
 </template>
@@ -74,7 +74,7 @@ export default {
       Data(this.model).update(doc)
         .then(doc => {
           if (doc) this.doc = doc
-          Alert.set('success', 'Saved')
+          Alert.setBoth('success', 'Saved')
         })
         .catch(error => {
           this.$refs.dataForm.handleError(error)
@@ -90,6 +90,9 @@ export default {
             this.$refs.dataForm.handleError(error)
           })
       }
+    },
+    listUrl () {
+      return `/data/${this.model}`
     }
   }
 }

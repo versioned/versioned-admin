@@ -2,6 +2,8 @@
 
 ## Backlog (Sprint)
 
+* Link relationships in DataList
+
 * Cannot remove single relationship
 
 * Debounce rel search
