@@ -2,6 +2,8 @@
 
 ## Backlog (Sprint)
 
+* Dangerous to link to JSON Data with login token. Need a more limited token
+
 * Add JSON Data to DataEdit
 
 * Link relationships in DataList

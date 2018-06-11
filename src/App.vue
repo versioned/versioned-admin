@@ -5,6 +5,9 @@
     <main role="main">
       <div class="container">
         <router-view></router-view>
+        <div v-if="$store.state.loading" class="loader">
+          <img src="/ajax-loader.gif">
+        </div>
       </div>
     </main>
     <alerts position="bottom"></alerts>
@@ -45,5 +48,8 @@ export default {
   .field-heading.required a:after {
     content:"*";
     color:red;
+  }
+  .loader {
+    margin-top: 20px;
   }
 </style>
