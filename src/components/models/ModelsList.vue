@@ -69,6 +69,7 @@ import u from '@/util'
 import User from '@/services/user'
 import Model from '@/services/model'
 import DbStats from '@/services/db_stats'
+import {capitalize} from '@/client_util'
 
 export default {
   data () {
@@ -120,11 +121,19 @@ export default {
       // TODO :check if user can update
       return true
     },
+    fieldName (model, property) {
+      const fieldPath = `model.schema.properties.${property}.x-meta.field`
+      return u.getIn(model, `${fieldPath}.name`) || capitalize(property)
+    },
     fields (model) {
-      return model.propertiesOrder.filter(p => !this.isRelationship(model, p))
+      return model.propertiesOrder
+        .filter(p => !this.isRelationship(model, p))
+        .map(p => this.fieldName(model, p))
     },
     relationships (model) {
-      return model.propertiesOrder.filter(p => this.isRelationship(model, p))
+      return model.propertiesOrder
+        .filter(p => this.isRelationship(model, p))
+        .map(p => this.fieldName(model, p))
     },
     isRelationship (model, property) {
       return u.getIn(model, `model.schema.properties.${property}.x-meta.relationship`)

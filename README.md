@@ -2,7 +2,10 @@
 
 ## Backlog (Sprint)
 
-* Dangerous to link to JSON Data with login token. Need a more limited token
+* Dangerous to link to JSON Data with login token. Better solution:
+  Refactor api to listRequest and request
+  Show JSON Data instead of HTML table
+  show httpie command as well
 
 * Add JSON Data to DataEdit
 
