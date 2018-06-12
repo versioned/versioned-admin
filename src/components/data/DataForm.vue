@@ -20,7 +20,6 @@
       <div class="form-group buttons">
         <input type="submit" class="btn btn-primary" value="Save" />
         <a v-if="doc.id" href="#" @click.prevent="remove()">Delete</a>
-        <img v-if="$store.state.loading" src="/ajax-loader.gif">
       </div>
     </div>
   </form>

@@ -226,7 +226,6 @@
 
     <input v-if="model.fields.length > 0" type="submit" class="btn btn-primary" value="Save" />
     <a v-if="model.id" href="#" @click.prevent="remove()">Delete</a>
-    <img v-if="$store.state.loading" src="/ajax-loader.gif">
   </form>
 </template>
 
