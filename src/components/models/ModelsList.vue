@@ -39,9 +39,8 @@
               <router-link :to="dataUrl(model)">
                 docs: {{documentCount(model)}}
               </router-link>
-              <router-link :to="createDataUrl(model)">
-                [+]
-              </router-link>
+              <br/>
+              <router-link :to="createDataUrl(model)">New {{model.name}}</router-link>
             </td>
             <td>
               {{fields(model).join(', ')}}
