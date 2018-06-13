@@ -5,6 +5,18 @@ import store from '@/store'
 import u from '@/util'
 const {getIn, merge} = u
 
+function urlWithQuery (url, query) {
+  if (u.notEmpty(query)) {
+    const sep = (url.includes('?') ? '&' : '?')
+    const queryString = Object.entries(query).map(([key, value]) => {
+      return `${key}=${encodeURIComponent(value)}`
+    }).join('&')
+    return url + sep + queryString
+  } else {
+    return url
+  }
+}
+
 function listPath (contentType, options = {}) {
   const {accountId, spaceId} = (getIn(options, 'scope') || {})
   if (spaceId) {
@@ -26,6 +38,7 @@ function authHeader () {
     return {}
   }
 }
+
 function headers () {
   return authHeader()
 }
@@ -34,48 +47,76 @@ function responseDoc (response) {
   return getIn(response, 'data.data')
 }
 
+function responseList (response) {
+  return getIn(response, 'data')
+}
+
 function getRequest (url) {
   return axios.get(url, {headers: headers()})
     .then(responseDoc)
 }
 
+function listRequest (url) {
+  return axios.get(url, {headers: headers()})
+    .then(responseList)
+}
+
+function httpie (url) {
+  const headerString = Object.entries(headers()).map(([key, value]) => {
+    return `${key}:"${value}"`
+  }).join(' ')
+  return `http GET ${url} ${headerString}`
+}
+
 function create (contentType, options = {}) {
-  const listUrl = process.env.VUE_APP_API_URL + listPath(contentType, options)
-  function getUrl (id) {
-    return listUrl + '/' + id
+  function listUrl (params = {}) {
+    const url = process.env.VUE_APP_API_URL + listPath(contentType, options)
+    return urlWithQuery(url, params)
   }
-  function responseList (response) {
-    return getIn(response, 'data')
+
+  function getUrl (id, params = {}) {
+    const url = listUrl() + '/' + id
+    return urlWithQuery(url, params)
   }
+
   function handleSaveError (error) {
     throw getIn(error, 'response.data')
   }
-  function get (id, options = {}) {
-    const relationshipLevels = options.relationshipLevels === undefined ? 1 : options.relationshipLevels
-    const url = getUrl(id) + `?relationshipLevels=${relationshipLevels}`
+
+  function get (id, params = {}) {
+    const defaultParams = {relationshipLevels: 1}
+    params = merge(defaultParams, params)
+    const url = getUrl(id, params)
     return getRequest(url)
   }
+
   function list (options = {}) {
     const defaultParams = {}
     const params = merge(defaultParams, options.params)
-    return axios.get(listUrl, {params, headers: headers()})
-      .then(responseList)
+    const url = listUrl(params)
+    return listRequest(url)
   }
+
   function create (doc) {
-    return axios.post(listUrl, doc, {headers: headers()})
+    return axios.post(listUrl(), doc, {headers: headers()})
       .then(responseDoc)
       .catch(handleSaveError)
   }
+
   function update (doc) {
     return axios.put(getUrl(doc.id), doc, {headers: headers()})
       .then(responseDoc)
       .catch(handleSaveError)
   }
+
   function remove (id) {
     return axios.delete(getUrl(id), {headers: headers()})
       .then(responseDoc)
   }
+
   return {
+    listUrl,
+    getUrl,
     get,
     list,
     create,
@@ -107,5 +148,7 @@ export default {
   create,
   headers,
   responseDoc,
-  getRequest
+  getRequest,
+  listRequest,
+  httpie
 }

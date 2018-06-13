@@ -24,7 +24,6 @@ function makeAlert (alertType, message) {
 function set (alertType, message, options = {}) {
   const when = options.when || 'current'
   const position = options.position || DEFAULT_POSITION
-  console.log('pm debug alert.set', alertType, when, position, message)
   store.commit('setAlert', u.deepMerge(get(), {
     [position]: {
       [when]: makeAlert(alertType, message)

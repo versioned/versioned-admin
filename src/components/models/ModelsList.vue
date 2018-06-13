@@ -32,12 +32,12 @@
           <tr v-for="model in models">
             <td>
               <router-link v-if="canUpdate()" :to="editUrl(model)">
-                {{model.name}}
+                {{model.name}} Model
               </router-link>
             </td>
             <td>
               <router-link :to="dataUrl(model)">
-                docs: {{documentCount(model)}}
+                {{model.name}} Data: {{documentCount(model)}}
               </router-link>
               <br/>
               <router-link :to="createDataUrl(model)">New {{model.name}}</router-link>

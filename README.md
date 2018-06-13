@@ -2,14 +2,7 @@
 
 ## Backlog (Sprint)
 
-* Dangerous to link to JSON Data with login token. Better solution:
-  Refactor api to listRequest and request
-  Show JSON Data instead of HTML table
-  show httpie command as well
-
-* Add JSON Data to DataEdit
-
-* Link relationships in DataList
+* For unique relationships (one-to-many, one-to-one) - only make search results that are not taken selectable?
 
 * Cannot remove single relationship
 

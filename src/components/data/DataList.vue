@@ -27,9 +27,7 @@
       Number of documents: {{count}}
     </div>
 
-    <div class="json-data">
-      <a :href="apiUrl()" target="_blank">JSON Data</a>
-    </div>
+    <json-data :jsonData="jsonData" :jsonUrl="jsonUrl"></json-data>
 
     <div class="row" v-if="count">
       <table class="table table-striped">
@@ -69,13 +67,14 @@
 
 <script>
 import u from '@/util'
-import session from '@/services/session'
+import Api from '@/services/api'
 import User from '@/services/user'
 import Data from '@/services/data'
 import {truncated} from '@/client_util'
 import router from '@/router'
 import Model from '@/services/model'
 import Swagger from '@/services/swagger'
+import JsonData from '@/components/JsonData'
 
 const ATTRIBUTES_LIMIT = 10
 const ARRAY_LIMIT = 10
@@ -83,6 +82,8 @@ const ARRAY_LIMIT = 10
 export default {
   data () {
     return {
+      jsonData: null,
+      jsonUrl: null,
       coll: null,
       schema: null,
       attributes: [],
@@ -103,7 +104,7 @@ export default {
   },
   computed: {
     model () {
-      return this.lookupModel(this.coll)
+      return this.lookupModel(this.coll) || {}
     }
   },
   methods: {
@@ -122,11 +123,14 @@ export default {
     getData (coll) {
       const schema = u.getIn(this.lookupModel(coll), 'model.schema')
       const params = {relationshipLevels: 1}
-      Data(coll).list({params}).then(body => {
+      const api = Data(coll)
+      this.jsonUrl = api.listUrl(params)
+      return Api.listRequest(this.jsonUrl).then(body => {
         this.schema = schema
         this.attributes = this.getAttributes(schema)
         this.docs = body.data
         this.count = body.count
+        this.jsonData = u.prettyJson(this.docs)
         router.push(`/data/${coll}`)
       })
     },
@@ -154,11 +158,6 @@ export default {
     getAttributes (schema) {
       return Swagger.attributes(schema).slice(0, ATTRIBUTES_LIMIT)
     },
-    apiUrl () {
-      const spaceId = u.getIn(User.get(), 'space.id')
-      const token = session.getToken()
-      return `${process.env.VUE_APP_API_URL}/data/${spaceId}/${this.coll}?token=${token}&relationshipLevels=1`
-    },
     editUrl (doc) {
       return `/data/${doc.type}/${doc.id}/edit`
     },
@@ -183,11 +182,17 @@ export default {
       //   return false
       // }
     }
+  },
+  components: {
+    JsonData
   }
 }
 </script>
 
 <style lang="css">
+  .json-data {
+    margin-top: 10px;
+  }
   div.rows-count {
     margin-top: 10px;
     margin-bottom: 20px;

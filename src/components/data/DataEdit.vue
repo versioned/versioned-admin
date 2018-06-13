@@ -4,30 +4,31 @@
         <h1>Edit {{modelName}}</h1>
     </div>
 
-    <div class="json-data">
-      <a :href="apiUrl()" target="_blank">JSON Data</a>
-    </div>
+    <json-data :jsonData="jsonData" :jsonUrl="jsonUrl"></json-data>
 
     <data-form ref="dataForm" :doc="doc" :schema="schema" :model="model" @formSubmit="save($event)" @remove="remove($event)"></data-form>
     <div>
-      <router-link :to="listUrl()">Return to {{modelName}} list</router-link>
+      <router-link :to="listUrl()">Return to {{modelName}} Data</router-link>
     </div>
   </section>
 </template>
 
 <script>
 import u from '@/util'
-import session from '@/services/session'
 import User from '@/services/user'
 import router from '@/router'
 import DataForm from '@/components/data/DataForm'
+import Api from '@/services/api'
 import Data from '@/services/data'
 import Model from '@/services/model'
 import Alert from '@/services/alert'
+import JsonData from '@/components/JsonData'
 
 export default {
   data: function () {
     return {
+      jsonData: null,
+      jsonUrl: null,
       id: null,
       model: null,
       modelName: null,
@@ -47,7 +48,8 @@ export default {
     }
   },
   components: {
-    DataForm
+    DataForm,
+    JsonData
   },
   created () {
     this.getData()
@@ -66,8 +68,11 @@ export default {
           this.model = model.coll
           this.modelName = model.name
           this.schema = u.getIn(model, 'model.schema')
-          Data(this.model).get(this.id).then(doc => {
+          const api = Data(this.model)
+          this.jsonUrl = api.getUrl(this.id, {relationshipLevels: 1})
+          Api.getRequest(this.jsonUrl).then(doc => {
             this.doc = doc
+            this.jsonData = u.prettyJson(this.doc)
           }).catch(() => {
             Alert.set('error', 'Could not find data')
           })
@@ -96,11 +101,6 @@ export default {
             this.$refs.dataForm.handleError(error)
           })
       }
-    },
-    apiUrl () {
-      const spaceId = u.getIn(User.get(), 'space.id')
-      const token = session.getToken()
-      return `${process.env.VUE_APP_API_URL}/data/${spaceId}/${this.model}/${this.doc.id}?token=${token}&relationshipLevels=1`
     },
     listUrl () {
       return `/data/${this.model}`
