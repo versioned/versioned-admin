@@ -1,5 +1,5 @@
 <template>
-    <div class="row" v-if="changelog.length > 0">
+    <div class="row">
       <h1>Changelog</h1>
       <table class="table table-striped">
         <thead>
@@ -30,16 +30,12 @@
         </tbody>
       </table>
     </div>
-    <div class="row" v-else>
-      <welcome />
-    </div>
 </template>
 
 <script>
 import u from '@/util'
 import User from '@/services/user'
 import Changelog from '@/services/changelog'
-import Welcome from '@/components/Welcome'
 
 export default {
   data () {
@@ -86,9 +82,6 @@ export default {
         }
       }
     }
-  },
-  components: {
-    Welcome
   }
 }
 </script>
