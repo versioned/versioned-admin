@@ -77,8 +77,8 @@ export default {
     },
     async getExamples (models, dbStats) {
       const result = []
-      const exampleModels = this.models.filter(model => u.getIn(this.dbStats, `${model.coll}.count`) > 0)
-      for (let exampleModel of exampleModels) {
+      const exampleModel = this.models.find(model => u.getIn(this.dbStats, `${model.coll}.count`) > 0)
+      if (exampleModel) {
         const api = Data(exampleModel.coll)
         result.push({name: `List ${exampleModel.name} Data`, httpie: this.httpie(api.listUrl())})
 
