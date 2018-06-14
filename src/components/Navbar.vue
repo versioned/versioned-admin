@@ -1,19 +1,20 @@
 <template lang="html">
   <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-      <router-link class="navbar-brand navbar-link brand" to="/">{{brand()}}</router-link>
+      <router-link v-if="isLoggedIn()" class="navbar-brand navbar-link brand" to="/">{{brand()}}</router-link>
+      <span v-else class="navbar-brand brand">{{brand()}}</span>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
           <ul class="navbar-nav mr-auto">
-            <li v-show="user" class="nav-item">
+            <li v-show="isLoggedIn()" class="nav-item">
               <router-link class="nav-link" to="/models">Models</router-link>
             </li>
-            <li v-show="user" class="nav-item">
+            <li v-show="isLoggedIn()" class="nav-item">
               <router-link class="nav-link" to="/changelog">Changelog</router-link>
             </li>
-            <li v-show="user" class="nav-item">
+            <li v-show="isLoggedIn()" class="nav-item">
               <router-link class="nav-link" to="/api">API</router-link>
             </li>
             <!-- <li class="nav-item">
@@ -41,9 +42,9 @@
             </a>
           </li>
 
-          <li v-if="$store.state.loading">
+          <!-- <li v-if="$store.state.loading">
             <img src="/ajax-loader.gif">
-          </li>
+          </li> -->
 
           <!-- <form class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
@@ -76,6 +77,9 @@ export default {
     },
     userEmail () {
       return u.getIn(this.user, 'email') || u.getIn(this.user, 'user.email')
+    },
+    isLoggedIn () {
+      return User.get()
     },
     logout () {
       User.logout()
