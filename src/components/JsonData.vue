@@ -16,7 +16,9 @@
 </template>
 
 <script>
+import u from '@/util'
 import Api from '@/services/api'
+import User from '@/services/user'
 
 export default {
   props: ['jsonData', 'jsonUrl'],
@@ -27,7 +29,8 @@ export default {
   },
   computed: {
     apiCall () {
-      return Api.httpie(this.jsonUrl)
+      const apiKey = u.getIn(User.get(), 'space.apiKey')
+      return Api.httpie(this.jsonUrl, {apiKey})
     }
   }
 }

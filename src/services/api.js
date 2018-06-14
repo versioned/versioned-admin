@@ -61,11 +61,15 @@ function listRequest (url) {
     .then(responseList)
 }
 
-function httpie (url) {
-  const headerString = Object.entries(headers()).map(([key, value]) => {
-    return `${key}:"${value}"`
-  }).join(' ')
-  return `http GET ${url} ${headerString}`
+function httpie (url, options = {}) {
+  if (options.apiKey) {
+    return `http GET '${urlWithQuery(url, {apiKey: options.apiKey})}'`
+  } else {
+    const headerString = Object.entries(headers()).map(([key, value]) => {
+      return `${key}:"${value}"`
+    }).join(' ')
+    return `http GET '${url}' ${headerString}`
+  }
 }
 
 function create (contentType, options = {}) {
@@ -145,6 +149,7 @@ axios.interceptors.response.use(function (response) {
 })
 
 export default {
+  urlWithQuery,
   create,
   headers,
   responseDoc,
