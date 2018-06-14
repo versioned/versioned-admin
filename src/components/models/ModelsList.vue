@@ -20,7 +20,7 @@
       <table v-if="models.length > 0" class="table table-striped">
         <thead>
           <tr>
-            <th>Name</th>
+            <th>Model</th>
             <th>Data</th>
             <th>Fields</th>
             <th>Relationships</th>

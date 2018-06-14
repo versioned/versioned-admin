@@ -43,9 +43,23 @@ export function truncated (string, limit = 50) {
   }
 }
 
+// TODO: use isomporphic library instead? https://github.com/unshiftio/url-parse
+export function parseUrl (url) {
+  const parser = document.createElement('a')
+  parser.href = url
+  // hostname, pathname, search, protocol, port, search, hash, host
+  return parser
+}
+
+export function rootUrl (urlString) {
+  const url = parseUrl(urlString)
+  return `${url.protocol}//${url.host}`
+}
+
 export default {
   capitalize,
   timeAgo,
   debounce,
-  truncated
+  truncated,
+  parseUrl
 }

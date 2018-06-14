@@ -2,6 +2,18 @@
 
 ## Backlog (Sprint)
 
+* API tab
+
+* API Key
+  API key that provides read-only data acess for clients (mobile/web apps etc.)
+  Rewrite API examples and JsonData to use this.
+
+* Config tab
+
+* Webhhoks with SQS
+
+* Translations
+
 * For unique relationships (one-to-many, one-to-one) - only make search results that are not taken selectable?
 
 * Cannot remove single relationship

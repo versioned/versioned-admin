@@ -13,6 +13,9 @@
             <li class="nav-item">
               <router-link class="nav-link" to="/changelog">Changelog</router-link>
             </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/api">API</router-link>
+            </li>
             <!-- <li class="nav-item">
               <router-link class="nav-link" to="/data">Data</router-link>
             </li> -->

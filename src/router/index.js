@@ -4,6 +4,7 @@ import guards from '@/router/guards'
 import PageNotFound from '@/components/PageNotFound'
 import Home from '@/components/Home'
 import Changelog from '@/components/Changelog'
+import Api from '@/components/Api'
 import Register from '@/components/Register'
 import Login from '@/components/Login'
 import ModelsList from '@/components/models/ModelsList'
@@ -26,6 +27,11 @@ const router = new Router({
       path: '/changelog',
       name: 'Changelog',
       component: Changelog
+    },
+    {
+      path: '/api',
+      name: 'API',
+      component: Api
     },
     {
       path: '/register',
