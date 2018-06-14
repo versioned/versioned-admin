@@ -3,6 +3,11 @@
     <ul v-if="allErrors.length > 0" class="errors alert alert-danger">
       <li v-for="error in allErrors">{{error.field}} {{error.message}}</li>
     </ul>
+
+    <div class="form-group buttons">
+      <input type="submit" class="btn btn-primary" value="Save" />
+    </div>
+
     <div class="form-group required">
       <label for="name">Name</label>
       <input type="text" v-model="model.name" class="form-control" id="name" :maxlength="NAME_LENGTH" @input="nameChange()" v-bind:class="{ 'is-invalid': errors.name}" autofocus required/>
