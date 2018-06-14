@@ -7,13 +7,13 @@
 
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
+            <li v-show="user" class="nav-item">
               <router-link class="nav-link" to="/models">Models</router-link>
             </li>
-            <li class="nav-item">
+            <li v-show="user" class="nav-item">
               <router-link class="nav-link" to="/changelog">Changelog</router-link>
             </li>
-            <li class="nav-item">
+            <li v-show="user" class="nav-item">
               <router-link class="nav-link" to="/api">API</router-link>
             </li>
             <!-- <li class="nav-item">
@@ -58,6 +58,11 @@ import u from '@/util'
 import User from '@/services/user'
 
 export default {
+  data: () => {
+    return {
+      user: User.get()
+    }
+  },
   methods: {
     brand () {
       const user = User.get()
@@ -66,12 +71,11 @@ export default {
       if (accountName && spaceName) {
         return accountName !== spaceName ? `${accountName} - ${spaceName}` : accountName
       } else {
-        return process.env.VUE_APP_NAME
+        return process.env.VUE_APP_NAME || 'Versioned'
       }
     },
     userEmail () {
-      const user = User.get()
-      return u.getIn(user, 'email') || u.getIn(user, 'user.email')
+      return u.getIn(this.user, 'email') || u.getIn(this.user, 'user.email')
     },
     logout () {
       User.logout()
