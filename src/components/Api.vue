@@ -4,15 +4,15 @@
 
       <ul class="api-info">
         <li>
-          <strong>Base URL:</strong>
+          <strong>Base URL</strong>
           <pre>{{baseUrl}}</pre>
         </li>
         <li>
-          <strong>API Key:</strong> (read-only data access for clients - mobile/web apps etc.)
+          <strong>API Key</strong> (read-only data access for clients - mobile/web apps etc.)
           <pre>{{apiKey}}</pre>
         </li>
         <li>
-          <strong>Space ID:</strong>
+          <strong>Space ID</strong>
           <pre>{{spaceId}}</pre>
         </li>
         <li>
@@ -21,7 +21,7 @@
       </ul>
 
       <div v-if="examples.length > 0" class="example-container">
-        <h2>Data Examples</h2>
+        <h2>API Call Examples</h2>
 
         <p>
           Examples use the <a href="https://httpie.org" target="_blanke">httpie</a> client.
@@ -85,7 +85,7 @@ export default {
         const docs = (await Api.listRequest(api.listUrl({limit: 1}))).data
         const id = u.getIn(docs, '0.id')
         const getUrl = api.getUrl(id)
-        result.push({name: `Get One ${exampleModel.name}`, httpie: this.httpie(getUrl)})
+        result.push({name: `Get Data for One ${exampleModel.name}`, httpie: this.httpie(getUrl)})
       }
       return result
     },

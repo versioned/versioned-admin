@@ -27,7 +27,6 @@
 </template>
 
 <script>
-import u from '@/util'
 import User from '@/services/user'
 import Alert from '@/services/alert'
 import router from '@/router'

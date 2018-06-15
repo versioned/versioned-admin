@@ -7,15 +7,18 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-          <ul class="navbar-nav mr-auto">
-            <li v-show="isLoggedIn()" class="nav-item">
+          <ul class="navbar-nav mr-auto" v-show="$store.state.login">
+            <li class="nav-item">
               <router-link class="nav-link" to="/models">Models</router-link>
             </li>
-            <li v-show="isLoggedIn()" class="nav-item">
+            <li class="nav-item">
               <router-link class="nav-link" to="/changelog">Changelog</router-link>
             </li>
-            <li v-show="isLoggedIn()" class="nav-item">
+            <li class="nav-item">
               <router-link class="nav-link" to="/api">API</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/config">Config</router-link>
             </li>
             <!-- <li class="nav-item">
               <router-link class="nav-link" to="/data">Data</router-link>
@@ -35,8 +38,8 @@
               </div>
             </li> -->
           </ul>
-          <li v-if="$store.state.login" class="logged-in-user">
-            <a href="#" class="user-email">{{userEmail()}}</a> |
+          <li v-show="$store.state.login" class="logged-in-user">
+            <router-link class="user-email" to="/profile">{{userEmail()}}</router-link> |
             <a href="#" class="logout" data-toggle="tooltip" title="Logga ut" @click.prevent="logout">
               logout
             </a>
@@ -76,7 +79,7 @@ export default {
       }
     },
     userEmail () {
-      return u.getIn(this.user, 'email') || u.getIn(this.user, 'user.email')
+      return u.getIn(User.get(), 'user.email')
     },
     isLoggedIn () {
       return User.get()

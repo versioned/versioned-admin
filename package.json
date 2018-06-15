@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": "8.11.2"
+    "node": "8.11.1"
   },
   "scripts": {
     "serve": "bin/write-env && $(yarn bin)/vue-cli-service serve --open",

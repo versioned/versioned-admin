@@ -5,6 +5,8 @@ import PageNotFound from '@/components/PageNotFound'
 import Home from '@/components/Home'
 import Changelog from '@/components/Changelog'
 import Api from '@/components/Api'
+import Config from '@/components/Config'
+import Profile from '@/components/Profile'
 import Register from '@/components/Register'
 import Login from '@/components/Login'
 import ModelsList from '@/components/models/ModelsList'
@@ -32,6 +34,16 @@ const router = new Router({
       path: '/api',
       name: 'API',
       component: Api
+    },
+    {
+      path: '/config',
+      name: 'Config',
+      component: Config
+    },
+    {
+      path: '/profile',
+      name: 'Profile',
+      component: Profile
     },
     {
       path: '/register',

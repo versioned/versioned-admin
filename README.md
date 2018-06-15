@@ -2,15 +2,26 @@
 
 ## Backlog (Sprint)
 
-* API tab
+* Versioning och publishing UI
 
-* API Key
-  API key that provides read-only data acess for clients (mobile/web apps etc.)
-  Rewrite API examples and JsonData to use this.
+* Add changelog.publishEvent boolean -
 
-* Config tab
+```
+function isPublishEvent (doc) {
+  return (doc.action === 'created' && getIn(doc, 'doc.publishedVersion')) ||
+    (doc.action === 'update' && getIn(doc, 'doc.publishedVersion') !== getIn(doc, 'existingDoc.publishedVerison'))
+}
+```
+
+* Do not allow delete when publishedVersion is set - must unpublish before delete
 
 * Webhhoks with SQS
+
+* Script to load data into UI - articles, authors, slots, categories
+
+* User profile page
+
+* Config tab
 
 * Translations
 
