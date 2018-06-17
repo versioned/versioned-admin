@@ -2,7 +2,38 @@
 
 ## Backlog (Sprint)
 
+* Rename versions to publish history with revert links
+
+* Unpublished at (lastUnpublishedAt)
+
+* Having changelog.publishEvent does not provide a good history of publish events. Having them in a separate collection would be nicer!
+
+* You have to click "Save and Publish" twice for it to be published!
+
+* Put versions expandable on top of DataEdit?
+
+* Component for dates?
+
 * Versioning och publishing UI
+  What info can we get from versions history?
+
+* Need to create secured Algolia API keys when creating a space and store them in spaces.algoliaKeys
+https://www.algolia.com/doc/guides/security/api-keys/#secured-api-keys
+
+```
+var searchOnlyApiKey = 'BIEV2YG99YSHTKQXQM';
+var params = {
+  hitsPerPage: 20,
+  filters: '_tags:user_42 AND available = 1',
+  validUntil: currentTimestamp + 3600,
+  restrictIndices: 'index1,index2',
+  userToken: 'user_42',
+  restrictSources: '192.168.1.0/24'
+};
+var publicKey = client.generateSecuredApiKey(searchOnlyApiKey, params);
+```
+
+* Check account and space scoping works in changelog, algolia, DataList, ModelsList
 
 * Add changelog.publishEvent boolean -
 

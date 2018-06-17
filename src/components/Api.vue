@@ -8,12 +8,16 @@
           <pre>{{baseUrl}}</pre>
         </li>
         <li>
-          <strong>API Key</strong> (read-only data access for clients - mobile/web apps etc.)
-          <pre>{{apiKey}}</pre>
+          <strong>Account ID</strong>
+          <pre>{{accountId}}</pre>
         </li>
         <li>
           <strong>Space ID</strong>
           <pre>{{spaceId}}</pre>
+        </li>
+        <li>
+          <strong>API Key</strong> (read-only data access for clients - mobile/web apps etc.)
+          <pre>{{apiKey}}</pre>
         </li>
         <li>
           <a :href="docsUrl" target="_blank">API Docs</a>
@@ -47,11 +51,13 @@ import {rootUrl} from '@/client_util'
 
 export default {
   data () {
+    const accountId = u.getIn(User.get(), 'account.id')
     const spaceId = u.getIn(User.get(), 'space.id')
     const baseUrl = process.env.VUE_APP_API_URL
     const swaggerUrl = `${baseUrl}/data/${spaceId}/swagger.json`
     const docsUrl = `${rootUrl(process.env.VUE_APP_API_URL)}/swagger-ui/index.html?url=${swaggerUrl}`
     return {
+      accountId,
       spaceId,
       baseUrl,
       docsUrl,

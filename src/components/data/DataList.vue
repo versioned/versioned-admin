@@ -34,6 +34,7 @@
         <thead>
           <tr>
             <th v-for="attribute in attributes">{{attribute.label}}</th>
+            <th>Publish Status</th>
             <th>Updated</th>
             <th>By</th>
           </tr>
@@ -51,6 +52,9 @@
               </span>
             </td>
 
+            <td>
+              <publish-status :doc="doc"></publish-status>
+            </td>
             <td>
               {{(doc.updatedAt || doc.createdAt) | date('YYYY-MM-DD hh:mm') }}<br />
               ({{(doc.updatedAt || doc.createdAt) | timeAgo}})
@@ -75,6 +79,7 @@ import router from '@/router'
 import Model from '@/services/model'
 import Swagger from '@/services/swagger'
 import JsonData from '@/components/JsonData'
+import PublishStatus from '@/components/data/PublishStatus'
 
 const ATTRIBUTES_LIMIT = 10
 const ARRAY_LIMIT = 10
@@ -184,7 +189,8 @@ export default {
     }
   },
   components: {
-    JsonData
+    JsonData,
+    PublishStatus
   }
 }
 </script>

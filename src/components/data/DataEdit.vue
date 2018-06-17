@@ -1,14 +1,14 @@
 <template lang="html">
   <section v-if="doc">
     <div class="page-title">
-        <h1>Edit {{modelName}}</h1>
+        <h1>Edit {{model.name}}</h1>
     </div>
 
     <json-data :jsonData="jsonData" :jsonUrl="jsonUrl"></json-data>
 
-    <data-form ref="dataForm" :doc="doc" :schema="schema" :model="model" @formSubmit="save($event)" @remove="remove($event)"></data-form>
+    <data-form ref="dataForm" :doc="doc" :schema="schema" :model="model.coll" :isPublished="isPublished" :versions="versions" @formSubmit="save($event)" @remove="remove($event)"></data-form>
     <div>
-      <router-link :to="listUrl()">Return to {{modelName}} Data</router-link>
+      <router-link :to="listUrl()">Return to {{model.name}} Data</router-link>
     </div>
   </section>
 </template>
@@ -31,20 +31,16 @@ export default {
       jsonUrl: null,
       id: null,
       model: null,
-      modelName: null,
+      isPublished: false,
       schema: null,
-      doc: null
+      doc: null,
+      versions: []
     }
   },
   computed: {
     canDelete: function () {
       // TODO
       return true
-      // if (this.swagger && this.contentType) {
-      //   return Swagger.canDelete(this.swagger, this.contentType)
-      // } else {
-      //   return null
-      // }
     }
   },
   components: {
@@ -64,14 +60,16 @@ export default {
       const params = {'filter.coll': this.$route.params.model}
       Model(accountId).list({params}).then(({data}) => {
         if (data.length > 0) {
-          const model = data[0]
-          this.model = model.coll
-          this.modelName = model.name
-          this.schema = u.getIn(model, 'model.schema')
-          const api = Data(this.model)
-          this.jsonUrl = api.getUrl(this.id, {relationshipLevels: 1})
+          this.model = data[0]
+          this.isPublished = u.getIn(this.model, 'model.features', []).includes('published')
+          this.schema = u.getIn(this.model, 'model.schema')
+          const api = Data(this.model.coll)
+          const params = {relationshipLevels: 1}
+          if (this.isPublished) params.versions = 1
+          this.jsonUrl = api.getUrl(this.id, params)
           Api.getRequest(this.jsonUrl).then(doc => {
             this.doc = doc
+            this.versions = u.getIn(doc, 'sys.versions', [])
             this.jsonData = u.prettyJson(this.doc)
           }).catch(() => {
             Alert.set('error', 'Could not find data')
@@ -82,10 +80,11 @@ export default {
       })
     },
     save (doc) {
-      Data(this.model).update(doc)
+      Data(this.model.coll).update(doc)
         .then(doc => {
           if (doc) this.doc = doc
           Alert.setBoth('success', 'Saved')
+          this.getData()
         })
         .catch(error => {
           this.$refs.dataForm.handleError(error)
@@ -93,9 +92,9 @@ export default {
     },
     remove () {
       if (confirm('Are you sure?')) {
-        Data(this.model).remove(this.doc.id)
+        Data(this.model.coll).remove(this.doc.id)
           .then(() => {
-            router.push(`/data/${this.model}`)
+            router.push(`/data/${this.model.coll}`)
           })
           .catch(error => {
             this.$refs.dataForm.handleError(error)
@@ -103,11 +102,14 @@ export default {
       }
     },
     listUrl () {
-      return `/data/${this.model}`
+      return `/data/${this.model.coll}`
     }
   }
 }
 </script>
 
 <style lang="css">
+  .versions {
+    margin-top: 10px;
+  }
 </style>
