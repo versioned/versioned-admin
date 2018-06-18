@@ -47,7 +47,7 @@
 
 <script>
 import u from '@/util'
-import {capitalize, truncated} from '@/client_util'
+import {capitalize} from '@/client_util'
 import User from '@/services/user'
 import Changelog from '@/services/changelog'
 import Changes from '@/components/data/Changes'
