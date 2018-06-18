@@ -18,11 +18,13 @@
 </template>
 
 <script>
-import { ModelListSelect } from 'vue-search-select'
-import debounce from '@/directives/debounce'
+import {ModelListSelect} from 'vue-search-select'
 import Search from '@/services/search'
 import User from '@/services/user'
 import u from '@/util'
+
+let searchTimeout = null
+const DEBOUNCE_INTERVAL = 200
 
 export default {
   props: ['attribute'],
@@ -57,8 +59,11 @@ export default {
         const space = u.getIn(User.get(), 'space')
         const type = u.getIn(this.attribute, 'schema.x-meta.relationship.toType')
         const options = {filters: `type:${type}`}
-        const result = await Search({space}).search(query, options)
-        this.results = result.data.hits
+        if (searchTimeout) clearTimeout(searchTimeout)
+        searchTimeout = setTimeout(async () => {
+          const result = await Search({space}).search(query, options)
+          if (result) this.results = result.data.hits
+        }, DEBOUNCE_INTERVAL)
       } else {
         this.results = []
       }
@@ -78,7 +83,6 @@ export default {
       return this.isArray() ? ids : (u.first(ids) || null)
     }
   },
-  directives: {debounce},
   components: {
     ModelListSelect
   }

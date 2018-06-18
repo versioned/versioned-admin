@@ -26,7 +26,7 @@ export function timeAgo (time) {
   }
 }
 
-export function debounce (fn, interval) {
+export function debounce (fn, interval = 200) {
   let timeout = null
   return function () {
     const args = arguments

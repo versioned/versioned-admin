@@ -2,6 +2,8 @@
 
 ## Backlog (Sprint)
 
+* You need to make relationship docs ids on save? Or do this server side? Convert objects to ids in callback models.normalizeRelationshipIds
+
 * Rename versions to publish history with revert links
 
 * Unpublished at (lastUnpublishedAt)
