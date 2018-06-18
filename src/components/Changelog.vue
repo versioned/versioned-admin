@@ -32,20 +32,7 @@
             </td>
             <td>
               <a href="#" v-show="item.changes" @click.prevent="toggle('showChanges', item.id)">Changes</a>
-              <table v-if="item.changes && show('showChanges', item.id)" class="changes">
-                <thead>
-                  <th>Field</th>
-                  <th>From</th>
-                  <th>To</th>
-                </thead>
-                <tbody>
-                  <tr v-for="(value, key) in changes(item)" :key="key">
-                    <td>{{key}}</td>
-                    <td>{{stringify(value.from)}}</td>
-                    <td>{{stringify(value.to)}}</td>
-                  </tr>
-                </tbody>
-              </table>
+              <changes v-if="item.action === 'update' && show('showChanges', item.id)" :from="item.existingDoc" :to="item.doc"></changes>
             </td>
             <td>{{item.createdBy.email}}</td>
             <td>
@@ -63,6 +50,7 @@ import u from '@/util'
 import {capitalize, truncated} from '@/client_util'
 import User from '@/services/user'
 import Changelog from '@/services/changelog'
+import Changes from '@/components/data/Changes'
 
 export default {
   data () {
@@ -124,33 +112,15 @@ export default {
         }
       }
     },
-    changes (item) {
-      const excludedKeys = ['versionToken', 'firstPublishedAt', 'lastPublishedAt']
-      return Object.keys(item.changes || {}).reduce((acc, key) => {
-        const change = item.changes[key]
-        if (!excludedKeys.includes(key)) {
-          acc[key] = {
-            from: (u.getIn(change, 'changed.from') || u.getIn(change, 'deleted')),
-            to: (u.getIn(change, 'changed.to') || u.getIn(change, 'added'))
-          }
-          // if (changeTrackedKeys.includes(key) && change) {
-          //   acc[key] = change
-          // } else {
-          //   acc[key] = true
-          // }
-        }
-        return acc
-      }, {})
-    },
-    stringify (value) {
-      return truncated(value)
-    },
     toggle (objName, property) {
       this[objName] = u.evolveAll((this[objName] || {}), {[property]: (v) => !v})
     },
     show (objName, property) {
       return this[objName] && this[objName][property]
     }
+  },
+  components: {
+    Changes
   }
 }
 </script>
@@ -159,9 +129,5 @@ export default {
 <style scoped>
   td {
     text-align: left;
-  }
-
-  ul.changes {
-    list-style-type: none;
   }
 </style>

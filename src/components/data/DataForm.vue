@@ -37,13 +37,16 @@
         </div>
 
         <ul v-show="showVersions" class="list-group">
-          <li v-for="version in versions" class="list-group-item">
+          <li v-for="(version, index) in versions" class="list-group-item">
             <strong>{{version.version}}.</strong>
             By {{version.createdBy.email}}
             at
             {{(version.updatedAt || version.createdAt) | date('YYYY-MM-DD hh:mm') }}
             ({{(version.updatedAt || version.createdAt) | timeAgo}})
             <pre v-show="showJson">{{version}}</pre>
+
+            <a href="#" v-if="(index + 1) < versions.length" @click.prevent="toggle('showChanges', index)">Changes</a>
+            <changes v-if="(index + 1) < versions.length && show('showChanges', index)" :from="versions[index + 1]" :to="version"></changes>
           </li>
         </ul>
       </div>
@@ -72,6 +75,7 @@ import u from '@/util'
 import Swagger from '@/services/swagger'
 import DataFormField from '@/components/data/DataFormField'
 import PublishStatus from '@/components/data/PublishStatus'
+import Changes from '@/components/data/Changes'
 
 export default {
   props: ['model', 'doc', 'schema', 'isPublished', 'versions'],
@@ -79,7 +83,8 @@ export default {
     return {
       showVersions: false,
       allErrors: [],
-      showJson: false
+      showJson: false,
+      showChanges: {}
     }
   },
   computed: {
@@ -100,7 +105,8 @@ export default {
   },
   components: {
     DataFormField,
-    PublishStatus
+    PublishStatus,
+    Changes
   },
   methods: {
     saveAndPublish () {
@@ -117,6 +123,12 @@ export default {
     },
     remove () {
       this.$emit('remove', this.doc)
+    },
+    toggle (objName, property) {
+      this[objName] = u.evolveAll((this[objName] || {}), {[property]: (v) => !v})
+    },
+    show (objName, property) {
+      return this[objName] && this[objName][property]
     },
     handleError (error) {
       if (error.status === 422) {
