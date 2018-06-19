@@ -32,7 +32,7 @@ export default {
   },
   computed: {
     changes () {
-      const excludedKeys = ['versionToken', 'firstPublishedAt', 'lastPublishedAt', 'updatedBy', 'updatedAt']
+      const excludedKeys = ['versionToken', 'firstPublishedAt', 'lastPublishedAt', 'updatedBy', 'updatedAt', 'type']
       return Object.entries(diff(this.from, this.to)).reduce((acc, [key, change]) => {
         if (!excludedKeys.includes(key)) {
           acc[key] = {

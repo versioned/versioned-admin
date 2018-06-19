@@ -6,6 +6,8 @@
     <div class="form-group">
       <div class="form-group buttons">
         <input type="submit" class="btn btn-primary" value="Save" />
+        <button v-if="isPublished" class="btn btn-secondary" @click.prevent="saveAndPublish()">Save and Publish</button>
+        <button v-if="isPublished && doc.publishedVersion" class="btn btn-secondary" @click.prevent="unpublish()">Unpublish</button>
       </div>
 
       <div v-if="isPublished" class="form-group versions">

@@ -80,10 +80,15 @@ export default {
       })
     },
     save (doc) {
+      Alert.clear()
       Data(this.model.coll).update(doc)
         .then(doc => {
-          if (doc) this.doc = doc
-          Alert.setBoth('success', 'Saved')
+          if (doc) {
+            this.doc = doc
+            Alert.setBoth('success', 'Saved')
+          } else {
+            Alert.setBoth('warning', 'No Changes')
+          }
           this.getData()
         })
         .catch(error => {

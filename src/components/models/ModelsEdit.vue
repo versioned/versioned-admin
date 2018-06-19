@@ -36,10 +36,15 @@ export default {
       this.model = u.merge(model, {fields})
     },
     save: async function (model) {
+      Alert.clear()
       try {
         const accountId = u.getIn(User.get(), 'account.id')
-        await Model(accountId).update(model)
-        Alert.setBoth('Saved')
+        const updatedModel = await Model(accountId).update(model)
+        if (updatedModel) {
+          Alert.setBoth('Saved')
+        } else {
+          Alert.setBoth('warning', 'No Changes')
+        }
       } catch (error) {
         this.$refs.modelsForm.handleError(error)
       }

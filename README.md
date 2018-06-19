@@ -2,6 +2,10 @@
 
 ## Backlog (Sprint)
 
+* Ability to have color codes for models
+
+* Check no delete of published content (remove link and have backend callback check as well)
+
 * You need to make relationship docs ids on save? Or do this server side? Convert objects to ids in callback models.normalizeRelationshipIds
 
 * Rename versions to publish history with revert links
