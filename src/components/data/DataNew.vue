@@ -3,7 +3,7 @@
     <div class="page-title">
         <h1>New {{modelName}}</h1>
     </div>
-    <data-form ref="dataForm" :doc="doc" :schema="schema" :model="model" @formSubmit="save($event)"></data-form>
+    <data-form ref="dataForm" :doc="doc" :schema="schema" :model="model" @fieldChange="fieldChange($event)" @formSubmit="save($event)"></data-form>
   </section>
 </template>
 
@@ -43,6 +43,10 @@ export default {
     })
   },
   methods: {
+    fieldChange (field) {
+      this.doc = u.merge(this.doc, field)
+      // this.doc[field.key] = field.value
+    },
     save (doc) {
       Data(this.model).create(doc)
         .then(doc => {

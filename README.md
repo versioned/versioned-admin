@@ -2,6 +2,10 @@
 
 ## Backlog (Sprint)
 
+* Search in DataRelField doesn't work properly. Why?
+
+* Test all form field types (boolean etc. enum?)
+
 * Ability to have color codes for models
 
 * Check no delete of published content (remove link and have backend callback check as well)

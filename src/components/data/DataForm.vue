@@ -60,7 +60,7 @@
         </div>
       </div>
 
-      <data-form-field v-for="attribute in writeAttributes" :doc="doc" :attribute="attribute" :model="model" :key="attribute.key"></data-form-field>
+      <data-form-field v-for="attribute in writeAttributes" :doc="doc" :attribute="attribute" :model="model" :key="attribute.key" @fieldChange="fieldChange($event)"></data-form-field>
 
       <div class="form-group buttons">
         <input type="submit" class="btn btn-primary" value="Save" />
@@ -118,6 +118,9 @@ export default {
     unpublish () {
       this.doc.publishedVersion = null
       this.formSubmit()
+    },
+    fieldChange (field) {
+      this.$emit('fieldChange', field)
     },
     formSubmit () {
       this.allErrors = []

@@ -6,7 +6,7 @@
 
     <json-data :jsonData="jsonData" :jsonUrl="jsonUrl"></json-data>
 
-    <data-form ref="dataForm" :doc="doc" :schema="schema" :model="model.coll" :isPublished="isPublished" :versions="versions" @formSubmit="save($event)" @remove="remove($event)"></data-form>
+    <data-form ref="dataForm" :doc="doc" :schema="schema" :model="model.coll" :isPublished="isPublished" :versions="versions" @fieldChange="fieldChange($event)" @formSubmit="save($event)" @remove="remove($event)"></data-form>
     <div>
       <router-link :to="listUrl()">Return to {{model.name}} Data</router-link>
     </div>
@@ -78,6 +78,10 @@ export default {
           Alert.set('error', `Could not find model ${this.$route.params.model}`)
         }
       })
+    },
+    fieldChange (field) {
+      this.doc = u.merge(this.doc, field)
+      // this.doc[field.key] = field.value
     },
     save (doc) {
       Alert.clear()

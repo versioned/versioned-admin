@@ -32,7 +32,6 @@ export default {
     const toType = u.getIn(this.attribute, 'schema.x-meta.relationship.toType')
     const selectedResults = u.array(this.attribute.value || [])
     const placeholder = (this.isArray() ? `search ${toType} to add` : `search ${toType}`)
-    this.$emit('fieldInput', this.fieldValue(selectedResults))
     return {
       results: [],
       placeholder,
@@ -79,8 +78,7 @@ export default {
       this.$emit('fieldInput', this.fieldValue(this.selectedResults))
     },
     fieldValue (selectedResults) {
-      const ids = selectedResults.map(doc => doc.id)
-      return this.isArray() ? ids : (u.first(ids) || null)
+      return this.isArray() ? selectedResults : (u.first(selectedResults) || null)
     }
   },
   components: {

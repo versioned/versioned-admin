@@ -53,6 +53,7 @@
       "standard"
     ],
     "rules": {
+      "no-unneeded-ternary": 0,
       "no-throw-literal": 0,
       "vue/require-v-for-key": false
     }
