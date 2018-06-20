@@ -1,28 +1,26 @@
 <template>
-  <div>
-    <div class="changes table table-striped">
-      <table>
-        <thead>
-          <th>Field</th>
-          <th>From</th>
-          <th>To</th>
-        </thead>
-        <tbody>
-          <tr v-for="(value, key) in changes" :key="key">
-            <td>{{key}}</td>
-            <td>{{stringify(value.from)}}</td>
-            <td>{{stringify(value.to)}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <div class="changes table table-striped">
+    <table>
+      <thead>
+        <th>Field</th>
+        <th>From</th>
+        <th>To</th>
+      </thead>
+      <tbody>
+        <tr v-for="(value, key) in changes" :key="key">
+          <td>{{key}}</td>
+          <td>{{stringify(value.from)}}</td>
+          <td>{{stringify(value.to)}}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script>
 import u from '@/util'
-import diff from '@/diff'
 import {truncated} from '@/client_util'
+import DataUtil from '@/data_util'
 
 export default {
   props: ['from', 'to'],
@@ -32,16 +30,7 @@ export default {
   },
   computed: {
     changes () {
-      const excludedKeys = ['versionToken', 'firstPublishedAt', 'lastPublishedAt', 'updatedBy', 'updatedAt', 'type']
-      return Object.entries(diff(this.from, this.to)).reduce((acc, [key, change]) => {
-        if (!excludedKeys.includes(key)) {
-          acc[key] = {
-            from: (u.getIn(change, 'changed.from') || u.getIn(change, 'deleted')),
-            to: (u.getIn(change, 'changed.to') || u.getIn(change, 'added'))
-          }
-        }
-        return acc
-      }, {})
+      return DataUtil.changes(this.from, this.to)
     }
   },
   methods: {
@@ -59,4 +48,8 @@ export default {
 </script>
 
 <style scoped>
+  div.changes {
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
 </style>

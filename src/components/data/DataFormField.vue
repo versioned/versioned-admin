@@ -8,7 +8,7 @@
     </label>
 
     <select v-if="attribute.schema.enum" v-model="doc[attribute.key]" @input="updateValue($event.target.value)" class="form-control">
-      <option v-for="value in attribute.schema.enum">
+      <option v-for="value in enumOptions()">
         {{ value }}
       </option>
     </select>
@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import u from '@/util'
 import JsonField from '@/components/form/JsonField'
 import DataRelField from '@/components/data/DataRelField'
 
@@ -40,6 +41,9 @@ export default {
     },
     isJsonField () {
       return !this.attribute.relationship && (this.attribute.schema.type === 'object' || this.attribute.schema.type === 'array')
+    },
+    enumOptions () {
+      return u.concat([null], this.attribute.schema.enum)
     }
   },
   components: {

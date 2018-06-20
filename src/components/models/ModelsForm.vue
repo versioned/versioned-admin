@@ -429,12 +429,10 @@ export default {
       let isArray = field.array
       const fieldType = field.type || 'string'
       let property = FIELD_TYPES_PROPERTIES[fieldType] || {}
-      if (field.hasValidation && field.validation.enum) {
-        property = {enum: field.enum.split(',')}
-      }
       if (field.category === 'data') {
         if (field.hasValidation) {
           property = u.merge(property, u.evolve(field.validation, {
+            enum: (v) => v.split(','),
             minLength: u.parseIfInt,
             maxLength: u.parseIfInt,
             pattern: (v) => v
@@ -456,6 +454,8 @@ export default {
       })
       if (isArray) {
         property = {type: 'array', items: property}
+      } else if (property.enum) {
+        delete property.type
       }
       return u.compact(u.deepMerge(property, {
         'x-meta': xMeta
