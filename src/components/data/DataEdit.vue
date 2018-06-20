@@ -6,7 +6,7 @@
 
     <json-data :jsonData="jsonData" :jsonUrl="jsonUrl"></json-data>
 
-    <data-form ref="dataForm" :doc="doc" :schema="schema" :model="model.coll" :isPublished="isPublished" :versions="versions" @fieldChange="fieldChange($event)" @formSubmit="save($event)" @remove="remove($event)"></data-form>
+    <data-form ref="dataForm" :doc="doc" :docOrig="docOrig" :schema="schema" :model="model.coll" :isPublished="isPublished" :versions="versions" @fieldChange="fieldChange($event)" @formSubmit="save($event)" @remove="remove($event)"></data-form>
     <div>
       <router-link :to="listUrl()">Return to {{model.name}} Data</router-link>
     </div>
@@ -34,6 +34,7 @@ export default {
       isPublished: false,
       schema: null,
       doc: null,
+      docOrig: null,
       versions: []
     }
   },
@@ -69,6 +70,7 @@ export default {
           this.jsonUrl = api.getUrl(this.id, params)
           Api.getRequest(this.jsonUrl).then(doc => {
             this.doc = doc
+            if (!this.docOrig) this.docOrig = JSON.parse(JSON.stringify(doc))
             this.versions = u.getIn(doc, 'sys.versions', [])
             this.jsonData = u.prettyJson(this.doc)
           }).catch(() => {
@@ -89,6 +91,7 @@ export default {
         .then(doc => {
           if (doc) {
             this.doc = doc
+            this.docOrig = null
             Alert.setBoth('success', 'Saved')
           } else {
             Alert.setBoth('warning', 'No Changes')

@@ -2,8 +2,6 @@
 
 ## Backlog (Sprint)
 
-* Enum type doesn't work
-
 * Relationships one-to-many and many-to-many with *lots* of entries will probably crash the UI
 
 * Using relationship.name will not work with the UI. Turn off or add relationshipNames=0 for get

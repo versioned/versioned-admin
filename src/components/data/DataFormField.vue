@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="form-group">
-    <label name="title">
+    <label name="title" :class="{'text-warning': isChanged}">
       {{attribute.label}}
       <span v-if="attribute.help" class="help">
         ({{attribute.help}})
@@ -31,7 +31,7 @@ import JsonField from '@/components/form/JsonField'
 import DataRelField from '@/components/data/DataRelField'
 
 export default {
-  props: ['doc', 'attribute', 'model'],
+  props: ['doc', 'attribute', 'model', 'isChanged'],
   methods: {
     updateValue (value) {
       if (this.attribute.schema.type === 'boolean') {

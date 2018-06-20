@@ -45,10 +45,10 @@
             at
             {{(version.updatedAt || version.createdAt) | date('YYYY-MM-DD hh:mm') }}
             ({{(version.updatedAt || version.createdAt) | timeAgo}})
-            <pre v-show="showJson">{{version}}</pre>
-
             <a href="#" v-if="(index + 1) < versions.length" @click.prevent="toggle('showChanges', index)">Changes</a>
             <changes v-if="(index + 1) < versions.length && show('showChanges', index)" :from="versions[index + 1]" :to="version"></changes>
+
+            <pre v-show="showJson">{{version}}</pre>
           </li>
         </ul>
       </div>
@@ -60,7 +60,10 @@
         </div>
       </div>
 
-      <data-form-field v-for="attribute in writeAttributes" :doc="doc" :attribute="attribute" :model="model" :key="attribute.key" @fieldChange="fieldChange($event)"></data-form-field>
+      <data-form-field v-for="attribute in writeAttributes" :doc="doc" :attribute="attribute" :model="model" :key="attribute.key" :isChanged="fieldIsChanged(attribute.key)" @fieldChange="fieldChange($event)"></data-form-field>
+
+      <a v-show="hasChanges()" class="text-warning" href="#" @click.prevent="showUnsavedChanges = !showUnsavedChanges">Show unsaved Changes</a>
+      <changes v-show="showUnsavedChanges" :from="docOrig" :to="doc"></changes>
 
       <div class="form-group buttons">
         <input type="submit" class="btn btn-primary" value="Save" />
@@ -78,15 +81,17 @@ import Swagger from '@/services/swagger'
 import DataFormField from '@/components/data/DataFormField'
 import PublishStatus from '@/components/data/PublishStatus'
 import Changes from '@/components/data/Changes'
+import DataUtil from '@/data_util'
 
 export default {
-  props: ['model', 'doc', 'schema', 'isPublished', 'versions'],
+  props: ['model', 'doc', 'docOrig', 'schema', 'isPublished', 'versions'],
   data: function () {
     return {
       showVersions: false,
       allErrors: [],
       showJson: false,
-      showChanges: {}
+      showChanges: {},
+      showUnsavedChanges: false
     }
   },
   computed: {
@@ -103,6 +108,9 @@ export default {
       } else {
         return null
       }
+    },
+    changes () {
+      return this.docOrig && DataUtil.changes(this.docOrig, this.doc)
     }
   },
   components: {
@@ -143,6 +151,13 @@ export default {
       } else {
         throw error
       }
+    },
+    fieldIsChanged (key) {
+      const stripArrayIndex = (k) => k.replace(/\[\d+\]$/, '')
+      return u.keys(this.changes).map(stripArrayIndex).includes(key)
+    },
+    hasChanges () {
+      return u.notEmpty(u.compact(this.changes))
     }
   }
 }
