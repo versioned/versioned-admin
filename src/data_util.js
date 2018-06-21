@@ -12,7 +12,7 @@ function convertRelObjectsToIds (doc) {
 
 export function changes (from, to) {
   const excludedKeys = ['versionToken', 'firstPublishedAt', 'lastPublishedAt', 'updatedBy', 'updatedAt', 'type']
-  const _diff = diff.apply(null, [from, to].map(convertRelObjectsToIds))
+  const _diff = diff.apply(null, [from, to].map(convertRelObjectsToIds).map(u.compact))
   if (!_diff) return {}
   return Object.entries(_diff).reduce((acc, [key, change]) => {
     if (!excludedKeys.includes(key)) {

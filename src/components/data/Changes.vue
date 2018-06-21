@@ -1,5 +1,5 @@
 <template>
-  <div class="changes table table-striped">
+  <div v-show="changes && Object.keys(changes).length > 0" class="changes table table-striped">
     <table>
       <thead>
         <th>Field</th>
