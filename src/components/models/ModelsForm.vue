@@ -10,7 +10,7 @@
 
     <div class="form-group required">
       <label for="name">Name</label>
-      <input type="text" v-model="model.name" class="form-control" id="name" :maxlength="NAME_LENGTH" @input="nameChange()" v-bind:class="{ 'is-invalid': errors.name}" autofocus required/>
+      <input type="text" v-model="model.name" class="form-control" id="name" :maxlength="NAME_LENGTH" @input="nameChange()" v-bind:class="{ 'is-invalid': errors.name}" v-autofocus required/>
       <div class="invalid-feedback">
         {{errors.name}}
       </div>
@@ -56,6 +56,7 @@
           </span>
         </a>
         <span v-if="field.category === 'data'" class="small">[{{field.type}}]</span>
+        <span v-if="field.category === 'data' && field.array" class="small">[array]</span>
         <!-- <a href="#" class="small" v-show="field.key && collapsed[field.key]" @click.prevent="toggleCollapsed(field.key)">show</a>
         <a href="#" class="small" v-show="field.key && !collapsed[field.key]" @click.prevent="toggleCollapsed(field.key)">hide</a> -->
         <a href="#" class="small" v-show="index> 0" @click.prevent="removeField(index)">[remove]</a>
@@ -238,6 +239,7 @@
 import Vue from 'vue'
 import u from '@/util'
 import {capitalize} from '@/client_util'
+import {propertiesOrder} from '@/models_util'
 import JsonField from '@/components/form/JsonField'
 
 const FIELD_TYPES = [
@@ -414,12 +416,8 @@ export default {
     },
     getFields (model) {
       const schema = u.getIn(model, 'model.schema', {})
-      if (u.empty(schema.properties)) return []
-      let keys = Object.keys(schema.properties)
-      if (model.propertiesOrder) {
-        const missingKeys = u.difference(Object.keys(schema.properties), model.propertiesOrder)
-        keys = model.propertiesOrder.concat(missingKeys)
-      }
+      const keys = propertiesOrder(schema)
+      if (u.empty(keys)) return []
       const required = schema.required || []
       return keys.map((key) => {
         return this.makeField(this.propertyToField(key, schema.properties[key], required.includes(key)))

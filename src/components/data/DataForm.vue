@@ -72,6 +72,9 @@
         <a v-if="doc.id" href="#" @click.prevent="remove()">Delete</a>
       </div>
     </div>
+    <ul v-if="allErrors.length > 0" class="errors alert alert-danger">
+      <li v-for="error in allErrors">{{error.field}} - {{error.message}}</li>
+    </ul>
   </form>
 </template>
 
@@ -132,7 +135,7 @@ export default {
     },
     formSubmit () {
       this.allErrors = []
-      this.$emit('formSubmit', this.doc)
+      this.$emit('formSubmit', this.coerceDoc(this.doc))
     },
     remove () {
       this.$emit('remove', this.doc)
@@ -142,6 +145,24 @@ export default {
     },
     show (objName, property) {
       return this[objName] && this[objName][property]
+    },
+    coerceDoc (doc) {
+      return Object.entries(doc).reduce((acc, [key, value]) => {
+        const propertySchema = u.getIn(this.schema, `properties.${key}`)
+        acc[key] = this.coerceValue(propertySchema, value)
+        return acc
+      }, {})
+    },
+    coerceValue (schema, value) {
+      const type = u.getIn(schema, 'type')
+      if (type === 'integer') {
+        return u.parseIfInt(value)
+      } else if (type === 'number') {
+        const coerced = parseFloat(value)
+        return isNaN(coerced) ? value : coerced
+      } else {
+        return value
+      }
     },
     handleError (error) {
       if (error.status === 422) {

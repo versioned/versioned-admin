@@ -35,7 +35,9 @@ export function debounce (fn, interval = 200) {
   }
 }
 
-export function truncated (string, limit = 50) {
+export function truncated (value, limit = 50) {
+  if (u.nil(value)) return ''
+  const string = typeof value === 'object' ? JSON.stringify(value) : value.toString()
   if (string && string.length > limit) {
     return string.substring(0, limit) + '...'
   } else {

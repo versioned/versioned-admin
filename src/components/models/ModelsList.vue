@@ -64,7 +64,7 @@
 
 <script>
 import u from '@/util'
-import {propertyKeys} from '@/models_util'
+import {propertiesOrder} from '@/models_util'
 // import router from '@/router'
 import User from '@/services/user'
 import Model from '@/services/model'
@@ -126,12 +126,12 @@ export default {
       return u.getIn(model, `${fieldPath}.name`) || capitalize(property)
     },
     fields (model) {
-      return propertyKeys(model)
+      return propertiesOrder(u.getIn(model, 'model.schema'))
         .filter(p => !this.isRelationship(model, p))
         .map(p => this.fieldName(model, p))
     },
     relationships (model) {
-      return propertyKeys(model)
+      return propertiesOrder(u.getIn(model, 'model.schema'))
         .filter(p => this.isRelationship(model, p))
         .map(p => this.fieldName(model, p))
     },

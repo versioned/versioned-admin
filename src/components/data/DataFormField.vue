@@ -21,7 +21,7 @@
 
     <data-rel-field v-else-if="attribute.relationship" :attribute="attribute" @fieldInput="updateValue($event)"></data-rel-field>
 
-    <input v-else type="text" v-model="doc[attribute.key]" class="form-control" @input="updateValue($event.target.value)"/>
+    <input v-else type="text" ref="textInput" v-model="doc[attribute.key]" class="form-control" @input="updateValue($event.target.value)"/>
   </div>
 </template>
 
@@ -32,6 +32,11 @@ import DataRelField from '@/components/data/DataRelField'
 
 export default {
   props: ['doc', 'attribute', 'model', 'isChanged'],
+  mounted () {
+    if (this.attribute.index === 0 && this.$refs.textInput) {
+      this.$refs.textInput.focus()
+    }
+  },
   methods: {
     updateValue (value) {
       if (this.attribute.schema.type === 'boolean') {

@@ -1,5 +1,6 @@
 import axios from 'axios'
 import u from '@/util'
+import {propertiesOrder} from '@/models_util'
 
 let _swagger = null
 
@@ -97,12 +98,8 @@ function canWriteProperty (propertySchema) {
     u.getIn(propertySchema, 'x-meta.admin_write') !== false
 }
 
-function propertyNames (schema) {
-  return u.getIn(schema, 'x-meta.propertiesOrder') || Object.keys(schema.properties)
-}
-
 function attributes (schema, doc) {
-  return propertyNames(schema).map(key => {
+  return propertiesOrder(schema).map((key, index) => {
     const propertySchema = schema.properties[key]
     const meta = propertySchema['x-meta']
     const field = u.getIn(propertySchema, 'x-meta.field', {})
@@ -110,6 +107,7 @@ function attributes (schema, doc) {
     const value = u.getIn(doc, key)
     return {
       key,
+      index,
       label: label(key, propertySchema),
       help: help(key, propertySchema),
       field,

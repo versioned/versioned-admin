@@ -2,6 +2,12 @@
 
 ## Backlog (Sprint)
 
+* Boolean field somehow broken now by coercion?
+
+* Array type not supported - remove for now or fix
+
+* Need coercion of number/integer types in DataFormField
+
 * Relationships one-to-many and many-to-many with *lots* of entries will probably crash the UI
 
 * Using relationship.name will not work with the UI. Turn off or add relationshipNames=0 for get
