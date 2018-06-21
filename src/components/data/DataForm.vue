@@ -10,6 +10,9 @@
         <button v-if="isPublished && doc.publishedVersion" class="btn btn-secondary" @click.prevent="unpublish()">Unpublish</button>
       </div>
 
+      <a v-show="hasChanges()" class="text-warning" href="#" @click.prevent="showUnsavedChanges = !showUnsavedChanges">Unsaved Changes</a>
+      <changes v-if="showUnsavedChanges" :from="docOrig" :to="doc"></changes>
+
       <div v-if="isPublished" class="form-group versions">
         <publish-status :doc="doc"></publish-status>
 
@@ -62,8 +65,8 @@
 
       <data-form-field v-for="attribute in writeAttributes" :doc="doc" :attribute="attribute" :model="model" :key="attribute.key" :isChanged="fieldIsChanged(attribute.key)" @fieldChange="fieldChange($event)"></data-form-field>
 
-      <a v-show="hasChanges()" class="text-warning" href="#" @click.prevent="showUnsavedChanges = !showUnsavedChanges">Show unsaved Changes</a>
-      <changes v-show="showUnsavedChanges" :from="docOrig" :to="doc"></changes>
+      <a v-show="hasChanges()" class="text-warning" href="#" @click.prevent="showUnsavedChanges = !showUnsavedChanges">Unsaved Changes</a>
+      <changes v-if="showUnsavedChanges" :from="docOrig" :to="doc"></changes>
 
       <div class="form-group buttons">
         <input type="submit" class="btn btn-primary" value="Save" />

@@ -21,7 +21,7 @@
 
     <data-rel-field v-else-if="attribute.relationship" :attribute="attribute" @fieldInput="updateValue($event)"></data-rel-field>
 
-    <input v-else type="text" ref="textInput" v-model="doc[attribute.key]" class="form-control" @input="updateValue($event.target.value)"/>
+    <input v-else :type="inputType()" ref="textInput" v-model="doc[attribute.key]" class="form-control" @input="updateValue($event.target.value)"/>
   </div>
 </template>
 
@@ -49,6 +49,13 @@ export default {
     },
     enumOptions () {
       return u.concat([null], this.attribute.schema.enum)
+    },
+    inputType () {
+      if (this.attribute.schema.type === 'integer') {
+        return 'number'
+      } else {
+        return 'text'
+      }
     }
   },
   components: {

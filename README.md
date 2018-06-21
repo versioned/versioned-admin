@@ -2,9 +2,7 @@
 
 ## Backlog (Sprint)
 
-* Boolean field somehow broken now by coercion?
-
-* Array type not supported - remove for now or fix
+* Array type not well supported - remove?
 
 * Need coercion of number/integer types in DataFormField
 
@@ -12,9 +10,9 @@
 
 * Using relationship.name will not work with the UI. Turn off or add relationshipNames=0 for get
 
-* Need to fix changes function to handle relationship objects/ids
+* Search in DataRelField doesn't work properly. Why? Replace with custom search/select? Also need scroll/handling of many items
 
-* Search in DataRelField doesn't work properly. Why?
+* Set up Cypress test that creates Kitchensink models with most common data types and data
 
 * Test all form field types (boolean etc. enum?)
 

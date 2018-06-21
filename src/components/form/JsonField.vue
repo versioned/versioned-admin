@@ -1,5 +1,5 @@
 <template lang="html">
-  <textarea type="text" :id="id" ref="objJson" v-model="objJson" class="form-control" @input="fieldInput" rows="20"/>
+  <textarea type="text" :id="id" ref="objJson" v-model="objJson" class="form-control" @input="fieldInput" rows="20" placeholder="Enter JSON data here..."/>
 </template>
 
 <script>
