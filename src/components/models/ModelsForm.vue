@@ -1,5 +1,5 @@
 <template lang="html">
-  <form @submit.prevent="submit">
+  <form @submit.prevent="submit" class="models-form">
     <ul v-if="allErrors.length > 0" class="errors alert alert-danger">
       <li v-for="error in allErrors">{{error.field}} {{error.message}}</li>
     </ul>
@@ -44,7 +44,7 @@
       </div> -->
     </div>
 
-    <div class="form-group" v-for="(field, index) in model.fields">
+    <div :class="fieldClass(field, index)" v-for="(field, index) in model.fields">
       <h2 :class="{'field-heading': true, 'required': field.required}">
         <a href="#" @click.prevent="toggleCollapsed(field.key)">
           <span v-if="!field.name">Field {{index + 1}}</span>
@@ -65,7 +65,7 @@
       <div v-show="!collapsed[field.key]" class="fields">
         <div class="form-group required">
           <label>Name</label>
-          <input type="text" v-model="field.name" :maxlength="NAME_LENGTH" @input="fieldNameChange(field)" ref="fieldName" class="form-control" required/>
+          <input type="text" v-model="field.name" :maxlength="NAME_LENGTH" @input="fieldNameChange(field)" ref="fieldName" class="form-control field-name" required/>
         </div>
 
         <div class="form-group required">
@@ -82,14 +82,14 @@
           </div>
 
           <div class="form-check">
-            <input v-model="field.category" class="form-check-input" type="radio" value="oneWayRelationship">
+            <input v-model="field.category" class="form-check-input one-way-relationship" type="radio" value="oneWayRelationship">
             <label class="form-check-label">
               One-way Relationship
             </label>
           </div>
 
           <div class="form-check">
-            <input v-model="field.category" class="form-check-input" type="radio" value="twoWayRelationship">
+            <input v-model="field.category" class="form-check-input two-way-relationship" type="radio" value="twoWayRelationship">
             <label class="form-check-label">
               Two-way Relationship
             </label>
@@ -100,7 +100,7 @@
           <label class="form-check-label">
             Data type
           </label>
-          <select v-if="field.category === 'data'" v-model="field.type">
+          <select v-if="field.category === 'data'" v-model="field.type" class="data-type">
             <option v-for="type in FIELD_TYPES" v-bind:value="type.key">
               {{type.name}}
             </option>
@@ -109,29 +109,29 @@
 
         <div v-if="field.category !== 'data'" class="form-group required">
           <label>Target model (key)</label>
-          <input type="text" v-model="field.relationship.toType" :maxlength="COLL_LENGTH" @change="makeDbFriendly(field.relationship, 'toType')" class="form-control" required/>
+          <input type="text" v-model="field.relationship.toType" :maxlength="COLL_LENGTH" @change="makeDbFriendly(field.relationship, 'toType')" class="form-control to-type" required/>
         </div>
 
         <div v-if="field.category === 'twoWayRelationship'" class="form-group required">
           <label>Target field (key)</label>
-          <input type="text" v-model="field.relationship.toField" :maxlength="FIELD_LENGTH" @change="makeDbFriendly(field.relationship, 'toField')" class="form-control" required/>
+          <input type="text" v-model="field.relationship.toField" :maxlength="FIELD_LENGTH" @change="makeDbFriendly(field.relationship, 'toField')" class="form-control to-field" required/>
         </div>
 
         <div v-if="field.category === 'oneWayRelationship'" class="form-group">
           <div class="form-check">
-            <input class="form-check-input" type="radio" v-model="field.relationship.type" value="one-to-many">
+            <input class="form-check-input one-to-many" type="radio" v-model="field.relationship.type" value="one-to-many">
             <label class="form-check-label">
               Multiple ID references ("has many" relationship, i.e. an array of string IDs)
             </label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="radio" v-model="field.relationship.type" value="many-to-one">
+            <input class="form-check-input many-to-one" type="radio" v-model="field.relationship.type" value="many-to-one">
             <label class="form-check-label">
               Single ID reference ("belongs to" relationship, i.e. a single string ID)
             </label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="radio" v-model="field.relationship.type" value="one-to-one">
+            <input class="form-check-input one-to-one" type="radio" v-model="field.relationship.type" value="one-to-one">
             <label class="form-check-label">
               Single Unique ID reference ("belongs to" relationship, i.e. a single string ID)
             </label>
@@ -140,25 +140,25 @@
 
         <div v-if="field.category === 'twoWayRelationship'" class="form-group">
           <div class="form-check">
-            <input class="form-check-input" type="radio" v-model="field.relationship.type" value="one-to-many">
+            <input class="form-check-input one-to-many" type="radio" v-model="field.relationship.type" value="one-to-many">
             <label class="form-check-label">
               One to Many - multiple ID references (array of string IDs in this model, single string ID in target model)
             </label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="radio" v-model="field.relationship.type" value="many-to-many">
+            <input class="form-check-input many-to-many" type="radio" v-model="field.relationship.type" value="many-to-many">
             <label class="form-check-label">
               Many to Many - multiple ID references (array of string IDs in this model, array of string IDs in target model)
             </label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="radio" v-model="field.relationship.type" value="many-to-one">
+            <input class="form-check-input many-to-one" type="radio" v-model="field.relationship.type" value="many-to-one">
             <label class="form-check-label">
               Many to One - single ID reference (single string ID in this model, array of string IDs in target model)
             </label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="radio" v-model="field.relationship.type" value="one-to-one">
+            <input class="form-check-input one-to-one" type="radio" v-model="field.relationship.type" value="one-to-one">
             <label class="form-check-label">
               One to One - single unique ID reference (single unique string ID in this model, single unique string ID in target model)
             </label>
@@ -227,7 +227,7 @@
     </div>
 
     <div class="form-group">
-      <button class="btn btn-secondary" @click.prevent="addField">Add Another Field</button>
+      <button class="btn btn-secondary add-field" @click.prevent="addField">Add Another Field</button>
     </div>
 
     <input v-if="model.fields.length > 0" type="submit" class="btn btn-primary" value="Save" />
@@ -413,6 +413,9 @@ export default {
         additionalProperties: false,
         required
       }
+    },
+    fieldClass (field, index) {
+      return `form-group field field-${index + 1}`
     },
     getFields (model) {
       const schema = u.getIn(model, 'model.schema', {})
