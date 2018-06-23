@@ -22,11 +22,6 @@
       <div class="invalid-feedback">
         {{errors.coll}}
       </div>
-      <!-- <label for="schema">Schema</label>
-      <json-field id="schema" :obj="model.model.schema" @fieldInput="updateSchema($event)"></json-field>
-      <div class="invalid-feedback">
-        {{errors.schema}}
-      </div> -->
     </div>
 
     <div class="form-group">
@@ -36,17 +31,11 @@
           Published and versioned
         </label>
       </div>
-      <!-- <div class="form-check">
-        <input v-model="features.search" class="form-check-input" type="checkbox">
-        <label class="form-check-label">
-          Searchable
-        </label>
-      </div> -->
     </div>
 
     <div :class="fieldClass(field, index)" v-for="(field, index) in model.fields">
       <h2 :class="{'field-heading': true, 'required': field.required}">
-        <a href="#" @click.prevent="toggleCollapsed(field.key)">
+        <a href="#" @click.prevent="toggleCollapsed(field.key)" class="expand-field">
           <span v-if="!field.name">Field {{index + 1}}</span>
           <span v-else-if="field.category !== 'data'">
             {{field.name}} relationship
@@ -70,7 +59,7 @@
 
         <div class="form-group required">
           <label>Key</label>
-          <input type="text" v-model="field.key" :maxlength="KEY_LENGTH" @change="makeDbFriendly(field, 'key')" class="form-control" required/>
+          <input type="text" v-model="field.key" :maxlength="KEY_LENGTH" @change="makeDbFriendly(field, 'key')" class="form-control field-key" required/>
         </div>
 
         <div class="form-group">

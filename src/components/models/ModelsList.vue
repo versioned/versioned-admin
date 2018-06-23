@@ -29,9 +29,9 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="model in models">
+          <tr v-for="model in models" :class="modelRowClass(model)">
             <td>
-              <router-link v-if="canUpdate()" :to="editUrl(model)">
+              <router-link v-if="canUpdate()" :to="editUrl(model)" class="models-edit">
                 {{model.name}} Model
               </router-link>
             </td>
@@ -42,10 +42,10 @@
               <br/>
               <router-link :to="createDataUrl(model)">New {{model.name}}</router-link>
             </td>
-            <td>
+            <td class="fields">
               {{fields(model).join(', ')}}
             </td>
-            <td>
+            <td class="relationships">
               {{relationships(model).join(', ')}}
             </td>
             <td>
@@ -140,6 +140,9 @@ export default {
     },
     documentCount (model) {
       return u.getIn(this.dbStats, `${model.coll}.count`)
+    },
+    modelRowClass (model) {
+      return `models-row ${model.coll}`
     }
   }
 }

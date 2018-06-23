@@ -9,13 +9,18 @@ const user = {
 }
 const accountName = `Company ${userId}`
 
-const Article = {
+const Article = Model({
   name: 'Article',
   fields: [
+    {
+      name: 'Body',
+      type: 'text'
+    },
     {
       name: 'Author',
       category: 'two-way-relationship',
       relationship: {
+        toType: 'author',
         toField: 'articles',
         type: 'many-to-one'
       }
@@ -24,6 +29,8 @@ const Article = {
       name: 'Slot',
       category: 'two-way-relationship',
       relationship: {
+        toType: 'slot',
+        toField: 'article',
         type: 'one-to-one'
       }
     },
@@ -45,18 +52,71 @@ const Article = {
       type: 'integer'
     }
   ]
-}
+})
 
-const Author = {
-  name: 'Author'
-}
+const Author = Model({
+  name: 'Author',
+  expectedFields: [
+    {
+      name: 'Articles',
+      category: 'two-way-relationship',
+      relationship: {
+        type: 'one-to-many',
+        toType: 'article',
+        toField: 'author'
+      }
+    }
+  ]
+})
 
-const Slot = {
-  name: 'Slot'
-}
+const Slot = Model({
+  name: 'Slot',
+  expectedFields: [
+    {
+      name: 'Article',
+      category: 'two-way-relationship',
+      relationship: {
+        type: 'one-to-one',
+        toType: 'article',
+        toField: 'slot'
+      }
+    }
+  ]
+})
 
-const Category = {
-  name: 'Category'
+const Category = Model({
+  name: 'Category',
+  expectedFields: [
+    {
+      name: 'Articles',
+      category: 'two-way-relationship',
+      relationship: {
+        type: 'many-to-many',
+        toType: 'article',
+        toField: 'categories'
+      }
+    }
+  ]
+})
+
+function Model (model) {
+  const modelDefaults = {
+    coll: u.dbFriendly(model.name)
+  }
+  const fieldDefaults = {
+    category: 'data',
+    type: 'string'
+  }
+  function fieldsWithDefaults (fields) {
+    return (fields || []).map((field) => {
+      const key = u.dbFriendly(field.name)
+      return Object.assign({key}, fieldDefaults, field)
+    })
+  }
+  return Object.assign({}, modelDefaults, model, {
+    fields: fieldsWithDefaults(model.fields),
+    expectedFields: fieldsWithDefaults(model.expectedFields)
+  })
 }
 
 function navigateHome () {
@@ -75,13 +135,7 @@ function clickNewModel () {
   cy.location('href').should('match', /#\/models\/new$/)
 }
 
-const FIELD_DEFAULTS = {
-  category: 'data',
-  type: 'string'
-}
-
 function addModelField (field, index) {
-  field = Object.assign({}, FIELD_DEFAULTS, field)
   cy.get('.add-field').click()
   const scope = `.field-${index + 2}`
   cy.get(`${scope} input.field-name`).type(field.name)
@@ -103,6 +157,44 @@ function createModel (model) {
   cy.get('form input#name').type(model.name);
   (model.fields || []).forEach(addModelField)
   saveModelsForm()
+  verifyModelCreated(model)
+}
+
+function verifyModelCreated (model) {
+  navigateHome()
+  const fields = u.concat(model.fields, model.expectedFields)
+
+  const scope = `tr.models-row.${model.coll}`
+  const expectedFields = fields.filter(f => f.relationship === undefined).map(f => f.name)
+  cy.get(`${scope} td.fields`).should('contain', expectedFields.join(', '))
+  const expectedRelationships = fields.filter(f => f.relationship !== undefined).map(f => f.name)
+  cy.get(`${scope} td.relationships`).should('contain', expectedRelationships.join(', '))
+
+  // NOTE/FIXME: Cypress seems to think the link is not visible so need to use force here, see:
+  // https://docs.cypress.io/guides/references/error-messages.html#cy-failed-because-the-element-cannot-be-interacted-with
+  cy.get(`${scope} td a.models-edit`).click({force: true})
+  cy.location('href').should('match', /#\/models\/[^\/]+\/edit/)
+  cy.get(`form.models-form input#name`).should('have.value', model.name)
+  cy.get(`form.models-form input#coll`).should('have.value', model.coll)
+
+  fields.forEach((field, index) => {
+    const scope = `div.form-group.field-${index + 2}`
+    cy.get(`${scope} a.expand-field`).click()
+    cy.get(`${scope} input.field-name`).should('have.value', field.name)
+    cy.get(`${scope} input.field-key`).should('have.value', field.key)
+    if (field.category === 'two-way-relationship') {
+      cy.get(`${scope} input.two-way-relationship`).should('be.checked')
+    } else if (field.category === 'one-way-relationship') {
+      cy.get(`${scope} input.one-way-relationship`).should('be.checked')
+    } else {
+      cy.get(`${scope} select.data-type option[value="${field.type}"]`).should('be.selected')
+    }
+    if (field.relationship) {
+      cy.get(`${scope} input.to-type`).should('have.value', field.relationship.toType)
+      cy.get(`${scope} input.to-field`).should('have.value', field.relationship.toField)
+      cy.get(`${scope} input.${field.relationship.type}`).should('be.checked')
+    }
+  })
 }
 
 describe('Kitchensink', () => {
