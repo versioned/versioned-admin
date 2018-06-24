@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="form-group">
+  <div :class="fieldClass()">
     <label name="title" :class="{'text-warning': isChanged}">
       {{attribute.label}}
       <span v-if="attribute.help" class="help">
@@ -56,6 +56,9 @@ export default {
       } else {
         return 'text'
       }
+    },
+    fieldClass () {
+      return `form-group data-field data-field-${this.attribute.key}`
     }
   },
   components: {

@@ -40,7 +40,7 @@
                 {{model.name}} Data: {{documentCount(model)}}
               </router-link>
               <br/>
-              <router-link :to="createDataUrl(model)">New {{model.name}}</router-link>
+              <router-link :to="createDataUrl(model)" class="new-data">New {{model.name}}</router-link>
             </td>
             <td class="fields">
               {{fields(model).join(', ')}}

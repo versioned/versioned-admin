@@ -48,7 +48,7 @@
         <span v-if="field.category === 'data' && field.array" class="small">[array]</span>
         <!-- <a href="#" class="small" v-show="field.key && collapsed[field.key]" @click.prevent="toggleCollapsed(field.key)">show</a>
         <a href="#" class="small" v-show="field.key && !collapsed[field.key]" @click.prevent="toggleCollapsed(field.key)">hide</a> -->
-        <a href="#" class="small" v-show="index> 0" @click.prevent="removeField(index)">[remove]</a>
+        <a href="#" class="small remove-field" v-show="index> 0" @click.prevent="removeField(index)">[remove]</a>
       </h2>
 
       <div v-show="!collapsed[field.key]" class="fields">

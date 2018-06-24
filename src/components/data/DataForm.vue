@@ -1,5 +1,5 @@
 <template lang="html">
-  <form @submit.prevent="formSubmit" role="form">
+  <form @submit.prevent="formSubmit" role="form" class="data-form">
     <ul v-if="allErrors.length > 0" class="errors alert alert-danger">
       <li v-for="error in allErrors">{{error.field}} - {{error.message}}</li>
     </ul>
@@ -69,10 +69,10 @@
       <changes v-if="showUnsavedChanges" :from="docOrig" :to="doc"></changes>
 
       <div class="form-group buttons">
-        <input type="submit" class="btn btn-primary" value="Save" />
-        <button v-if="isPublished" class="btn btn-secondary" @click.prevent="saveAndPublish()">Save and Publish</button>
-        <button v-if="isPublished && doc.publishedVersion" class="btn btn-secondary" @click.prevent="unpublish()">Unpublish</button>
-        <a v-if="doc.id" href="#" @click.prevent="remove()">Delete</a>
+        <input type="submit" class="btn btn-primary save" value="Save" />
+        <button v-if="isPublished" class="btn btn-secondary save-and-publish" @click.prevent="saveAndPublish()">Save and Publish</button>
+        <button v-if="isPublished && doc.publishedVersion" class="btn btn-secondary unpublish" @click.prevent="unpublish()">Unpublish</button>
+        <a v-if="doc.id" href="#" class="delete" @click.prevent="remove()">Delete</a>
       </div>
     </div>
     <ul v-if="allErrors.length > 0" class="errors alert alert-danger">

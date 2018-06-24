@@ -1,6 +1,7 @@
 // https://docs.cypress.io/api/introduction/api.html
 
 import u from '../support/util'
+import data from '../support/kitchensink_data'
 
 const userId = u.uuid()
 const user = {
@@ -9,9 +10,19 @@ const user = {
 }
 const accountName = `Company ${userId}`
 
+function jsonEqual (obj1, obj2) {
+  return JSON.stringify(obj1) === JSON.stringify(obj2)
+}
+
+const TITLE_FIELD = {
+  name: 'Title',
+  type: 'string'
+}
+
 const Article = Model({
   name: 'Article',
   fields: [
+    TITLE_FIELD,
     {
       name: 'Body',
       type: 'text'
@@ -56,6 +67,12 @@ const Article = Model({
 
 const Author = Model({
   name: 'Author',
+  fields: [
+    {
+      name: 'Name',
+      type: 'string'
+    }
+  ],
   expectedFields: [
     {
       name: 'Articles',
@@ -71,6 +88,12 @@ const Author = Model({
 
 const Slot = Model({
   name: 'Slot',
+  fields: [
+    {
+      name: 'Name',
+      type: 'string'
+    }
+  ],
   expectedFields: [
     {
       name: 'Article',
@@ -86,6 +109,12 @@ const Slot = Model({
 
 const Category = Model({
   name: 'Category',
+  fields: [
+    {
+      name: 'Name',
+      type: 'string'
+    }
+  ],
   expectedFields: [
     {
       name: 'Articles',
@@ -135,6 +164,12 @@ function clickNewModel () {
   cy.location('href').should('match', /#\/models\/new$/)
 }
 
+function clickNewData (model) {
+  navigateHome()
+  cy.get(`tr.models-row.${model.coll} a.new-data`).click({force: true})
+  cy.location('href').should('match', new RegExp(`#\/data\/${model.coll}\/new$`))
+}
+
 function addModelField (field, index) {
   cy.get('.add-field').click()
   const scope = `.field-${index + 2}`
@@ -155,7 +190,13 @@ function addModelField (field, index) {
 function createModel (model) {
   clickNewModel()
   cy.get('form input#name').type(model.name);
-  (model.fields || []).forEach(addModelField)
+  const fields = model.fields || []
+  if (fields[0] && !jsonEqual(fields[0], TITLE_FIELD)) {
+    cy.get(`.field-1 a.expand-field`).click()
+    cy.get(`.field-1 input.field-name`).clear().type(fields[0].name)
+    cy.get(`.field-1 select.data-type`).select(fields[0].type)
+  }
+  fields.slice(1).forEach(addModelField)
   saveModelsForm()
   verifyModelCreated(model)
 }
@@ -178,7 +219,7 @@ function verifyModelCreated (model) {
   cy.get(`form.models-form input#coll`).should('have.value', model.coll)
 
   fields.forEach((field, index) => {
-    const scope = `div.form-group.field-${index + 2}`
+    const scope = `div.form-group.field-${index + 1}`
     cy.get(`${scope} a.expand-field`).click()
     cy.get(`${scope} input.field-name`).should('have.value', field.name)
     cy.get(`${scope} input.field-key`).should('have.value', field.key)
@@ -194,6 +235,23 @@ function verifyModelCreated (model) {
       cy.get(`${scope} input.to-field`).should('have.value', field.relationship.toField)
       cy.get(`${scope} input.${field.relationship.type}`).should('be.checked')
     }
+  })
+}
+
+function createData (model) {
+  (data[model.name] || []).forEach((doc, index) => {
+    console.log(`createData for model=${model.name} index=${index}`)
+    clickNewData(model)
+    model.fields.filter(field => doc[field.key]).forEach((field) => {
+      const value = doc[field.key]
+      const scope = `form.data-form .data-field-${field.key}`
+      if (field.category === 'data' && ['string', 'text'].includes(field.type)) {
+        // NOTE: needed force here, see: https://on.cypress.io/element-cannot-be-interacted-with
+        cy.get(`${scope} .form-control`).type(value, {force: true, delay: 0})
+      }
+    })
+    cy.get(`form.data-form input[type="submit"].save`).first().click()
+    cy.location('href').should('match', new RegExp(`/#/data/${model.coll}/[^/]+/edit`))
   })
 }
 
@@ -243,5 +301,21 @@ describe('Kitchensink', () => {
 
   it('Create Category model', () => {
     createModel(Category)
+  })
+
+  it('Create Author data', () => {
+    createData(Author)
+  })
+
+  it('Create Slot data', () => {
+    createData(Slot)
+  })
+
+  it('Create Category data', () => {
+    createData(Category)
+  })
+
+  it('Create Article data', () => {
+    createData(Article)
   })
 })
