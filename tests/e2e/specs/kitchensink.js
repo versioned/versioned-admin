@@ -247,7 +247,12 @@ function createData (model) {
       const scope = `form.data-form .data-field-${field.key}`
       if (field.category === 'data' && ['string', 'text'].includes(field.type)) {
         // NOTE: needed force here, see: https://on.cypress.io/element-cannot-be-interacted-with
-        cy.get(`${scope} .form-control`).type(value, {force: true, delay: 0})
+        cy.get(`${scope} .form-control`).type(value, {force: true, delay: 1})
+      } else if (field.relationship) {
+        u.array(value).forEach((item) => {
+          cy.get(`${scope} input.search`).clear().type(item, {force: true, delay: 1})
+          cy.get(`${scope} .menu .item`).first().click()
+        })
       }
     })
     cy.get(`form.data-form input[type="submit"].save`).first().click()

@@ -19,9 +19,16 @@ function getIndexName (config, options = {}) {
   }
 }
 
+function filters (customFilter, spaceId) {
+  const result = [`spaceId:${spaceId}`]
+  if (customFilter) result.push(`(${customFilter})`)
+  return result.join(' AND ')
+}
+
 function create (options = {}) {
   const applicationId = getConfig('ALGOLIASEARCH_APPLICATION_ID', options)
   const apiKey = getConfig('ALGOLIASEARCH_API_KEY_SEARCH', options)
+  const spaceId = u.getIn(options, 'space.id')
   const indexName = getIndexName(options)
   const baseUrl = `https://${applicationId}.algolia.net`
   const headers = {
@@ -36,7 +43,7 @@ function create (options = {}) {
     const params = toQueryString(u.compact({
       query,
       // See: https://www.algolia.com/doc/guides/searching/filtering
-      filters: options.filters
+      filters: filters(options.filters, spaceId)
     }))
     const body = {params}
     return axios.post(url, body, {headers})
