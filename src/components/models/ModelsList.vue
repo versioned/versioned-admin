@@ -36,7 +36,7 @@
               </router-link>
             </td>
             <td>
-              <router-link :to="dataUrl(model)">
+              <router-link :to="dataUrl(model)" class="data-list">
                 {{model.name}} Data: {{documentCount(model)}}
               </router-link>
               <br/>

@@ -170,6 +170,12 @@ function clickNewData (model) {
   cy.location('href').should('match', new RegExp(`#\/data\/${model.coll}\/new$`))
 }
 
+function clickDataList (model) {
+  navigateHome()
+  cy.get(`tr.models-row.${model.coll} a.data-list`).click({force: true})
+  cy.location('href').should('match', new RegExp(`#\/data\/${model.coll}$`))
+}
+
 function addModelField (field, index) {
   cy.get('.add-field').click()
   const scope = `.field-${index + 2}`
@@ -256,8 +262,33 @@ function createData (model) {
       }
     })
     cy.get(`form.data-form input[type="submit"].save`).first().click()
-    cy.location('href').should('match', new RegExp(`/#/data/${model.coll}/[^/]+/edit`))
+    const EDIT_URL_PATTERN = new RegExp(`/#/data/${model.coll}/([^/]+)/edit`)
+    cy.location('href').should('match', EDIT_URL_PATTERN)
+      .then((location) => {
+        doc.id = location.match(EDIT_URL_PATTERN)[1]
+      })
   })
+}
+
+function verifyDocCreated (model, doc) {
+  console.log(`verifyDocCreated for model=${model.name}`, doc)
+  clickDataList(model)
+  cy.get(`tr.${model.coll}-${doc.id} a.edit-data`).click({force: true})
+  model.fields.filter(f => doc[f.key]).forEach((field) => {
+    const value = doc[field.key]
+    const scope = `.data-field-${field.key}`
+    if (field.category === 'data' && ['string', 'text'].includes(field.type)) {
+      cy.get(`${scope} .form-control`).should('have.value', value)
+    } else {
+      u.array(value).forEach((item) => {
+        cy.get(`${scope} .selected-results li`).should('contain', item)
+      })
+    }
+  })
+}
+
+function verifyDataCreated (model) {
+  data[model.name].forEach(doc => verifyDocCreated(model, doc))
 }
 
 describe('Kitchensink', () => {
@@ -323,4 +354,16 @@ describe('Kitchensink', () => {
   it('Create Article data', () => {
     createData(Article)
   })
+
+  it('Verify Article data created', () => {
+    verifyDataCreated(Article)
+  })
+
+  // it('Update Article data', () => {
+  //   // TODO
+  // })
+
+  // it('Publish Article data', () => {
+  //   // TODO
+  // })
 })

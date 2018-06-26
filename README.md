@@ -2,6 +2,9 @@
 
 ## Backlog (Sprint)
 
+* Title in relationships in DataForm will only appear if there is a title or name property...
+  Solve with x-meta.titleProperty boolean
+
 * Array type not well supported - remove?
 
 * Need coercion of number/integer types in DataFormField

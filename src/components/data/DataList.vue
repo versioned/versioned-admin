@@ -40,9 +40,9 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="doc in docs">
+          <tr v-for="doc in docs" :class="rowClass(doc)">
             <td v-for="(attribute, index) in attributes">
-              <router-link v-if="canUpdate() && index === 0" :to="editUrl(doc)">
+              <router-link v-if="canUpdate() && index === 0" :to="editUrl(doc)" class="edit-data">
                 {{stringify(attribute, doc[attribute.key]) || '[edit]'}}
               </router-link>
               <span v-else-if="attribute.meta.relationship" v-html="relationshipLinks(attribute, doc)">
@@ -186,6 +186,9 @@ export default {
       // } else {
       //   return false
       // }
+    },
+    rowClass (doc) {
+      return `data-list-row ${doc.type}-${doc.id}`
     }
   },
   components: {

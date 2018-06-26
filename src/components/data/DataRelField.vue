@@ -2,7 +2,7 @@
   <div class="form-group">
     <ul v-if="selectedResults && selectedResults.length > 0" class="selected-results list-group">
         <li v-for="result in selectedResults" :key="result.id" class="list-group-item" @click.prevent="removeSelectedResult(result)">
-          {{result.title}}
+          {{result.title || result.name}}
           <a href="#" @click.prevent="removeSelectedResult(result)">[-]</a>
         </li>
     </ul>
