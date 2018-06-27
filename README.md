@@ -2,6 +2,9 @@
 
 ## Backlog (Sprint)
 
+* kitchensink e2e
+  Validate fields on DataList page after data create
+
 * Title in relationships in DataForm will only appear if there is a title or name property...
   Solve with x-meta.titleProperty boolean
 

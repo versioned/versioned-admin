@@ -1,4 +1,4 @@
-import u from '@/util'
+import u from './util'
 
 export function capitalize (string) {
   if (u.empty(string)) return string

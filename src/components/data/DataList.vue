@@ -41,7 +41,7 @@
         </thead>
         <tbody>
           <tr v-for="doc in docs" :class="rowClass(doc)">
-            <td v-for="(attribute, index) in attributes">
+            <td v-for="(attribute, index) in attributes" :class="attributeClass(attribute)">
               <router-link v-if="canUpdate() && index === 0" :to="editUrl(doc)" class="edit-data">
                 {{stringify(attribute, doc[attribute.key]) || '[edit]'}}
               </router-link>
@@ -189,6 +189,9 @@ export default {
     },
     rowClass (doc) {
       return `data-list-row ${doc.type}-${doc.id}`
+    },
+    attributeClass (attribute) {
+      return `field-${attribute.key}`
     }
   },
   components: {

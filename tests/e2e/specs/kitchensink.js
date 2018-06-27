@@ -1,6 +1,7 @@
 // https://docs.cypress.io/api/introduction/api.html
 
 import u from '../support/util'
+import {truncated} from '../support/client_util'
 import data from '../support/kitchensink_data'
 
 const userId = u.uuid()
@@ -148,6 +149,11 @@ function Model (model) {
   })
 }
 
+function stringify (value) {
+  const stringValue = (u.isArray(value) ? value.join(', ') : value)
+  return truncated(stringValue)
+}
+
 function navigateHome () {
   cy.get('a.navbar-brand').click()
   cy.location('href').should('match', /#\/$/)
@@ -155,6 +161,11 @@ function navigateHome () {
 
 function saveModelsForm () {
   cy.get('form.models-form input[type="submit"]').last().click()
+  cy.get('.alert-success').contains('Saved')
+}
+
+function saveDataForm() {
+  cy.get(`form.data-form input[type="submit"].save`).first().click()
   cy.get('.alert-success').contains('Saved')
 }
 
@@ -174,6 +185,11 @@ function clickDataList (model) {
   navigateHome()
   cy.get(`tr.models-row.${model.coll} a.data-list`).click({force: true})
   cy.location('href').should('match', new RegExp(`#\/data\/${model.coll}$`))
+}
+
+function navigateToDataEdit (model, doc) {
+  clickDataList(model)
+  cy.get(`tr.${model.coll}-${doc.id} a.edit-data`).click({force: true})
 }
 
 function addModelField (field, index) {
@@ -261,7 +277,7 @@ function createData (model) {
         })
       }
     })
-    cy.get(`form.data-form input[type="submit"].save`).first().click()
+    saveDataForm()
     const EDIT_URL_PATTERN = new RegExp(`/#/data/${model.coll}/([^/]+)/edit`)
     cy.location('href').should('match', EDIT_URL_PATTERN)
       .then((location) => {
@@ -273,7 +289,11 @@ function createData (model) {
 function verifyDocCreated (model, doc) {
   console.log(`verifyDocCreated for model=${model.name}`, doc)
   clickDataList(model)
-  cy.get(`tr.${model.coll}-${doc.id} a.edit-data`).click({force: true})
+  const scope = `tr.${model.coll}-${doc.id}`
+  Object.entries(doc).filter(([key, _]) => key !== 'id').forEach(([key, value]) => {
+    cy.get(`${scope} .field-${key}`).contains(stringify(value))
+  })
+  cy.get(`${scope} a.edit-data`).click({force: true})
   model.fields.filter(f => doc[f.key]).forEach((field) => {
     const value = doc[field.key]
     const scope = `.data-field-${field.key}`
@@ -289,6 +309,45 @@ function verifyDocCreated (model, doc) {
 
 function verifyDataCreated (model) {
   data[model.name].forEach(doc => verifyDocCreated(model, doc))
+}
+
+function updateArticleData () {
+  const model = Article
+  const doc = data[model.name][0]
+  navigateToDataEdit(Article, doc)
+
+  cy.log('Make changes')
+  const EDIT = ' EDIT'
+  cy.get(`.data-field-title .form-control`).type(EDIT)
+  cy.get(`.data-field-body .form-control`).type(EDIT)
+  const removeSlot = data[Slot.name].find(d => d.name === 'First Page')
+  cy.get(`.data-field-slot .selected-results .slot-${removeSlot.id} .remove-relationship`).click()
+  const removeCategory = data[Category.name].find(d => d.name === 'Entertainment')
+  cy.get(`.data-field-categories .selected-results .category-${removeCategory.id} .remove-relationship`).click()
+
+  cy.log('Save form and navigate back (refresh)')
+  saveDataForm()
+  navigateToDataEdit(Article, doc)
+
+  cy.log('Verify changes')
+  cy.get(`.data-field-title .form-control`).should('have.value', doc.title + EDIT)
+  cy.get(`.data-field-body .form-control`).should('have.value', doc.body + EDIT)
+  cy.get(`.data-field-slot .selected-results .slot-${removeSlot.id}`).should('not.exist')
+  cy.get(`.data-field-categories .selected-results .category-${removeCategory.id}`).should('not.exist')
+
+  cy.log('Make some different changes (re-add slot and category)')
+  cy.get(`.data-field-slot input.search`).clear().type(removeSlot.name, {force: true, delay: 1})
+  cy.get(`.data-field-slot .menu .item`).first().click()
+  cy.get(`.data-field-categories input.search`).clear().type(removeCategory.name, {force: true, delay: 1})
+  cy.get(`.data-field-categories .menu .item`).first().click()
+
+  cy.log('Save form and navigate back (refresh)')
+  saveDataForm()
+  navigateToDataEdit(Article, doc)
+
+  cy.log('verify changes (slot/category should be there again)')
+  cy.get(`.data-field-slot .selected-results .slot-${removeSlot.id}`).should('exist')
+  cy.get(`.data-field-categories .selected-results .category-${removeCategory.id}`).should('exist')
 }
 
 describe('Kitchensink', () => {
@@ -359,9 +418,9 @@ describe('Kitchensink', () => {
     verifyDataCreated(Article)
   })
 
-  // it('Update Article data', () => {
-  //   // TODO
-  // })
+  it('Update Article data', () => {
+    updateArticleData()
+  })
 
   // it('Publish Article data', () => {
   //   // TODO
