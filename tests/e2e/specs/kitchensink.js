@@ -159,14 +159,19 @@ function navigateHome () {
   cy.location('href').should('match', /#\/$/)
 }
 
-function saveModelsForm () {
-  cy.get('form.models-form input[type="submit"]').last().click()
+function waitForSave () {
   cy.get('.alert-success').contains('Saved')
 }
 
-function saveDataForm() {
-  cy.get(`form.data-form input[type="submit"].save`).first().click()
-  cy.get('.alert-success').contains('Saved')
+function saveModelsForm () {
+  cy.get('form.models-form input[type="submit"]').last().click()
+  waitForSave()
+}
+
+function saveDataForm (options = {}) {
+  const className = options.publish ? 'save-and-publish' : 'save'
+  cy.get(`form.data-form .${className}`).first().click()
+  waitForSave()
 }
 
 function clickNewModel () {
@@ -330,6 +335,8 @@ function updateArticleData () {
   navigateToDataEdit(Article, doc)
 
   cy.log('Verify changes')
+  cy.get('.version').should('have.text', '1')
+  cy.get('.published-version').should('not.exist')
   cy.get(`.data-field-title .form-control`).should('have.value', doc.title + EDIT)
   cy.get(`.data-field-body .form-control`).should('have.value', doc.body + EDIT)
   cy.get(`.data-field-slot .selected-results .slot-${removeSlot.id}`).should('not.exist')
@@ -346,8 +353,41 @@ function updateArticleData () {
   navigateToDataEdit(Article, doc)
 
   cy.log('verify changes (slot/category should be there again)')
+  cy.get('.version').should('contain', '1')
+  cy.get('.published-version').should('not.exist')
   cy.get(`.data-field-slot .selected-results .slot-${removeSlot.id}`).should('exist')
   cy.get(`.data-field-categories .selected-results .category-${removeCategory.id}`).should('exist')
+}
+
+function publishArticleData () {
+  const model = Article
+  const doc = data[model.name][1]
+
+  navigateToDataEdit(Article, doc)
+  cy.get('.version').should('have.text', '1')
+  cy.get('.published-version').should('not.exist')
+
+  cy.log('Click publish button - creates published version')
+  saveDataForm({publish: true})
+  cy.get('.version').should('have.text', '1')
+  cy.get('.published-version').should('have.text', '1')
+
+  cy.log('Make changes and click save - draft version is created')
+  const EDIT = ' EDIT'
+  cy.get(`.data-field-title .form-control`).type(EDIT)
+  cy.get('.save').click()
+  cy.get('.version').should('have.text', '2')
+  cy.get('.published-version').should('have.text', '1')
+
+  cy.log('Click publish button - published version is updated')
+  saveDataForm({publish: true})
+  cy.get('.version').should('have.text', '2')
+  cy.get('.published-version').should('have.text', '2')
+
+  cy.log('Navigate away and back and check changes have persisted')
+  navigateToDataEdit(Article, doc)
+  cy.get('.version').should('have.text', '2')
+  cy.get('.published-version').should('have.text', '2')
 }
 
 describe('Kitchensink', () => {
@@ -422,7 +462,7 @@ describe('Kitchensink', () => {
     updateArticleData()
   })
 
-  // it('Publish Article data', () => {
-  //   // TODO
-  // })
+  it('Publish Article data', () => {
+    publishArticleData()
+  })
 })

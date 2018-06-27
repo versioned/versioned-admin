@@ -17,12 +17,12 @@
         <publish-status :doc="doc"></publish-status>
 
         <div>
-          Version: {{doc.version}}
+          Version: <span class="version">{{doc.version}}</span>
         </div>
 
-        <div v-if="doc.publishedVersion && doc.publishedVersion !== doc.version">
+        <div v-if="doc.publishedVersion">
           Published version:
-          {{doc.publishedVersion}}
+          <span class="published-version">{{doc.publishedVersion}}</span>
         </div>
 
         <div v-if="doc.firstPublishedAt">

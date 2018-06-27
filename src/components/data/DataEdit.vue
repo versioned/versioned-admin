@@ -85,22 +85,21 @@ export default {
       this.doc = u.merge(this.doc, field)
       // this.doc[field.key] = field.value
     },
-    save (doc) {
+    async save (doc) {
       Alert.clear()
-      Data(this.model.coll).update(doc)
-        .then(doc => {
-          if (doc) {
-            this.doc = doc
-            this.docOrig = null
-            Alert.setBoth('success', 'Saved')
-          } else {
-            Alert.setBoth('warning', 'No Changes')
-          }
-          this.getData()
-        })
-        .catch(error => {
-          this.$refs.dataForm.handleError(error)
-        })
+      try {
+        const updatedDoc = await Data(this.model.coll).update(doc)
+        if (updatedDoc) {
+          this.doc = updatedDoc
+          this.docOrig = null
+          await this.getData()
+          Alert.setBoth('success', 'Saved')
+        } else {
+          Alert.setBoth('warning', 'No Changes')
+        }
+      } catch (error) {
+        this.$refs.dataForm.handleError(error)
+      }
     },
     remove () {
       if (confirm('Are you sure?')) {
