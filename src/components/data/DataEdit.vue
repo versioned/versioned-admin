@@ -89,10 +89,9 @@ export default {
       Alert.clear()
       try {
         const updatedDoc = await Data(this.model.coll).update(doc)
+        this.docOrig = null
+        await this.getData()
         if (updatedDoc) {
-          this.doc = updatedDoc
-          this.docOrig = null
-          await this.getData()
           Alert.setBoth('success', 'Saved')
         } else {
           Alert.setBoth('warning', 'No Changes')

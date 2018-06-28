@@ -366,11 +366,15 @@ function publishArticleData () {
   navigateToDataEdit(Article, doc)
   cy.get('.version').should('have.text', '1')
   cy.get('.published-version').should('not.exist')
+  cy.get('.publish-status').first().should('have.text', 'Not Yet Published')
 
   cy.log('Click publish button - creates published version')
   saveDataForm({publish: true})
   cy.get('.version').should('have.text', '1')
   cy.get('.published-version').should('have.text', '1')
+  cy.get('.publish-status').first().should('have.text', 'Published')
+  cy.get('.publish-status-draft').should('not.exist')
+  cy.get('.versions li').should('have.length', 1)
 
   cy.log('Make changes and click save - draft version is created')
   const EDIT = ' EDIT'
@@ -378,11 +382,17 @@ function publishArticleData () {
   cy.get('.save').click()
   cy.get('.version').should('have.text', '2')
   cy.get('.published-version').should('have.text', '1')
+  cy.get('.publish-status').first().should('have.text', 'Published')
+  cy.get('.publish-status-draft').first().should('have.text', 'Draft')
+  cy.get('.versions li').should('have.length', 2)
 
   cy.log('Click publish button - published version is updated')
   saveDataForm({publish: true})
   cy.get('.version').should('have.text', '2')
   cy.get('.published-version').should('have.text', '2')
+  cy.get('.publish-status').first().should('have.text', 'Published')
+  cy.get('.publish-status-draft').should('not.exist')
+  cy.get('.versions li').should('have.length', 2)
 
   cy.log('Navigate away and back and check changes have persisted')
   navigateToDataEdit(Article, doc)

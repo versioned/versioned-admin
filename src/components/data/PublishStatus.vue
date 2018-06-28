@@ -1,13 +1,13 @@
 <template lang="html">
-  <div v-show="doc.version" class="publish-status">
+  <div v-show="doc.version">
     <span :class="status.className">{{status.label}}</span>
-    <span v-show="status.draft" :class="status.draft.className">{{status.draft.label}}</span>
+    <span v-if="status.draft.label" :class="status.draft.className">{{status.draft.label}}</span>
   </div>
 </template>
 
 <script>
-function className (key) {
-  return `badge badge-${key}`
+function className (key, additionalClass) {
+  return `badge badge-${key} ${additionalClass}`
 }
 
 function getStatus (doc) {
@@ -18,7 +18,7 @@ function getStatus (doc) {
     label = 'Published'
     key = 'success'
     if (doc.version > doc.publishedVersion) {
-      draft = {label: 'Draft', className: className('warning')}
+      draft = {label: 'Draft', className: className('warning', 'publish-status-draft')}
     }
   } else {
     if (doc.firstPublishedAt) {
@@ -31,7 +31,7 @@ function getStatus (doc) {
   }
   return {
     label,
-    className: className(key),
+    className: className(key, 'publish-status'),
     draft
   }
 }
