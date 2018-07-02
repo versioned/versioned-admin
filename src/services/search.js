@@ -7,18 +7,6 @@ function toQueryString (obj) {
   }).join('&')
 }
 
-function getConfig (key, options = {}) {
-  return u.getIn(options, `space.config.${key}`, process.env[`VUE_APP_${key}`])
-}
-
-function getIndexName (config, options = {}) {
-  if (u.getIn(options, 'space.config.ALGOLIASEARCH_APPLICATION_ID')) {
-    return u.getIn(options, 'space.dbKey')
-  } else {
-    return process.env.VUE_APP_ALGOLIASEARCH_INDEX_NAME || `versioned2-${process.env.VUE_APP_ENV}`
-  }
-}
-
 function filters (customFilter, spaceId) {
   const result = [`spaceId:${spaceId}`]
   if (customFilter) result.push(`(${customFilter})`)
@@ -26,10 +14,10 @@ function filters (customFilter, spaceId) {
 }
 
 function create (options = {}) {
-  const applicationId = getConfig('ALGOLIASEARCH_APPLICATION_ID', options)
-  const apiKey = getConfig('ALGOLIASEARCH_API_KEY_SEARCH', options)
+  const applicationId = u.getIn(options, 'space.config.ALGOLIASEARCH_APPLICATION_ID') || process.env.VUE_APP_ALGOLIASEARCH_APPLICATION_ID
+  const apiKey = u.getIn(options, 'space.config.ALGOLIASEARCH_API_KEY') || u.getIn(options, 'space.algoliaApiKey')
+  const indexName = u.getIn(options, 'space.config.ALGOLIASEARCH_INDEX_NAME') || u.getIn(options, 'space.algoliaIndexName')
   const spaceId = u.getIn(options, 'space.id')
-  const indexName = getIndexName(options)
   const baseUrl = `https://${applicationId}.algolia.net`
   const headers = {
     'X-Algolia-Application-Id': applicationId,

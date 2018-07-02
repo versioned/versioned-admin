@@ -7,11 +7,15 @@
     </div>
 
     <div>
-      TODO: spaces.config.ALGOLIASEARCH_APPLICATION_ID:
+      TODO: spaces.config.ALGOLIASEARCH_APPLICATION_ID
     </div>
 
     <div>
-      TODO: spaces.config.ALGOLIASEARCH_API_KEY:
+      TODO: spaces.config.ALGOLIASEARCH_API_KEY
+    </div>
+
+    <div>
+      TODO: spaces.config.ALGOLIASEARCH_INDEX_NAME
     </div>
 
     <div>

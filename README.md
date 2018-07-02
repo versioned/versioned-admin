@@ -1,9 +1,77 @@
 # versioned-ui - A CMS Admin UI
 
+## Values
+
+Simplicity
+
+iZettle: Easy, Reliable, Inspiring
+
+## MVP
+
+* Algolia Keys
+  Each space needs its own index, move init index code to after space create
+  Generate on the fly in spaces, make them expire after two months
+  Need to make sure space/account data in session expires more often than that
+  https://www.algolia.com/doc/guides/security/api-keys/#secured-api-keys
+
+* User handling
+  Forgotten password
+  Invite user
+
+* Domain
+  www.versioned.io
+  api.versioned.io
+
+* Website (React Static?)
+
+* Better loader? https://codepen.io/MattIn4D/pen/LiKFC
+
+* Make sure account and space scoping works
+
+* CDN
+
+* Rate limiting (API Gateway?)
+
+* Make sure you can handle thousands of documents. Limit on relationships?
+  Use maxItems on arrays?
+  https://stackoverflow.com/questions/47256185/bootstrap-list-group-scroll
+
+* Rename apiKey to clientKey?
+  * Only allowed for published=1 or with versionToken preview?
+
+* Sort by updatedAt, always set?
+
+* JSON Edit option in DataEdit
+
+* Add slug Field as default for models after titel Field
+
+* Basic image/video support
+
+* Getting started text
+  What is a model?
+
+* Basic web hook support (can do sync for now)
+  https://aws.amazon.com/blogs/aws/aws-lambda-adds-amazon-simple-queue-service-to-supported-event-sources/
+
+* Remove any unfinished/complex features
+
+* UI tests for remaining parts
+
 ## Backlog (Sprint)
 
-* kitchensink e2e
-  Validate fields on DataList page after data create
+* Algolia keys
+
+* Dedicated Mongodb + dedicated Algolia (latter is required)
+
+* Images
+
+* Translations
+
+* Web hooks
+
+* First real project!
+
+* Hide any features that are not robust/complete
 
 * Title in relationships in DataForm will only appear if there is a title or name property...
   Solve with x-meta.titleProperty boolean
