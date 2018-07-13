@@ -5,7 +5,7 @@
     <form class="profile-form" @submit.prevent="save">
       <div class="form-group">
         <label for="name">Name</label>
-        <input type="text" v-model="user.name" class="form-control" id="name" v-bind:class="{ 'is-invalid': errors.name}" autofocus/>
+        <input type="text" v-model="user.name" class="form-control" id="name" v-bind:class="{ 'is-invalid': errors.name}" v-autofocus/>
         <div class="invalid-feedback">
           {{errors.name}}
         </div>

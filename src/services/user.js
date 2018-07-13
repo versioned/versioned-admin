@@ -34,11 +34,23 @@ function logout () {
   session.set(null)
 }
 
+function forgotDeliver (email) {
+  const url = process.env.VUE_APP_API_URL + '/forgot-password/deliver'
+  return axios.post(url, {email})
+}
+
+function forgotChange (email, token, password) {
+  const url = process.env.VUE_APP_API_URL + '/forgot-password/change'
+  return axios.post(url, {email, token, password})
+}
+
 export default {
   get: session.get,
   set: session.set,
   spaceId,
   accountId,
   login,
-  logout
+  logout,
+  forgotDeliver,
+  forgotChange
 }

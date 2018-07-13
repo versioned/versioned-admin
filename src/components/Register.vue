@@ -7,7 +7,7 @@
     <form class="register-form" @submit.prevent="register">
       <div class="form-group">
         <label for="email">Email</label>
-        <input type="email" v-model="user.email" class="form-control" id="email" v-bind:class="{ 'is-invalid': errors.email}" autofocus required/>
+        <input type="email" v-model="user.email" class="form-control" id="email" v-bind:class="{ 'is-invalid': errors.email}" v-autofocus required/>
         <div class="invalid-feedback">
           {{errors.email}}
         </div>

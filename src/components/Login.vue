@@ -20,7 +20,8 @@
       <input type="submit" class="btn btn-primary" value="Log in" />
 
       <p>
-        <router-link id="register-link" class="nav-link" to="/register">Register</router-link>
+        <router-link id="register-link" to="/register">Register</router-link>
+        | <router-link id="forgot-password-link" :to="forgotPasswordUrl()">Forgot Password</router-link>
       </p>
     </form>
   </section>
@@ -51,6 +52,9 @@ export default {
         .catch(() => {
           Alert.set('warning', 'Could not log you in. Please check your credentials or <a href="#/register">register</a> if you don\'t have an account')
         })
+    },
+    forgotPasswordUrl () {
+      return `/forgot-password/deliver?email=${encodeURIComponent(this.user.email)}`
     }
   }
 }

@@ -9,6 +9,8 @@ import Config from '@/components/Config'
 import Profile from '@/components/Profile'
 import Register from '@/components/Register'
 import Login from '@/components/Login'
+import ForgotDeliver from '@/components/ForgotDeliver'
+import ForgotChange from '@/components/ForgotChange'
 import ModelsList from '@/components/models/ModelsList'
 import ModelsNew from '@/components/models/ModelsNew'
 import ModelsEdit from '@/components/models/ModelsEdit'
@@ -57,6 +59,22 @@ const router = new Router({
       path: '/login',
       name: 'Login',
       component: Login,
+      meta: {
+        requiresAuth: false
+      }
+    },
+    {
+      path: '/forgot-password/deliver',
+      name: 'Forgot Password',
+      component: ForgotDeliver,
+      meta: {
+        requiresAuth: false
+      }
+    },
+    {
+      path: '/forgot-password/change',
+      name: 'Select New Password',
+      component: ForgotChange,
       meta: {
         requiresAuth: false
       }
