@@ -42,6 +42,9 @@ export default {
       message: ''
     }
   },
+  created () {
+    this.email = this.$route.query.email
+  },
   methods: {
     login: function () {
       User.login(this.user.email, this.user.password)

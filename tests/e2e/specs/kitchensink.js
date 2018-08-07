@@ -164,7 +164,7 @@ function waitForSave () {
 }
 
 function saveModelsForm () {
-  cy.get('form.models-form input[type="submit"]').last().click()
+  cy.get('form.models-form input[type="submit"]').last().click({force: true})
   waitForSave()
 }
 
@@ -198,19 +198,19 @@ function navigateToDataEdit (model, doc) {
 }
 
 function addModelField (field, index) {
-  cy.get('.add-field').click()
+  cy.get('.add-field').click({force: true})
   const scope = `.field-${index + 2}`
-  cy.get(`${scope} input.field-name`).type(field.name)
+  cy.get(`${scope} input.field-name`).type(field.name, {force: true})
   if (field.category === 'data') {
-    cy.get(`${scope} select.data-type`).select(field.type)
+    cy.get(`${scope} select.data-type`).select(field.type, {force: true})
   } else {
-    cy.get(`${scope} input.${field.category}`).click()
+    cy.get(`${scope} input.${field.category}`).click({force: true})
   }
   if (field.relationship) {
     const {type, toType, toField} = field.relationship
-    if (toType) cy.get(`${scope} input.to-type`).clear().type(toType)
-    if (toField) cy.get(`${scope} input.to-field`).clear().type(toField)
-    cy.get(`${scope} input.${type}`).click()
+    if (toType) cy.get(`${scope} input.to-type`).clear({force: true}).type(toType, {force: true})
+    if (toField) cy.get(`${scope} input.to-field`).clear({force: true}).type(toField, {force: true})
+    cy.get(`${scope} input.${type}`).click({force: true})
   }
 }
 
@@ -220,8 +220,8 @@ function createModel (model) {
   const fields = model.fields || []
   if (fields[0] && !jsonEqual(fields[0], TITLE_FIELD)) {
     cy.get(`.field-1 a.expand-field`).click()
-    cy.get(`.field-1 input.field-name`).clear().type(fields[0].name)
-    cy.get(`.field-1 select.data-type`).select(fields[0].type)
+    cy.get(`.field-1 input.field-name`).clear({force: true}).type(fields[0].name, {force: true})
+    cy.get(`.field-1 select.data-type`).select(fields[0].type, {force: true})
   }
   fields.slice(1).forEach(addModelField)
   saveModelsForm()

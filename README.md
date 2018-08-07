@@ -8,6 +8,9 @@ iZettle: Easy, Reliable, Inspiring
 
 ## MVP
 
+* Need to indicate clearly a "Model not created yet" warning for toModel that doesn't exist
+  Use same search/select as for relationships
+
 * Algolia Keys
   Each space needs its own index, move init index code to after space create
   Generate on the fly in spaces, make them expire after two months
@@ -32,7 +35,9 @@ iZettle: Easy, Reliable, Inspiring
 
 * Rate limiting (API Gateway?)
 
-* Make sure you can handle thousands of documents. Limit on relationships?
+* Make sure you can handle thousands of documents
+
+* Make UI/API able to deal with more than 100 relationship docs or enforce 100 in maxItems?
   Use maxItems on arrays?
   https://stackoverflow.com/questions/47256185/bootstrap-list-group-scroll
 

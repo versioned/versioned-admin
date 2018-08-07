@@ -4,6 +4,10 @@
       <h1>Forgot Password</h1>
     </div>
 
+    <p>
+      Please enter a new password for {{email}}:
+    </p>
+
     <form class="login-form" @submit.prevent="save">
       <div class="form-group">
         <label for="password">New Password</label>
@@ -23,9 +27,13 @@ import router from '@/router'
 export default {
   data: () => {
     return {
+      email: null,
       password: null,
       message: null
     }
+  },
+  created () {
+    this.email = this.$route.query.email
   },
   methods: {
     save () {
@@ -33,7 +41,7 @@ export default {
       User.forgotChange(email, token, this.password)
         .then(() => {
           Alert.setNext('Password changed. You can now log in with your new password')
-          router.push('/login')
+          router.push(`/login?email=${email}`)
         })
         .catch(() => {
           Alert.set('warning', 'Could not change password')
