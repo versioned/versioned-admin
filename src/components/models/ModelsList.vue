@@ -12,6 +12,10 @@
       </div>
     </div>
 
+    <div class="rows-count" v-if="count === 0">
+      No models created yet
+    </div>
+
     <div class="rows-count" v-if="count && count > 20">
       Number of models: {{count}}
     </div>

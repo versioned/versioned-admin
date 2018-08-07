@@ -1,48 +1,54 @@
 <template>
-    <div class="row">
-      <h1>Changelog</h1>
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Type</th>
-            <th>Action</th>
-            <th>Name</th>
-            <th>Data</th>
-            <th>Changes</th>
-            <th>User</th>
-            <th>Time</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in changelog" v-bind:key="item.id">
-            <td>{{item.model.type}}</td>
-            <td>
-              {{item.action}}
-              <span v-if="item.publishEvent" :class="publishEventClass(item)">{{publishEventLabel(item)}}</span>
-            </td>
-            <td>
-              <router-link v-if="editUrl(item)" :to="editUrl(item)">
-                {{title(item)}}
-              </router-link>
-              <span v-else>{{title(item)}}</span>
-            </td>
-            <td>
-              <a href="#" @click.prevent="toggle('showData', item.id)">JSON Data</a>
-              <pre v-show="show('showData', item.id)">{{item.doc}}</pre>
-            </td>
-            <td>
-              <a href="#" v-show="item.changes" @click.prevent="toggle('showChanges', item.id)">Changes</a>
-              <changes v-if="item.action === 'update' && show('showChanges', item.id)" :from="item.existingDoc" :to="item.doc"></changes>
-            </td>
-            <td>{{item.createdBy.email}}</td>
-            <td>
-              {{item.createdAt | date('YYYY-MM-DD hh:mm') }}<br />
-              ({{item.createdAt | timeAgo}})
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <section>
+    <div class="page-title">
+        <h1>Changelog</h1>
+
+        <table class="table table-striped" v-if="changelog.length > 0">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Action</th>
+              <th>Name</th>
+              <th>Data</th>
+              <th>Changes</th>
+              <th>User</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in changelog" v-bind:key="item.id">
+              <td>{{item.model.type}}</td>
+              <td>
+                {{item.action}}
+                <span v-if="item.publishEvent" :class="publishEventClass(item)">{{publishEventLabel(item)}}</span>
+              </td>
+              <td>
+                <router-link v-if="editUrl(item)" :to="editUrl(item)">
+                  {{title(item)}}
+                </router-link>
+                <span v-else>{{title(item)}}</span>
+              </td>
+              <td>
+                <a href="#" @click.prevent="toggle('showData', item.id)">JSON Data</a>
+                <pre v-show="show('showData', item.id)">{{item.doc}}</pre>
+              </td>
+              <td>
+                <a href="#" v-show="item.changes" @click.prevent="toggle('showChanges', item.id)">Changes</a>
+                <changes v-if="item.action === 'update' && show('showChanges', item.id)" :from="item.existingDoc" :to="item.doc"></changes>
+              </td>
+              <td>{{item.createdBy.email}}</td>
+              <td>
+                {{item.createdAt | date('YYYY-MM-DD hh:mm') }}<br />
+                ({{item.createdAt | timeAgo}})
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p v-else>
+          No changes yet
+        </p>
+      </div>
+    </section>
 </template>
 
 <script>

@@ -4,12 +4,9 @@
 
 Simplicity
 
-iZettle: Easy, Reliable, Inspiring
+(iZettle: Easy, Reliable, Inspiring)
 
 ## MVP
-
-* Need to indicate clearly a "Model not created yet" warning for toModel that doesn't exist
-  Use same search/select as for relationships
 
 * Algolia Keys
   Each space needs its own index, move init index code to after space create
@@ -63,6 +60,9 @@ iZettle: Easy, Reliable, Inspiring
 * UI tests for remaining parts
 
 ## Backlog (Sprint)
+
+* Need to indicate clearly a "Model not created yet" warning for toModel that doesn't exist
+  Use same search/select as for relationships
 
 * Algolia keys
 
