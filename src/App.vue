@@ -45,7 +45,7 @@ export default {
     color:red;
   }
 
-  .field-heading.required a:after {
+  .field-heading.required:after {
     content:"*";
     color:red;
   }

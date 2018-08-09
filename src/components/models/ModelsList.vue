@@ -97,7 +97,7 @@ export default {
     getModels () {
       const accountId = u.getIn(User.get(), 'account.id')
       const spaceId = u.getIn(User.get(), 'space.id')
-      const params = {sort: 'name'}
+      const params = {sort: 'name', 'filter.spaceId': spaceId}
       Model(accountId).list({params}).then(({data}) => {
         this.models = data
         DbStats(spaceId).get().then((data) => {

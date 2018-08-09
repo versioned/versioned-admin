@@ -8,7 +8,7 @@
             <tr>
               <th>Type</th>
               <th>Action</th>
-              <th>Name</th>
+              <th>Document</th>
               <th>Data</th>
               <th>Changes</th>
               <th>User</th>
@@ -24,9 +24,9 @@
               </td>
               <td>
                 <router-link v-if="editUrl(item)" :to="editUrl(item)">
-                  {{title(item)}}
+                  {{itemTitle(item)}}
                 </router-link>
-                <span v-else>{{title(item)}}</span>
+                <span v-else>{{itemTitle(item)}}</span>
               </td>
               <td>
                 <a href="#" @click.prevent="toggle('showData', item.id)">JSON Data</a>
@@ -72,7 +72,8 @@ export default {
   },
   methods: {
     fetchChangelog () {
-      const params = {}
+      const spaceId = u.getIn(User.get(), 'space.id')
+      const params = {'filter.spaceId': spaceId}
       const changelog = Changelog({accountId: User.accountId()})
       changelog.list({params})
         .then(({data}) => {
@@ -105,8 +106,8 @@ export default {
     objectName (item) {
       return `${item.doc.type}:${item.doc.id}`
     },
-    title (item) {
-      return item.doc.title || item.doc.name || item.doc.id
+    itemTitle (item) {
+      return item.doc.title || item.doc.name || [item.doc.type, item.doc.id].join('-')
     },
     editUrl (item) {
       const key = [item.model.type, item.doc.id].join('.')

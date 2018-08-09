@@ -22,7 +22,7 @@ export default {
     return {
       model: {
         spaceId,
-        fields: [ModelsForm.methods.makeField({name: 'Title', unique: true, required: true})],
+        fields: [ModelsForm.methods.makeField({name: 'Title', unique: true, required: true, titleProperty: true})],
         model: {},
         features: ['published', 'search']
       }

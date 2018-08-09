@@ -2,7 +2,7 @@
   <div class="form-group">
     <ul v-if="selectedResults && selectedResults.length > 0" class="selected-results list-group">
         <li v-for="result in selectedResults" :key="result.id" :class="selectedResultClass(result)" @click.prevent="removeSelectedResult(result)">
-          {{result.title || result.name}}
+          {{itemTitle(result)}}
           <a href="#" class="remove-relationship" @click.prevent="removeSelectedResult(result)">[-]</a>
         </li>
     </ul>
@@ -66,6 +66,9 @@ export default {
       } else {
         this.results = []
       }
+    },
+    itemTitle (item) {
+      return item.title || item.name || [item.type, item.id].join('-')
     },
     isArray () {
       return u.getIn(this.attribute, 'schema.type') === 'array'

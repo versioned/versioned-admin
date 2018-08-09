@@ -96,6 +96,15 @@
           </select>
         </div>
 
+        <div v-if="field.category === 'data'" class="form-group">
+          <div class="form-check">
+            <input v-model="field.titleProperty" class="form-check-input" type="checkbox" @change="updateTitleProperty(index)">
+            <label class="form-check-label">
+              Title/Name field
+            </label>
+          </div>
+        </div>
+
         <div v-if="field.category !== 'data'" class="form-group required">
           <label>Target model (key)</label>
           <input type="text" v-model="field.relationship.toType" :maxlength="COLL_LENGTH" @change="makeDbFriendly(field.relationship, 'toType')" class="form-control to-type" required/>
@@ -163,27 +172,27 @@
           <div v-if="field.category === 'data' && field.type !== 'text'" class="form-check">
             <input v-model="field.array" class="form-check-input" type="checkbox">
             <label class="form-check-label">
-              array (multiple {{field.type}} values)
+              Array (multiple {{field.type}} values)
             </label>
           </div>
           <div class="form-check">
             <input v-model="field.required" class="form-check-input" type="checkbox">
             <label class="form-check-label">
-              required
+              Required
             </label>
           </div>
 
           <div v-if="enabledField('unique', field)" class="form-check">
             <input v-model="field.unique" class="form-check-input" type="checkbox">
             <label class="form-check-label">
-              unique
+              Unique
             </label>
           </div>
 
           <div v-if="enabledField('validation', field)" class="form-check">
             <input v-model="field.hasValidation" class="form-check-input" type="checkbox" value="true">
             <label class="form-check-label">
-              validation
+              Validation
             </label>
           </div>
 
@@ -309,6 +318,7 @@ export default {
         category: 'data',
         type: 'string',
         required: false,
+        titleProperty: false,
         relationship: {type: 'one-to-many'},
         validation: {},
         errors: {}
@@ -318,6 +328,16 @@ export default {
     },
     nameChange () {
       this.model.coll = dbFriendly(this.model.name)
+    },
+    updateTitleProperty (index) {
+      const field = this.model.fields[index]
+      if (field.titleProperty) {
+        this.model.fields.forEach((field, i) => {
+          if (i !== index) {
+            this.model.fields[i].titleProperty = false
+          }
+        })
+      }
     },
     addField () {
       this.model.fields.push(this.makeField())
@@ -396,8 +416,12 @@ export default {
         return acc
       }, {})
       const required = fields.filter(u.property('required')).map(u.property('key'))
+      const titleProperty = u.getIn(fields.find(field => field.titleProperty), 'key')
       return {
         type: 'object',
+        'x-meta': {
+          titleProperty
+        },
         properties,
         additionalProperties: false,
         required
@@ -412,7 +436,11 @@ export default {
       if (u.empty(keys)) return []
       const required = schema.required || []
       return keys.map((key) => {
-        return this.makeField(this.propertyToField(key, schema.properties[key], required.includes(key)))
+        const titleProperty = (u.getIn(model, 'model.schema.x-meta.titleProperty') === key)
+        return this.makeField(this.propertyToField(key,
+          schema.properties[key],
+          required.includes(key),
+          titleProperty))
       })
     },
     fieldToProperty (field) {
@@ -451,7 +479,7 @@ export default {
         'x-meta': xMeta
       }))
     },
-    propertyToField (key, property, required) {
+    propertyToField (key, property, required, titleProperty) {
       const type = u.getIn(property, 'x-meta.field.type', property.type)
       const name = u.getIn(property, 'x-meta.field.name', capitalize(key))
       const defaults = FIELD_TYPES_PROPERTIES[type] || {}
@@ -464,6 +492,7 @@ export default {
         name,
         key,
         category,
+        titleProperty,
         array: (property.type === 'array'),
         type,
         relationship,

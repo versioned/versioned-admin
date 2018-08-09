@@ -8,11 +8,23 @@ Simplicity
 
 ## MVP
 
-* Algolia Keys
-  Each space needs its own index, move init index code to after space create
-  Generate on the fly in spaces, make them expire after two months
-  Need to make sure space/account data in session expires more often than that
-  https://www.algolia.com/doc/guides/security/api-keys/#secured-api-keys
+* Handle/display accounts/spaces/users
+  Space deletion? Needs to delete Algolia index as well
+
+* Test separation between accounts and spaces
+
+* Test dedicated database
+
+* Models and changelog should be scoped to spaces not accounts. Likewise, user roles should be scoped to spaces.
+
+* Ability to clone a space for environment (staging/test) support (ala Contentful)
+
+* GraphQL support
+
+* Email verification?
+
+* Ability to have a relationship to any type, i.e. toType is empty or possibly an array
+  Requires relationship items to always be objects with at least the id and type keys
 
 * User handling
   Forgotten password
@@ -61,10 +73,18 @@ Simplicity
 
 ## Backlog (Sprint)
 
+* Algolia Keys
+  Each space needs its own index, move init index code to after space create
+  Generate on the fly in spaces, make them expire after two months
+  Need to make sure space/account data in session expires more often than that
+  https://www.algolia.com/doc/guides/security/api-keys/#secured-api-keys
+
 * Need to indicate clearly a "Model not created yet" warning for toModel that doesn't exist
   Use same search/select as for relationships
 
-* Algolia keys
+* Have a title(model, doc) that gets the title property and otherwise returns type-id (requires access to Models in space)
+  Use on Changelog page
+  Use in search for relationships
 
 * Dedicated Mongodb + dedicated Algolia (latter is required)
 
