@@ -9,6 +9,7 @@ import Config from '@/components/Config'
 import Profile from '@/components/Profile'
 import Register from '@/components/Register'
 import Login from '@/components/Login'
+import VerifyEmail from '@/components/VerifyEmail'
 import ForgotDeliver from '@/components/ForgotDeliver'
 import ForgotChange from '@/components/ForgotChange'
 import ModelsList from '@/components/models/ModelsList'
@@ -59,6 +60,14 @@ const router = new Router({
       path: '/login',
       name: 'Login',
       component: Login,
+      meta: {
+        requiresAuth: false
+      }
+    },
+    {
+      path: '/verify-email',
+      name: 'Verify Email',
+      component: VerifyEmail,
       meta: {
         requiresAuth: false
       }

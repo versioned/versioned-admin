@@ -34,6 +34,11 @@ function logout () {
   session.set(null)
 }
 
+function verifyEmail (email, token) {
+  const url = process.env.VUE_APP_API_URL + '/verify-email'
+  return axios.post(url, {email, token})
+}
+
 function forgotDeliver (email) {
   const url = process.env.VUE_APP_API_URL + '/forgot-password/deliver'
   return axios.post(url, {email})
@@ -51,6 +56,7 @@ export default {
   accountId,
   login,
   logout,
+  verifyEmail,
   forgotDeliver,
   forgotChange
 }
