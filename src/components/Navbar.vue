@@ -18,7 +18,7 @@
               <router-link class="nav-link" to="/api">API</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" to="/config">Config</router-link>
+              <router-link class="nav-link" to="/config">Space Config</router-link>
             </li>
             <!-- <li class="nav-item">
               <router-link class="nav-link" to="/data">Data</router-link>
@@ -41,7 +41,7 @@
           <li v-show="$store.state.login" class="logged-in-user">
             <router-link class="user-email" to="/profile">{{userEmail()}}</router-link> |
             <a href="#" class="logout" data-toggle="tooltip" title="Logga ut" @click.prevent="logout">
-              logout
+              Logout
             </a>
           </li>
 
@@ -58,34 +58,26 @@
 </template>
 
 <script>
-import u from '@/util'
-import User from '@/services/user'
+import session from '@/services/session'
 
 export default {
-  data: () => {
-    return {
-      user: User.get()
-    }
-  },
   methods: {
     brand () {
-      const user = User.get()
-      const accountName = u.getIn(user, 'account.name')
-      const spaceName = u.getIn(user, 'space.name')
-      if (accountName && spaceName) {
-        return accountName !== spaceName ? `${accountName} - ${spaceName}` : accountName
+      const spaceName = session.get('space.name')
+      if (spaceName) {
+        return spaceName
       } else {
         return process.env.VUE_APP_NAME || 'Versioned'
       }
     },
     userEmail () {
-      return u.getIn(User.get(), 'user.email')
+      return session.get('user.email')
     },
     isLoggedIn () {
-      return User.get()
+      return session.get()
     },
     logout () {
-      User.logout()
+      session.logout()
       setTimeout(() => {
         location.reload(true)
       }, 50)

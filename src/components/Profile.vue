@@ -2,6 +2,33 @@
   <div>
     <h1>User Profile</h1>
 
+    <div v-if="user.accounts && user.accounts.length > 1">
+      <p>
+        <strong>
+          Accounts
+        </strong>
+      </p>
+
+      <ul class="accounts">
+        <li v-for="account in user.accounts" v-bind:key="account.id">
+          {{account.name}}
+          <span v-show="account.id === session.account.id">
+            (current)
+          </span>
+        </li>
+      </ul>
+    </div>
+    <div v-else>
+      <p>
+        <strong>
+          Account:
+        </strong>
+        <router-link :to="accountUrl(session.account)">
+          {{session.account.name}}
+        </router-link>
+      </p>
+    </div>
+
     <form class="profile-form" @submit.prevent="save">
       <div class="form-group">
         <label for="name">Name</label>
@@ -26,13 +53,14 @@
 
 <script>
 import u from '@/util'
+import session from '@/services/session'
 import User from '@/services/user'
-import UserApi from '@/services/user_api'
 import Alert from '@/services/alert'
 
 export default {
   data: () => {
     return {
+      session: {},
       user: {},
       errors: {},
       baseErrors: []
@@ -46,12 +74,16 @@ export default {
   },
   methods: {
     async getData () {
-      const id = u.getIn(User.get(), 'user.id')
-      this.user = await UserApi.get(id, {relationshipLevels: 0})
+      this.session = session.get()
+      const id = session.get('user.id')
+      this.user = await User.get(id, {relationshipLevels: 2})
+    },
+    accountUrl (account) {
+      return `/accounts/${account.id}/edit`
     },
     save: async function () {
       try {
-        await UserApi.update(this.user)
+        await User.update(this.user)
         Alert.setBoth('success', 'Saved')
       } catch (error) {
         if (error.status === 422) {
@@ -75,4 +107,10 @@ export default {
 </script>
 
 <style lang="css">
+  ul.accounts li {
+    margin-left: 0;
+  }
+  ul.accounts li {
+    list-style-type: none;
+  }
 </style>

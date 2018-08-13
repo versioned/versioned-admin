@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import User from '@/services/user'
+import session from '@/services/session'
 import Alert from '@/services/alert'
 import router from '@/router'
 
@@ -47,7 +47,7 @@ export default {
   },
   methods: {
     login: function () {
-      User.login(this.user.email, this.user.password)
+      session.login(this.user.email, this.user.password)
         .then(() => {
           Alert.setNext('Logged in')
           router.push('/')

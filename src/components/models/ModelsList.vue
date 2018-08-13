@@ -70,7 +70,7 @@
 import u from '@/util'
 import {propertiesOrder} from '@/models_util'
 // import router from '@/router'
-import User from '@/services/user'
+import session from '@/services/session'
 import Model from '@/services/model'
 import DbStats from '@/services/db_stats'
 import {capitalize} from '@/client_util'
@@ -95,8 +95,8 @@ export default {
   },
   methods: {
     getModels () {
-      const accountId = u.getIn(User.get(), 'account.id')
-      const spaceId = u.getIn(User.get(), 'space.id')
+      const accountId = u.getIn(session.get(), 'account.id')
+      const spaceId = u.getIn(session.get(), 'space.id')
       const params = {sort: 'name', 'filter.spaceId': spaceId}
       Model(accountId).list({params}).then(({data}) => {
         this.models = data

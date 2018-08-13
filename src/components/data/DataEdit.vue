@@ -15,7 +15,7 @@
 
 <script>
 import u from '@/util'
-import User from '@/services/user'
+import session from '@/services/session'
 import router from '@/router'
 import DataForm from '@/components/data/DataForm'
 import Api from '@/services/api'
@@ -57,7 +57,7 @@ export default {
   methods: {
     getData () {
       this.id = this.$route.params.id
-      const accountId = u.getIn(User.get(), 'account.id')
+      const accountId = u.getIn(session.get(), 'account.id')
       const params = {'filter.coll': this.$route.params.model}
       Model(accountId).list({params}).then(({data}) => {
         if (data.length > 0) {

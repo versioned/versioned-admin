@@ -42,7 +42,7 @@
 
 <script>
 import u from '@/util'
-import User from '@/services/user'
+import session from '@/services/session'
 import Api from '@/services/api'
 import Data from '@/services/data'
 import Model from '@/services/model'
@@ -51,8 +51,8 @@ import {rootUrl} from '@/client_util'
 
 export default {
   data () {
-    const accountId = u.getIn(User.get(), 'account.id')
-    const spaceId = u.getIn(User.get(), 'space.id')
+    const accountId = u.getIn(session.get(), 'account.id')
+    const spaceId = u.getIn(session.get(), 'space.id')
     const baseUrl = process.env.VUE_APP_API_URL
     const swaggerUrl = `${baseUrl}/data/${spaceId}/swagger.json`
     const docsUrl = `${rootUrl(process.env.VUE_APP_API_URL)}/swagger-ui/index.html?url=${swaggerUrl}`
@@ -73,10 +73,10 @@ export default {
   },
   methods: {
     async getData () {
-      const accountId = u.getIn(User.get(), 'account.id')
-      const spaceId = u.getIn(User.get(), 'space.id')
+      const accountId = u.getIn(session.get(), 'account.id')
+      const spaceId = u.getIn(session.get(), 'space.id')
       const params = {sort: 'name'}
-      this.apiKey = u.getIn(User.get(), 'space.apiKey')
+      this.apiKey = u.getIn(session.get(), 'space.apiKey')
       this.models = (await Model(accountId).list({params})).data
       this.dbStats = await DbStats(spaceId).get()
       this.examples = await this.getExamples()

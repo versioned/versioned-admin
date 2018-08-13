@@ -41,8 +41,8 @@
 
 <script>
 import u from '@/util'
+import session from '@/services/session'
 import User from '@/services/user'
-import UserApi from '@/services/user_api'
 import Account from '@/services/account'
 import Space from '@/services/space'
 import Alert from '@/services/alert'
@@ -65,12 +65,12 @@ export default {
   methods: {
     register: async function () {
       try {
-        await UserApi.create(this.user)
-        await User.login(this.user.email, this.user.password)
+        await User.create(this.user)
+        await session.login(this.user.email, this.user.password)
         const account = await Account.create(this.account)
-        User.set(u.merge(User.get(), {account}))
+        session.set(u.merge(session.get(), {account}))
         const space = await Space(account.id).get(account.spaces[0])
-        User.set(u.merge(User.get(), {space}))
+        session.set(u.merge(session.get(), {space}))
         Alert.setNext('Registration successful')
         router.push('/')
       } catch (error) {

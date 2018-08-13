@@ -10,7 +10,7 @@
 
 <script>
 import u from '@/util'
-import User from '@/services/user'
+import session from '@/services/session'
 import Model from '@/services/model'
 import ModelsForm from '@/components/models/ModelsForm'
 import router from '@/router'
@@ -18,7 +18,7 @@ import Alert from '@/services/alert'
 
 export default {
   data () {
-    const spaceId = u.getIn(User.get(), 'space.id')
+    const spaceId = u.getIn(session.get(), 'space.id')
     return {
       model: {
         spaceId,
@@ -31,7 +31,7 @@ export default {
   methods: {
     save: async function (model) {
       try {
-        const accountId = u.getIn(User.get(), 'account.id')
+        const accountId = u.getIn(session.get(), 'account.id')
         const createdModel = await Model(accountId).create(model)
         router.push(`/models/${createdModel.id}/edit`)
         Alert.setBoth('Saved')

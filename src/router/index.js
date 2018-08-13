@@ -5,8 +5,9 @@ import PageNotFound from '@/components/PageNotFound'
 import Home from '@/components/Home'
 import Changelog from '@/components/Changelog'
 import Api from '@/components/Api'
-import Config from '@/components/Config'
 import Profile from '@/components/Profile'
+import AccountsEdit from '@/components/AccountsEdit'
+import SpacesEdit from '@/components/SpacesEdit'
 import Register from '@/components/Register'
 import Login from '@/components/Login'
 import VerifyEmail from '@/components/VerifyEmail'
@@ -40,13 +41,23 @@ const router = new Router({
     },
     {
       path: '/config',
-      name: 'Config',
-      component: Config
+      name: 'Space Config',
+      component: SpacesEdit
     },
     {
       path: '/profile',
       name: 'Profile',
       component: Profile
+    },
+    {
+      path: '/accounts/:id/edit',
+      name: 'Account Config',
+      component: AccountsEdit
+    },
+    {
+      path: '/spaces/:id/edit',
+      name: 'Space Config',
+      component: SpacesEdit
     },
     {
       path: '/register',

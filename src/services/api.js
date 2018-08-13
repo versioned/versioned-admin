@@ -28,19 +28,8 @@ function listPath (contentType, options = {}) {
   }
 }
 
-function authHeader () {
-  const token = session.getToken()
-  if (token) {
-    return {
-      Authorization: `Bearer ${token}`
-    }
-  } else {
-    return {}
-  }
-}
-
 function headers () {
-  return authHeader()
+  return session.headers()
 }
 
 function responseDoc (response) {

@@ -11,7 +11,7 @@
 <script>
 import u from '@/util'
 import router from '@/router'
-import User from '@/services/user'
+import session from '@/services/session'
 import Model from '@/services/model'
 import Alert from '@/services/alert'
 import ModelsForm from '@/components/models/ModelsForm'
@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     getModel: async function () {
-      const accountId = u.getIn(User.get(), 'account.id')
+      const accountId = u.getIn(session.get(), 'account.id')
       const model = await Model(accountId).get(this.$route.params.id)
       const fields = ModelsForm.methods.getFields(model)
       this.model = u.merge(model, {fields})
@@ -38,7 +38,7 @@ export default {
     save: async function (model) {
       Alert.clear()
       try {
-        const accountId = u.getIn(User.get(), 'account.id')
+        const accountId = u.getIn(session.get(), 'account.id')
         const updatedModel = await Model(accountId).update(model)
         if (updatedModel) {
           Alert.setBoth('Saved')
@@ -51,7 +51,7 @@ export default {
     },
     remove: async function (model) {
       if (confirm('Are you sure?')) {
-        const accountId = u.getIn(User.get(), 'account.id')
+        const accountId = u.getIn(session.get(), 'account.id')
         await Model(accountId).remove(model.id)
         Alert.setNext('Deleted')
         router.push(`/models`)

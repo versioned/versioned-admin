@@ -72,7 +72,7 @@
 <script>
 import u from '@/util'
 import Api from '@/services/api'
-import User from '@/services/user'
+import session from '@/services/session'
 import Data from '@/services/data'
 import {truncated} from '@/client_util'
 import router from '@/router'
@@ -114,7 +114,7 @@ export default {
   },
   methods: {
     getModels () {
-      const accountId = u.getIn(User.get(), 'account.id')
+      const accountId = u.getIn(session.get(), 'account.id')
       Model(accountId).list().then(body => {
         // this.swagger = swagger
         // this.schemas = Swagger.schemas(swagger)

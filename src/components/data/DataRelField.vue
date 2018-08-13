@@ -20,7 +20,7 @@
 <script>
 import {ModelListSelect} from 'vue-search-select'
 import Search from '@/services/search'
-import User from '@/services/user'
+import session from '@/services/session'
 import u from '@/util'
 
 let searchTimeout = null
@@ -55,7 +55,7 @@ export default {
   methods: {
     async search (query) {
       if (u.notEmpty(query)) {
-        const space = u.getIn(User.get(), 'space')
+        const space = u.getIn(session.get(), 'space')
         const type = u.getIn(this.attribute, 'schema.x-meta.relationship.toType')
         const options = {filters: `type:${type}`}
         if (searchTimeout) clearTimeout(searchTimeout)

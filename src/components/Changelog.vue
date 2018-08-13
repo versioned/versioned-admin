@@ -54,7 +54,7 @@
 <script>
 import u from '@/util'
 import {capitalize} from '@/client_util'
-import User from '@/services/user'
+import session from '@/services/session'
 import Changelog from '@/services/changelog'
 import Changes from '@/components/data/Changes'
 
@@ -72,9 +72,10 @@ export default {
   },
   methods: {
     fetchChangelog () {
-      const spaceId = u.getIn(User.get(), 'space.id')
+      const accountId = u.getIn(session.get(), 'account.id')
+      const spaceId = u.getIn(session.get(), 'space.id')
       const params = {'filter.spaceId': spaceId}
-      const changelog = Changelog({accountId: User.accountId()})
+      const changelog = Changelog({accountId})
       changelog.list({params})
         .then(({data}) => {
           this.changelog = data
