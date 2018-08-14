@@ -102,6 +102,12 @@ function accountId () {
   return u.getIn(get(), 'account.id')
 }
 
+function isAdmin () {
+  const userId = get('user.id')
+  const users = get('account.users')
+  return userId && users && users.find(u => u.id === userId && u.role === 'admin')
+}
+
 export default {
   initFromLocalStorage,
   getStore,
@@ -113,5 +119,6 @@ export default {
   logout,
   getToken,
   spaceId,
-  accountId
+  accountId,
+  isAdmin
 }

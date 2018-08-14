@@ -2,31 +2,33 @@
   <div>
     <h1>User Profile</h1>
 
-    <div v-if="user.accounts && user.accounts.length > 1">
-      <p>
-        <strong>
-          Accounts
-        </strong>
-      </p>
+    <div v-if="isAdmin()">
+      <div v-if="user.accounts && user.accounts.length > 1">
+        <p>
+          <strong>
+            Accounts
+          </strong>
+        </p>
 
-      <ul class="accounts">
-        <li v-for="account in user.accounts" v-bind:key="account.id">
-          {{account.name}}
-          <span v-show="account.id === session.account.id">
-            (current)
-          </span>
-        </li>
-      </ul>
-    </div>
-    <div v-else>
-      <p>
-        <strong>
-          Account:
-        </strong>
-        <router-link :to="accountUrl(session.account)">
-          {{session.account.name}}
-        </router-link>
-      </p>
+        <ul class="accounts">
+          <li v-for="account in user.accounts" v-bind:key="account.id">
+            {{account.name}}
+            <span v-show="account.id === session.account.id">
+              (current)
+            </span>
+          </li>
+        </ul>
+      </div>
+      <div v-else>
+        <p>
+          <strong>
+            Account:
+          </strong>
+          <router-link :to="accountUrl(session.account)">
+            {{session.account.name}}
+          </router-link>
+        </p>
+      </div>
     </div>
 
     <form class="profile-form" @submit.prevent="save">

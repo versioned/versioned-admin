@@ -10,6 +10,9 @@ import AccountsEdit from '@/components/AccountsEdit'
 import SpacesEdit from '@/components/SpacesEdit'
 import Register from '@/components/Register'
 import Login from '@/components/Login'
+import UserInvitesNew from '@/components/UserInvitesNew'
+import UserInvitesEdit from '@/components/UserInvitesEdit'
+import UserInvitesAccept from '@/components/UserInvitesAccept'
 import VerifyEmail from '@/components/VerifyEmail'
 import ForgotDeliver from '@/components/ForgotDeliver'
 import ForgotChange from '@/components/ForgotChange'
@@ -41,7 +44,7 @@ const router = new Router({
     },
     {
       path: '/config',
-      name: 'Space Config',
+      name: 'Config',
       component: SpacesEdit
     },
     {
@@ -58,6 +61,24 @@ const router = new Router({
       path: '/spaces/:id/edit',
       name: 'Space Config',
       component: SpacesEdit
+    },
+    {
+      path: '/accounts/:id/invite-user',
+      name: 'Invite User',
+      component: UserInvitesNew
+    },
+    {
+      path: '/accounts/:id/invite-user/:inviteId',
+      name: 'User Invite',
+      component: UserInvitesEdit
+    },
+    {
+      path: '/accounts/:id/invite-user-accept/:inviteId',
+      name: 'Accept Invite',
+      component: UserInvitesAccept,
+      meta: {
+        requiresAuth: false
+      }
     },
     {
       path: '/register',

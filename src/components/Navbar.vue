@@ -17,7 +17,7 @@
             <li class="nav-item">
               <router-link class="nav-link" to="/api">API</router-link>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" v-show="isAdmin()">
               <router-link class="nav-link" to="/config">Space Config</router-link>
             </li>
             <!-- <li class="nav-item">
@@ -39,7 +39,7 @@
             </li> -->
           </ul>
           <li v-show="$store.state.login" class="logged-in-user">
-            <router-link class="user-email" to="/profile">{{userEmail()}}</router-link> |
+            <router-link class="user-profile" to="/profile">User Profile</router-link> |
             <a href="#" class="logout" data-toggle="tooltip" title="Logga ut" @click.prevent="logout">
               Logout
             </a>

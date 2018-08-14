@@ -4,6 +4,51 @@
 
     <form class="profile-form" @submit.prevent="save">
       <div class="form-group">
+        <label>Plan:</label>
+        {{account.plan}}
+      </div>
+
+      <div class="form-group">
+        <label>Users</label>
+
+        <ul>
+          <li v-for="user in account.users" v-bind:key="user.id">
+            {{user.email}}
+            <select v-model="user.role">
+              <option v-for="role in ROLES" v-bind:key="role">
+                {{role}}
+              </option>
+            </select>
+            <a href="#" @click.prevent="removeUser(user)" v-if="user.email !== sessionEmail">
+              [remove]
+            </a>
+          </li>
+        </ul>
+
+        <div class="invalid-feedback error-message">
+          {{errors.users}}
+        </div>
+
+        <p v-if="account.userInvites && account.userInvites.length > 0">
+          Invited Users
+
+          <ul>
+            <li v-for="userInvite in account.userInvites" v-bind:key="userInvite.id">
+              <router-link :to="inviteUserUrl(userInvite.id)" class="models-edit">
+                {{userInvite.email}}
+              </router-link>
+            </li>
+          </ul>
+        </p>
+
+        <p>
+          <router-link :to="newInviteUserUrl()" class="models-edit">
+            Invite User
+          </router-link>
+        </p>
+      </div>
+
+      <div class="form-group">
         <label for="name">Name</label>
         <input type="text" v-model="account.name" class="form-control" id="name" v-bind:class="{ 'is-invalid': errors.name}" v-autofocus/>
         <div class="invalid-feedback">
@@ -21,10 +66,13 @@ import u from '@/util'
 import session from '@/services/session'
 import Account from '@/services/account'
 import Alert from '@/services/alert'
+import {ROLES} from '@/config'
 
 export default {
   data: () => {
     return {
+      ROLES,
+      sessionEmail: session.get('user.email'),
       account: {},
       errors: {},
       baseErrors: []
@@ -41,7 +89,20 @@ export default {
       const id = this.$route.params.id
       this.account = await Account.get(id, {relationshipLevels: 2})
     },
+    newInviteUserUrl () {
+      return `/accounts/${this.account.id}/invite-user`
+    },
+    inviteUserUrl (inviteId) {
+      return `/accounts/${this.account.id}/invite-user/${inviteId}`
+    },
+    removeUser (user) {
+      const users = this.account.users.filter(u => u.email !== user.email)
+      this.account = u.merge(this.account, {users})
+    },
     save: async function () {
+      this.errors = {}
+      this.baseErrors = []
+      Alert.clear()
       try {
         await Account.update(this.account)
         await session.refresh()
@@ -68,4 +129,7 @@ export default {
 </script>
 
 <style lang="css">
+  .error-message {
+    display: block !important;
+  }
 </style>

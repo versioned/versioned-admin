@@ -427,9 +427,8 @@ describe('Kitchensink', () => {
     cy.location('href').should('match', /#\/$/)
   })
 
-  it('Check email and company name in Navbar', () => {
+  it('Check company name in Navbar', () => {
     cy.get('.brand').should('contain', accountName)
-    cy.get('.user-email').should('contain', user.email)
   })
 
   it('Create Article model', () => {

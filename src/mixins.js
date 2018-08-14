@@ -1,4 +1,9 @@
 import u from './util'
+import session from '@/services/session'
+
+export function isAdmin () {
+  return session.isAdmin()
+}
 
 export function title (schema, doc) {
   const titleProperty = u.getIn(schema, 'x-meta.titleProperty')
@@ -7,5 +12,6 @@ export function title (schema, doc) {
 }
 
 export default {
+  isAdmin,
   title
 }
