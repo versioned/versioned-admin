@@ -401,20 +401,8 @@ function publishArticleData () {
 }
 
 describe('Kitchensink', () => {
-  it('Visit homepage and get redirected to login page', () => {
-    cy.visit('/')
-    cy.location('href').should('match', /#\/login$/)
-  })
-
-  it(`Click register link and submit register form with email=${user.email}`, () => {
-    cy.get('#register-link').click()
-    cy.location('href').should('match', /#\/register$/)
-
-    cy.get('form input#email').type(user.email)
-    cy.get('form input#password').type(user.password)
-    cy.get('form input#accountName').type(accountName)
-    cy.get('form.register-form').submit()
-    cy.location('href').should('match', /#\/$/)
+  it(`Register with email=${user.email} and account ${accountName}`, () => {
+    cy.register(user.email, user.password, accountName)
   })
 
   it('Click logout link and log back in again', () => {

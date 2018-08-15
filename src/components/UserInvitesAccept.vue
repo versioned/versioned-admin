@@ -2,29 +2,31 @@
   <div>
     <h1>Accept Invite</h1>
 
-    <p>
-      Account: {{userInvite.account.name}}
-    </p>
+    <div v-show="displayForm">
+      <p>
+        Account: {{userInvite.account.name}}
+      </p>
 
-    <p>
-      Email: {{userInvite.email}}
-    </p>
+      <p>
+        Email: {{userInvite.email}}
+      </p>
 
-    <p v-if="userInvite.userExists">
-      Please enter your password below to log in and accept the invite
-    </p>
-    <p v-else>
-      Please select a password below and we'll create an account for you
-    </p>
+      <p v-if="userInvite.userExists">
+        Please enter your password below to log in and accept the invite
+      </p>
+      <p v-else>
+        Please select a password below and we'll create an account for you
+      </p>
 
-    <form class="profile-form" @submit.prevent="save">
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" v-model="password" class="form-control" id="password" required/>
-      </div>
+      <form class="user-invite-accept" @submit.prevent="save">
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" v-model="password" class="form-control" id="password" required/>
+        </div>
 
-      <input type="submit" class="btn btn-primary" value="Submit" />
-    </form>
+        <input type="submit" class="btn btn-primary" value="Submit" />
+      </form>
+    </div>
   </div>
 </template>
 
@@ -32,6 +34,7 @@
 import u from '@/util'
 import router from '@/router'
 import session from '@/services/session'
+import Account from '@/services/account'
 import User from '@/services/user'
 import UserInvite from '@/services/user_invite'
 import Alert from '@/services/alert'
@@ -39,6 +42,7 @@ import Alert from '@/services/alert'
 export default {
   data: () => {
     return {
+      displayForm: false,
       password: null,
       userInvite: {account: {}},
       account: {},
@@ -57,14 +61,16 @@ export default {
       const accountId = this.$route.params.id
       const inviteId = this.$route.params.inviteId
       this.userInvite = await UserInvite(accountId).get(inviteId, {relationshipLevels: 2})
-      if (session.get('user.email') === this.userInvite.email) {
+      this.displayForm = (session.get('user.email') !== this.userInvite.email)
+      if (!this.displayForm) {
         await this.acceptInvite()
       }
     },
     async acceptInvite () {
       await UserInvite(this.userInvite.accountId).accept(this.userInvite.id)
-      session.set(u.merge(session.get(), {account: this.userInvite.account}))
-      session.set(u.merge(session.get(), {space: this.userInvite.account.spaces[0]}))
+      const account = await Account.get(this.userInvite.account.id, {relationshipLevels: 2})
+      session.set(u.merge(session.get(), {account}))
+      session.set(u.merge(session.get(), {space: account.spaces[0]}))
       Alert.setNext('success', 'Invite accepted')
       router.push(`/`)
     },

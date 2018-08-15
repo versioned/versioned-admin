@@ -12,8 +12,10 @@
 
         <ul class="accounts">
           <li v-for="account in user.accounts" v-bind:key="account.id">
-            {{account.name}}
-            <span v-show="account.id === session.account.id">
+            <router-link :to="accountUrl(session.account)" :class="{'account-link': true, 'current-account': currentAccount(account)}">
+              {{account.name}}
+            </router-link>
+            <span v-show="currentAccount(account)">
               (current)
             </span>
           </li>
@@ -24,7 +26,7 @@
           <strong>
             Account:
           </strong>
-          <router-link :to="accountUrl(session.account)">
+          <router-link :to="accountUrl(session.account)" class="account-link current-account">
             {{session.account.name}}
           </router-link>
         </p>
@@ -82,6 +84,9 @@ export default {
     },
     accountUrl (account) {
       return `/accounts/${account.id}/edit`
+    },
+    currentAccount (account) {
+      return account.id === this.session.account.id
     },
     save: async function () {
       try {

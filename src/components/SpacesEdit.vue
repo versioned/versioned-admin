@@ -2,7 +2,7 @@
   <div>
     <h1>Space Config</h1>
 
-    <form class="profile-form" @submit.prevent="save">
+    <form class="space-form" @submit.prevent="save">
       <div class="form-group">
         <label for="name">Name</label>
         <input type="text" v-model="space.name" class="form-control" id="name" v-bind:class="{ 'is-invalid': errors.name}" v-autofocus/>

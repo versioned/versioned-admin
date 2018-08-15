@@ -2,7 +2,7 @@
   <div>
     <h1>Account Config</h1>
 
-    <form class="profile-form" @submit.prevent="save">
+    <form class="account-form" @submit.prevent="save">
       <div class="form-group">
         <label>Plan:</label>
         {{account.plan}}
@@ -11,7 +11,7 @@
       <div class="form-group">
         <label>Users</label>
 
-        <ul>
+        <ul class="users-list">
           <li v-for="user in account.users" v-bind:key="user.id">
             {{user.email}}
             <select v-model="user.role">
@@ -19,7 +19,7 @@
                 {{role}}
               </option>
             </select>
-            <a href="#" @click.prevent="removeUser(user)" v-if="user.email !== sessionEmail">
+            <a href="#" @click.prevent="removeUser(user)" v-if="user.email !== sessionEmail" class="remove-user">
               [remove]
             </a>
           </li>
@@ -32,9 +32,9 @@
         <p v-if="account.userInvites && account.userInvites.length > 0">
           Invited Users
 
-          <ul>
+          <ul class="invited-users-list">
             <li v-for="userInvite in account.userInvites" v-bind:key="userInvite.id">
-              <router-link :to="inviteUserUrl(userInvite.id)" class="models-edit">
+              <router-link :to="inviteUserUrl(userInvite.id)" class="user-invite">
                 {{userInvite.email}}
               </router-link>
             </li>
@@ -42,7 +42,7 @@
         </p>
 
         <p>
-          <router-link :to="newInviteUserUrl()" class="models-edit">
+          <router-link :to="newInviteUserUrl()" class="invite-user">
             Invite User
           </router-link>
         </p>

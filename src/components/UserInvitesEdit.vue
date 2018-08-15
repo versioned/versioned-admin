@@ -4,17 +4,17 @@
 
     <p>
       Account:
-      <router-link :to="accountUrl()">
+      <router-link :to="accountUrl()" class="account">
         {{account.name}}
       </router-link>
     </p>
 
     <p>
-      Email: {{userInvite.email}}
+      Email: <span class="user-invite-email">{{userInvite.email}}</span>
     </p>
 
     <p>
-      Role: {{userInvite.role}}
+      Role: <span class="user-invite-role">{{userInvite.role}}</span>
     </p>
 
     <p>
@@ -24,7 +24,7 @@
     </p>
 
     <p>
-      <a href="#" @click="remove()">Delete Invite</a>
+      <a href="#" @click="remove()" class="user-invite-delete">Delete Invite</a>
     </p>
   </div>
 </template>

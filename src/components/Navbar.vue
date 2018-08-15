@@ -73,9 +73,6 @@ export default {
     userEmail () {
       return session.get('user.email')
     },
-    isLoggedIn () {
-      return session.get()
-    },
     logout () {
       session.logout()
       setTimeout(() => {

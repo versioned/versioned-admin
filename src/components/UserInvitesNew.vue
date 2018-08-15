@@ -7,7 +7,7 @@
       The user will get an invitation link via email.
     </p>
 
-    <form class="profile-form" @submit.prevent="save">
+    <form class="user-invite-form" @submit.prevent="save">
       <div class="form-group">
         <label for="email">Email</label>
         <input type="email" v-model="userInvite.email" class="form-control" id="email" v-bind:class="{ 'is-invalid': errors.email}" v-autofocus/>
