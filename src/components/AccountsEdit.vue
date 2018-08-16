@@ -3,10 +3,10 @@
     <h1>Account Config</h1>
 
     <form class="account-form" @submit.prevent="save">
-      <div class="form-group">
+      <!-- <div class="form-group">
         <label>Plan:</label>
         {{account.plan}}
-      </div>
+      </div> -->
 
       <div class="form-group">
         <label>Users</label>

@@ -30,11 +30,13 @@
         </div>
       </div>
 
-      <input type="submit" class="btn btn-primary" value="Register" />
+      <div class="form-group">
+        <input type="submit" class="btn btn-primary" value="Register" />
+      </div>
 
-      <p>
+      <div class="form-group">
         <router-link class="nav-link" to="/login">Login</router-link>
-      </p>
+      </div>
     </form>
   </section>
 </template>

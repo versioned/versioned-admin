@@ -17,12 +17,14 @@
         {{ message }}
       </div>
 
-      <input type="submit" class="btn btn-primary" value="Log in" />
+      <div class="form-group">
+        <input type="submit" class="btn btn-primary" value="Log in" />
+      </div>
 
-      <p>
+      <div class="form-group">
         <router-link id="register-link" to="/register">Register</router-link>
         | <router-link id="forgot-password-link" :to="forgotPasswordUrl()">Forgot Password</router-link>
-      </p>
+      </div>
     </form>
   </section>
 </template>
