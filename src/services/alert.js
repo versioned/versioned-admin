@@ -41,6 +41,10 @@ function setNext (alertType, message, options = {}) {
 }
 
 function clear () {
+  store.commit('setAlert', {current: {}, next: {}})
+}
+
+function makeNextCurrent () {
   const alerts = get()
   store.commit('setAlert', Object.keys(alerts).reduce((acc, position) => {
     const alert = alerts[position]
@@ -54,5 +58,6 @@ export default {
   set,
   setBoth,
   setNext,
-  clear
+  clear,
+  makeNextCurrent
 }

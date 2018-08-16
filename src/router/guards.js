@@ -16,13 +16,13 @@ function redirectToLogin (router) {
   }
 }
 
-function clearAlerts (to, from, next) {
-  Alert.clear()
+function getAlerts (to, from, next) {
+  Alert.makeNextCurrent()
   next()
 }
 
 export default function guards (router) {
   router.beforeEach(initUserFromLocalStorage)
   router.beforeEach(redirectToLogin(router))
-  router.beforeEach(clearAlerts)
+  router.beforeEach(getAlerts)
 }
