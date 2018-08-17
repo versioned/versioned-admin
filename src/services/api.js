@@ -40,8 +40,13 @@ function responseList (response) {
   return getIn(response, 'data')
 }
 
+function validateStatus (status) {
+  // return status >= 200 && status < 300 // default
+  return status >= 200 && status < 500
+}
+
 function getRequest (url) {
-  return axios.get(url, {headers: headers()})
+  return axios.get(url, {validateStatus, headers: headers()})
     .then(responseDoc)
 }
 

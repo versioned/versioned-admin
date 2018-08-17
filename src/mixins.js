@@ -2,7 +2,7 @@ import u from './util'
 import session from '@/services/session'
 
 export function isLoggedIn () {
-  return session.get()
+  return session.isLoggedIn()
 }
 
 export function isAdmin () {

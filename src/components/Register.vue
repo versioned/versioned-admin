@@ -64,6 +64,12 @@ export default {
       baseErrors: []
     }
   },
+  created () {
+    if (session.isLoggedIn()) {
+      Alert.setNext('Logged in')
+      router.push('/')
+    }
+  },
   methods: {
     register: async function () {
       try {

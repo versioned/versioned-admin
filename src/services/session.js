@@ -102,6 +102,10 @@ function accountId () {
   return u.getIn(get(), 'account.id')
 }
 
+function isLoggedIn () {
+  return u.notEmpty(get('user'))
+}
+
 function isAdmin () {
   const userId = get('user.id')
   const users = get('account.users')
@@ -120,5 +124,6 @@ export default {
   getToken,
   spaceId,
   accountId,
+  isLoggedIn,
   isAdmin
 }

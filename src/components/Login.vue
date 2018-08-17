@@ -45,6 +45,10 @@ export default {
     }
   },
   created () {
+    if (session.isLoggedIn()) {
+      Alert.setNext('Logged in')
+      router.push('/')
+    }
     this.email = this.$route.query.email
   },
   methods: {

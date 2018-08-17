@@ -61,6 +61,11 @@ export default {
       const accountId = this.$route.params.id
       const inviteId = this.$route.params.inviteId
       this.userInvite = await UserInvite(accountId).get(inviteId, {relationshipLevels: 2})
+      if (!this.userInvite) {
+        Alert.setNext('warning', 'Could not find the invite, maybe you already accepted it?')
+        session.isLoggedIn() ? router.push('/') : router.push('/login')
+        return
+      }
       this.displayForm = (session.get('user.email') !== this.userInvite.email)
       if (!this.displayForm) {
         await this.acceptInvite()
@@ -71,7 +76,7 @@ export default {
       const account = await Account.get(this.userInvite.account.id, {relationshipLevels: 2})
       session.set(u.merge(session.get(), {account}))
       session.set(u.merge(session.get(), {space: account.spaces[0]}))
-      Alert.setNext('success', 'Invite accepted')
+      Alert.setNext('success', `Invite accepted. You are now logged in and can start using the ${account.name} account`)
       router.push(`/`)
     },
     save: async function () {
