@@ -9,7 +9,6 @@ describe('components/Login.vue', () => {
     // const wrapper = shallowMount(Login, {})
     // wrapper.setData({ count: 10 })
     // wrapper.setProps({ foo: 'bar' })
-    // console.log('pm debug login', typeof Login.methods.login)
     // const $ = cheerio.load(wrapper.html())
     // expect($('form div.form-group input#email').length).toBe(1)
     // expect($('form div.form-group input#password').length).toBe(1)

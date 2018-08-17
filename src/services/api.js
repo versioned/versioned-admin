@@ -135,7 +135,7 @@ axios.interceptors.response.use(function (response) {
   return response
 }, function (error) {
   store.commit('setLoading', false)
-  if (error.response.status === 401) {
+  if (error.response.status === 401 && !error.request.responseURL.includes('/login')) {
     session.set(null)
     router.push('/login')
   }

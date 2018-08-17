@@ -9,7 +9,7 @@ function initUserFromLocalStorage (to, from, next) {
 
 function redirectToLogin (router) {
   return (to, from, next) => {
-    if (u.getIn(to, 'meta.requiresAuth') !== false && !session.get()) {
+    if (u.getIn(to, 'meta.requiresAuth') !== false && !session.isLoggedIn()) {
       router.push('/login')
     }
     next()

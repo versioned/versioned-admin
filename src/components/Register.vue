@@ -1,5 +1,5 @@
 <template lang="html">
-  <section class="login-page">
+  <section class="register-page">
     <div class="page-title">
       <h1>Register</h1>
     </div>
@@ -61,29 +61,43 @@ export default {
         name: ''
       },
       errors: {},
-      baseErrors: []
-    }
-  },
-  created () {
-    if (session.isLoggedIn()) {
-      Alert.setNext('Logged in')
-      router.push('/')
+      baseErrors: [],
+      userCreated: false,
+      accountCreated: false
     }
   },
   methods: {
     register: async function () {
       try {
-        await User.create(this.user)
-        await session.login(this.user.email, this.user.password)
-        const account = await Account.create(this.account)
-        session.set(u.merge(session.get(), {account}))
-        const space = await Space(account.id).get(account.spaces[0])
-        session.set(u.merge(session.get(), {space}))
-        Alert.setNext('Registration successful')
+        // NOTE: first attempt a login. This is a bit of a hack, but it allows creation of
+        // multiple accounts for now. It also helps if someone uses Register instead of Login by mistake
+        let messages = []
+        try {
+          await session.login(this.user.email, this.user.password)
+          messages.push('You were already registered and are now logged in')
+        } catch (_) {
+          await User.create(this.user)
+          await session.login(this.user.email, this.user.password)
+          this.userCreated = true
+          messages.push(`User ${this.user.email} created`)
+        }
+        const userAccountNames = (session.get('user.accounts') || []).map(u.property('name'))
+        if (!userAccountNames.includes(this.account.name)) {
+          const account = await Account.create(this.account)
+          session.set(u.merge(session.get(), {account}))
+          const space = await Space(account.id).get(account.spaces[0])
+          session.set(u.merge(session.get(), {space}))
+          this.accountCreated = true
+          messages.push(`Account ${this.account.name} created`)
+        } else {
+          messages.push(`You are a member of the ${this.account.name} account`)
+        }
+        if (this.userCreated && this.accountCreated) messages = [`User ${this.user.email} and account ${this.account.name} successfully created`]
+        Alert.setNext(messages.join('. '))
         router.push('/')
       } catch (error) {
         if (error.status === 500) {
-          Alert.set('danger', 'We are having technical difficulties. Please try again!')
+          Alert.set('warning', 'We are having technical difficulties. Please try again!')
         } else if (error.status === 422) {
           if (u.notEmpty(error.errors)) {
             this.baseErrors = u.filter(error.errors, e => u.nil(e.field))
@@ -97,7 +111,7 @@ export default {
           }
           Alert.set('warning', `Registration failed. Please fix the erorrs in the form and try again`)
         } else {
-          Alert.set('warning', `Registration failed. Please try again (status=${error.status})`)
+          Alert.set('warning', `Registration failed. Please try again`)
         }
       }
     }

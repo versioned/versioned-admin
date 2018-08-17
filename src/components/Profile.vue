@@ -16,7 +16,7 @@
               {{account.name}}
             </router-link>
             <span v-show="currentAccount(account)">
-              (current)
+              [current]
             </span>
           </li>
         </ul>
@@ -117,7 +117,7 @@ export default {
   ul.accounts li {
     margin-left: 0;
   }
-  ul.accounts li {
+  /* ul.accounts li {
     list-style-type: none;
-  }
+  } */
 </style>
