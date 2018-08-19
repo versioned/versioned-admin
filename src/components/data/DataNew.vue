@@ -38,7 +38,7 @@ export default {
         this.modelName = model.name
         this.schema = u.getIn(model, 'model.schema')
       } else {
-        Alert.set('error', `Could not find model ${this.$route.params.model}`)
+        Alert.set('warning', `Could not find model ${this.$route.params.model}`)
       }
     })
   },

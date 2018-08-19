@@ -58,7 +58,8 @@ export default {
           Alert.setNext('Logged in')
           router.push('/')
         })
-        .catch(() => {
+        .catch((error) => {
+          console.log(error)
           Alert.set('warning', 'Could not log you in. Please check your credentials or <a href="#/register">register</a> if you don\'t have an account')
         })
     },

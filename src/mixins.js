@@ -9,6 +9,10 @@ export function isAdmin () {
   return session.isAdmin()
 }
 
+export function currentSpace () {
+  return u.notEmpty(session.get('space'))
+}
+
 export function title (schema, doc) {
   const titleProperty = u.getIn(schema, 'x-meta.titleProperty')
   const defaultTitle = [doc.type, doc.id].join('-')
@@ -18,5 +22,6 @@ export function title (schema, doc) {
 export default {
   isLoggedIn,
   isAdmin,
+  currentSpace,
   title
 }

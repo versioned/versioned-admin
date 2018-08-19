@@ -3,10 +3,31 @@
     <h1>Account Config</h1>
 
     <form class="account-form" @submit.prevent="save">
-      <!-- <div class="form-group">
-        <label>Plan:</label>
-        {{account.plan}}
-      </div> -->
+      <div class="form-group" v-if="!currentAccount(account)">
+        <a href="#" @click="makeCurrent()">Switch to this account</a>
+      </div>
+
+      <div class="form-group">
+        <label v-if="account.spaces && account.spaces.length > 0">Spaces</label>
+        <label v-else>No Spaces</label>
+
+        <ul class="spaces-list">
+          <li v-for="space in account.spaces" v-bind:key="space.id">
+            <router-link :to="spaceUrl(space)" :class="{'space-link': true, 'current-space': currentSpace(space)}">
+              {{space.name}}
+            </router-link>
+            <span v-if="currentSpace(space)">
+              [current]
+            </span>
+          </li>
+        </ul>
+
+        <p>
+          <router-link :to="newSpaceUrl()" class="new-space">
+            New Space
+          </router-link>
+        </p>
+      </div>
 
       <div class="form-group">
         <label>Users</label>
@@ -98,6 +119,23 @@ export default {
     removeUser (user) {
       const users = this.account.users.filter(u => u.email !== user.email)
       this.account = u.merge(this.account, {users})
+    },
+    currentAccount (account) {
+      return account.id === session.get('account.id')
+    },
+    makeCurrent () {
+      session.set(u.merge(session.get(), {account: this.account}))
+      const space = this.account.spaces[0]
+      session.set(u.merge(session.get(), {space}))
+    },
+    currentSpace (space) {
+      return space.id === session.get('space.id')
+    },
+    spaceUrl (space) {
+      return `/accounts/${space.accountId}/spaces/${space.id}/edit`
+    },
+    newSpaceUrl () {
+      return `/accounts/${this.account.id}/spaces/new`
     },
     save: async function () {
       this.errors = {}

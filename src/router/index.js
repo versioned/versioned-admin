@@ -7,6 +7,7 @@ import Changelog from '@/components/Changelog'
 import Api from '@/components/Api'
 import Profile from '@/components/Profile'
 import AccountsEdit from '@/components/AccountsEdit'
+import SpacesNew from '@/components/SpacesNew'
 import SpacesEdit from '@/components/SpacesEdit'
 import Register from '@/components/Register'
 import Login from '@/components/Login'
@@ -58,7 +59,12 @@ const router = new Router({
       component: AccountsEdit
     },
     {
-      path: '/spaces/:id/edit',
+      path: '/accounts/:accountId/spaces/new',
+      name: 'New Space',
+      component: SpacesNew
+    },
+    {
+      path: '/accounts/:accountId/spaces/:id/edit',
       name: 'Space Config',
       component: SpacesEdit
     },

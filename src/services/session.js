@@ -53,12 +53,26 @@ function headers () {
 }
 
 function setLogin (token, user) {
-  // NOTE: making it convenient to access user fields directly with fields account/space/token added
+  const defaultSpace = u.getIn(user, 'defaultSpace')
+  const defaultAccount = u.getIn(user, 'defaultSpace.account')
+  const current = {}
+  if (get('user.id') === user.id) {
+    const userAccounts = u.getIn(user, 'accounts', [])
+    current['account'] = userAccounts.find(a => a.id === get('account.id'))
+    current['space'] = u.flatten(userAccounts.map(u.property('spaces'))).find(s => s.id === get('space.id'))
+  }
+  let account = current['account'] || defaultAccount || u.first(user.accounts)
+  let space = current['space'] || defaultSpace
+  if (u.getIn(space, 'accountId') !== u.getIn(account, 'id')) {
+    space = u.first(account.spaces)
+  }
+  space = space || {}
+  account = account || {}
   const loginData = {
     token: token,
     user: user,
-    space: u.getIn(user, 'defaultSpace'),
-    account: u.getIn(user, 'defaultSpace.account')
+    account,
+    space
   }
   set(loginData)
 }

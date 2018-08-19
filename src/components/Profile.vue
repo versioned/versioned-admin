@@ -12,10 +12,10 @@
 
         <ul class="accounts">
           <li v-for="account in user.accounts" v-bind:key="account.id">
-            <router-link :to="accountUrl(session.account)" :class="{'account-link': true, 'current-account': currentAccount(account)}">
+            <router-link :to="accountUrl(account)" :class="{'account-link': true, 'current-account': currentAccount(account)}">
               {{account.name}}
             </router-link>
-            <span v-show="currentAccount(account)">
+            <span v-if="currentAccount(account)">
               [current]
             </span>
           </li>

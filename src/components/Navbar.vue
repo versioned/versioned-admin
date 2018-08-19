@@ -9,15 +9,15 @@
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
           <ul class="navbar-nav mr-auto" v-show="$store.state.login">
             <li class="nav-item">
-              <router-link class="nav-link" to="/models">Models</router-link>
+              <router-link class="nav-link" to="/models" v-show="currentSpace()">Models</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" to="/changelog">Changelog</router-link>
+              <router-link class="nav-link" to="/changelog" v-show="currentSpace()">Changelog</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" to="/api">API</router-link>
+              <router-link class="nav-link" to="/api" v-show="currentSpace()">API</router-link>
             </li>
-            <li class="nav-item" v-show="isAdmin()">
+            <li class="nav-item" v-show="isAdmin() && currentSpace()">
               <router-link class="nav-link" to="/config">Space Config</router-link>
             </li>
             <!-- <li class="nav-item">

@@ -74,10 +74,10 @@ export default {
             this.versions = u.getIn(doc, 'sys.versions', [])
             this.jsonData = u.prettyJson(this.doc)
           }).catch(() => {
-            Alert.set('error', 'Could not find data')
+            Alert.set('warning', 'Could not find data')
           })
         } else {
-          Alert.set('error', `Could not find model ${this.$route.params.model}`)
+          Alert.set('warning', `Could not find model ${this.$route.params.model}`)
         }
       })
     },
