@@ -181,6 +181,12 @@
               Required
             </label>
           </div>
+          <div class="form-check" v-show="showCascade(field)">
+            <input v-model="field.cascade" class="form-check-input" type="checkbox">
+            <label class="form-check-label">
+              Cascade deletes (i.e. if relationship is removed, delete the document)
+            </label>
+          </div>
 
           <div v-if="enabledField('unique', field)" class="form-check">
             <input v-model="field.unique" class="form-check-input" type="checkbox">
@@ -354,6 +360,11 @@ export default {
       field.relationship.toType = field.key
       field.relationship.toField = this.model.coll
     },
+    showCascade (field) {
+      return field.required &&
+        field.category === 'twoWayRelationship' &&
+        ['many-to-one', 'one-to-one'].includes(field.relationship.type)
+    },
     makeDbFriendly (obj, prop) {
       obj[prop] = dbFriendly(obj[prop])
     },
@@ -460,7 +471,6 @@ export default {
         // Relationship
         property.type = 'string'
         isArray = ['many-to-many', 'one-to-many'].includes(field.relationship.type)
-        field.relationship.oneWay = (field.category === 'oneWayRelationship')
       }
       const xMeta = u.compact({
         unique: field.unique,
@@ -470,6 +480,9 @@ export default {
         },
         relationship: (field.category === 'data' ? undefined : field.relationship)
       })
+      if (xMeta.relationship) {
+        xMeta.relationship.onDelete = (field.cascade ? 'cascade' : null)
+      }
       if (isArray) {
         property = {type: 'array', items: property}
       } else if (property.enum) {
@@ -484,9 +497,10 @@ export default {
       const name = u.getIn(property, 'x-meta.field.name', capitalize(key))
       const defaults = FIELD_TYPES_PROPERTIES[type] || {}
       const relationship = u.getIn(property, 'x-meta.relationship')
+      const cascade = (u.getIn(property, 'x-meta.relationship.onDelete') === 'cascade')
       let category = 'data'
       if (relationship) {
-        category = relationship.oneWay ? 'oneWayRelationship' : 'twoWayRelationship'
+        category = relationship.toField ? 'twoWayRelationship' : 'oneWayRelationship'
       }
       return u.compact({
         name,
@@ -498,6 +512,7 @@ export default {
         relationship,
         unique: u.getIn(property, 'x-meta.unique'),
         required,
+        cascade,
         validation: {
           minLength: property.minLength,
           maxLength: (defaults.maxLength === property.maxLength ? undefined : property.maxLength),
