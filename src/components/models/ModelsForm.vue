@@ -1,9 +1,5 @@
 <template lang="html">
   <form @submit.prevent="submit" class="models-form">
-    <ul v-if="allErrors.length > 0" class="errors alert alert-danger">
-      <li v-for="error in allErrors">{{error.field}} {{error.message}}</li>
-    </ul>
-
     <div class="form-group buttons">
       <input type="submit" class="btn btn-primary" value="Save" />
     </div>
@@ -18,7 +14,7 @@
 
     <div class="form-group required">
       <label for="coll">Key</label>
-      <input type="text" v-model="model.coll" class="form-control" id="coll" :maxlength="KEY_LENGTH" @change="makeDbFriendly(model, 'coll')" v-bind:class="{ 'is-invalid': errors.coll}" required/>
+      <input type="text" v-model="model.coll" class="form-control" id="coll" :maxlength="KEY_LENGTH" @change="makeDbFriendly(model, 'coll')" v-bind:class="{ 'is-invalid': errors.coll}" :disabled="model.id" required/>
       <div class="invalid-feedback">
         {{errors.coll}}
       </div>
@@ -242,9 +238,11 @@
 <script>
 import Vue from 'vue'
 import u from '@/util'
+import Alert from '@/services/alert'
 import {capitalize} from '@/client_util'
 import {propertiesOrder} from '@/models_util'
 import JsonField from '@/components/form/JsonField'
+import FormUtil from '@/form_util'
 
 const FIELD_TYPES = [
   {
@@ -297,7 +295,6 @@ export default {
       COLL_LENGTH,
       FIELD_TYPES,
       errors: {},
-      allErrors: [],
       features: this.makeFeatures(this.model),
       collapsed: this.getCollapsed(this.model.fields)
     }
@@ -333,7 +330,9 @@ export default {
       return u.merge(result, {hasValidation: u.notEmpty(result.validation)})
     },
     nameChange () {
-      this.model.coll = dbFriendly(this.model.name)
+      if (!this.model.id) {
+        this.model.coll = dbFriendly(this.model.name)
+      }
     },
     updateTitleProperty (index) {
       const field = this.model.fields[index]
@@ -372,6 +371,7 @@ export default {
       this.model.model.schema = value
     },
     submit () {
+      Alert.clear()
       if (this.model.fields) {
         this.model.model = {schema: this.getSchema(this.model.fields)}
         this.model.propertiesOrder = this.model.fields.map(u.property('key'))
@@ -407,19 +407,7 @@ export default {
       this.collapsed = u.merge(this.collapsed, {[key]: !this.collapsed[key]})
     },
     handleError (error) {
-      if (error.status === 422) {
-        if (u.notEmpty(error.errors)) {
-          this.allErrors = error.errors
-          this.errors = error.errors.reduce((acc, error) => {
-            if (error.field) {
-              acc[error.field] = error.message
-            }
-            return acc
-          }, {})
-        }
-      } else {
-        throw error
-      }
+      this.errors = FormUtil.handleError(error)
     },
     getSchema (fields) {
       const properties = fields.reduce((acc, field) => {

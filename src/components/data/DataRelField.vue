@@ -27,7 +27,7 @@ let searchTimeout = null
 const DEBOUNCE_INTERVAL = 200
 
 export default {
-  props: ['attribute'],
+  props: ['attribute', 'error'],
   data () {
     const toType = u.getIn(this.attribute, 'schema.x-meta.relationship.toType')
     const selectedResults = u.array(this.attribute.value || [])

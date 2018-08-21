@@ -54,6 +54,7 @@ import session from '@/services/session'
 import router from '@/router'
 import Space from '@/services/space'
 import Alert from '@/services/alert'
+import FormUtil from '@/form_util'
 
 export default {
   data: () => {
@@ -85,6 +86,7 @@ export default {
       this.accountId = this.$route.params.accountId || session.get('account.id')
       const id = this.$route.params.id || session.get('space.id')
       this.space = await Space(this.accountId).get(id, {relationshipLevels: 2})
+      if (this.$route.query.makeCurrent) this.makeCurrent()
     },
     async save () {
       try {
@@ -92,20 +94,7 @@ export default {
         await session.refresh()
         Alert.setBoth('success', 'Saved')
       } catch (error) {
-        if (error.status === 422) {
-          if (u.notEmpty(error.errors)) {
-            this.baseErrors = u.filter(error.errors, e => u.nil(e.field))
-            this.errors = error.errors.reduce((acc, error) => {
-              if (error.field) {
-                acc[error.field] = error.message
-              }
-              return acc
-            }, {})
-          }
-          Alert.set('warning', `Could not save space. Please fix the erorrs in the form and try again`)
-        } else {
-          Alert.set('warning', `Could not save space. Please try again (status=${error.status})`)
-        }
+        this.errors = FormUtil.handleError(error)
       }
     },
     async remove () {

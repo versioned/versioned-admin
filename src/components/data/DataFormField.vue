@@ -19,9 +19,13 @@
 
     <textarea v-else-if="attribute.field.type === 'text'" type="text" v-model="doc[attribute.key]" @input="updateValue($event.target.value)" class="form-control" rows="5"/>
 
-    <data-rel-field v-else-if="attribute.relationship" :attribute="attribute" @fieldInput="updateValue($event)"></data-rel-field>
+    <data-rel-field v-else-if="attribute.relationship" :attribute="attribute" @fieldInput="updateValue($event)" :error="error"></data-rel-field>
 
-    <input v-else :type="inputType()" ref="textInput" v-model="doc[attribute.key]" class="form-control" @input="updateValue($event.target.value)"/>
+    <input v-else :type="inputType()" ref="textInput" v-model="doc[attribute.key]" class="form-control" :class="{ 'is-invalid': error}" @input="updateValue($event.target.value)"/>
+
+    <div class="invalid-feedback">
+      {{error}}
+    </div>
   </div>
 </template>
 
@@ -31,7 +35,7 @@ import JsonField from '@/components/form/JsonField'
 import DataRelField from '@/components/data/DataRelField'
 
 export default {
-  props: ['doc', 'attribute', 'model', 'isChanged'],
+  props: ['doc', 'attribute', 'model', 'isChanged', 'error'],
   mounted () {
     if (this.attribute.index === 0 && this.$refs.textInput) {
       this.$refs.textInput.focus()

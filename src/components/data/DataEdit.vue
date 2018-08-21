@@ -83,7 +83,6 @@ export default {
     },
     fieldChange (field) {
       this.doc = u.merge(this.doc, field)
-      // this.doc[field.key] = field.value
     },
     async save (doc) {
       Alert.clear()
@@ -104,6 +103,7 @@ export default {
       if (confirm('Are you sure?')) {
         Data(this.model.coll).remove(this.doc.id)
           .then(() => {
+            Alert.setNext('Deleted')
             router.push(`/data/${this.model.coll}`)
           })
           .catch(error => {

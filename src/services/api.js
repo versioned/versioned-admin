@@ -110,6 +110,7 @@ function create (contentType, options = {}) {
   function remove (id) {
     return axios.delete(getUrl(id), {headers: headers()})
       .then(responseDoc)
+      .catch(handleSaveError)
   }
 
   return {

@@ -53,8 +53,8 @@ export default {
       try {
         this.space = await Space(this.account.id).create(this.space)
         await session.refresh()
-        Alert.setBoth('success', 'Saved')
-        router.push(`/accounts/${this.space.accountId}/edit`)
+        Alert.setNext('success', `Space ${this.space.name} saved. <a href="/#/models/new">Create a model</a>`)
+        router.push(`/accounts/${this.space.accountId}/spaces/${this.space.id}/edit?makeCurrent=1`)
       } catch (error) {
         if (error.status === 422) {
           if (u.notEmpty(error.errors)) {

@@ -1,8 +1,5 @@
 <template lang="html">
   <form @submit.prevent="formSubmit" role="form" class="data-form">
-    <ul v-if="allErrors.length > 0" class="errors alert alert-danger">
-      <li v-for="error in allErrors">{{error.field}} - {{error.message}}</li>
-    </ul>
     <div class="form-group">
       <div class="form-group buttons">
         <input type="submit" class="btn btn-primary" value="Save" />
@@ -63,7 +60,7 @@
         </div>
       </div>
 
-      <data-form-field v-for="attribute in writeAttributes" :doc="doc" :attribute="attribute" :model="model" :key="attribute.key" :isChanged="fieldIsChanged(attribute.key)" @fieldChange="fieldChange($event)"></data-form-field>
+      <data-form-field v-for="attribute in writeAttributes" :doc="doc" :attribute="attribute" :model="model" :key="attribute.key" :isChanged="fieldIsChanged(attribute.key)" @fieldChange="fieldChange($event)" :error="errors[attribute.key]"></data-form-field>
 
       <a v-show="hasChanges()" class="text-warning" href="#" @click.prevent="showUnsavedChanges = !showUnsavedChanges">Unsaved Changes</a>
       <changes v-if="showUnsavedChanges" :from="docOrig" :to="doc"></changes>
@@ -75,26 +72,25 @@
         <a v-if="doc.id" href="#" class="delete" @click.prevent="remove()">Delete</a>
       </div>
     </div>
-    <ul v-if="allErrors.length > 0" class="errors alert alert-danger">
-      <li v-for="error in allErrors">{{error.field}} - {{error.message}}</li>
-    </ul>
   </form>
 </template>
 
 <script>
 import u from '@/util'
+import Alert from '@/services/alert'
 import Swagger from '@/services/swagger'
 import DataFormField from '@/components/data/DataFormField'
 import PublishStatus from '@/components/data/PublishStatus'
 import Changes from '@/components/data/Changes'
 import DataUtil from '@/data_util'
+import FormUtil from '@/form_util'
 
 export default {
   props: ['model', 'doc', 'docOrig', 'schema', 'isPublished', 'versions'],
   data: function () {
     return {
+      errors: {},
       showVersions: false,
-      allErrors: [],
       showJson: false,
       showChanges: {},
       showUnsavedChanges: false
@@ -137,7 +133,7 @@ export default {
       this.$emit('fieldChange', field)
     },
     formSubmit () {
-      this.allErrors = []
+      Alert.clear()
       this.$emit('formSubmit', this.coerceDoc(this.doc))
     },
     remove () {
@@ -168,13 +164,7 @@ export default {
       }
     },
     handleError (error) {
-      if (error.status === 422) {
-        if (u.notEmpty(error.errors)) {
-          this.allErrors = error.errors
-        }
-      } else {
-        throw error
-      }
+      this.errors = FormUtil.handleError(error)
     },
     fieldIsChanged (key) {
       const stripArrayIndex = (k) => k.replace(/\[\d+\]$/, '')
