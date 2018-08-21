@@ -123,6 +123,44 @@ function createModel (model) {
   verifyModelCreated(model)
 }
 
+function clickNewData (model) {
+  cy.navigateHome()
+  cy.get(`tr.models-row.${model.coll} a.new-data`).click({force: true})
+  cy.location('href').should('match', new RegExp(`#\/data\/${model.coll}\/new$`))
+}
+
+function saveDataForm (options = {}) {
+  const className = options.publish ? 'save-and-publish' : 'save'
+  cy.get(`form.data-form .${className}`).first().click()
+  cy.waitForSave()
+}
+
+function createData (model, docs) {
+  docs.forEach((doc, index) => {
+    console.log(`createData for model=${model.name} index=${index}`)
+    clickNewData(model)
+    model.fields.filter(field => doc[field.key]).forEach((field) => {
+      const value = doc[field.key]
+      const scope = `form.data-form .data-field-${field.key}`
+      if (field.category === 'data' && ['string', 'text'].includes(field.type)) {
+        // NOTE: needed force here, see: https://on.cypress.io/element-cannot-be-interacted-with
+        cy.get(`${scope} .form-control`).type(value, {force: true, delay: 1})
+      } else if (field.relationship) {
+        u.array(value).forEach((item) => {
+          cy.get(`${scope} input.search`).clear().type(item, {force: true, delay: 1})
+          cy.get(`${scope} .menu .item`).first().click()
+        })
+      }
+    })
+    saveDataForm()
+    const EDIT_URL_PATTERN = new RegExp(`/#/data/${model.coll}/([^/]+)/edit`)
+    cy.location('href').should('match', EDIT_URL_PATTERN)
+      .then((location) => {
+        doc.id = location.match(EDIT_URL_PATTERN)[1]
+      })
+  })
+}
+
 function register (email, password, accountName) {
   cy.visit('/')
   cy.location('href').should('match', /#\/login$/)
@@ -150,7 +188,9 @@ const commands = [
   login,
   waitForSave,
   navigateHome,
-  createModel
+  createModel,
+  saveDataForm,
+  createData
 ]
 for (let command of commands) {
   Cypress.Commands.add(command.name, command)

@@ -150,18 +150,6 @@ function stringify (value) {
   return truncated(stringValue)
 }
 
-function saveDataForm (options = {}) {
-  const className = options.publish ? 'save-and-publish' : 'save'
-  cy.get(`form.data-form .${className}`).first().click()
-  cy.waitForSave()
-}
-
-function clickNewData (model) {
-  cy.navigateHome()
-  cy.get(`tr.models-row.${model.coll} a.new-data`).click({force: true})
-  cy.location('href').should('match', new RegExp(`#\/data\/${model.coll}\/new$`))
-}
-
 function clickDataList (model) {
   cy.navigateHome()
   cy.get(`tr.models-row.${model.coll} a.data-list`).click({force: true})
@@ -171,32 +159,6 @@ function clickDataList (model) {
 function navigateToDataEdit (model, doc) {
   clickDataList(model)
   cy.get(`tr.${model.coll}-${doc.id} a.edit-data`).click({force: true})
-}
-
-function createData (model) {
-  (data[model.name] || []).forEach((doc, index) => {
-    console.log(`createData for model=${model.name} index=${index}`)
-    clickNewData(model)
-    model.fields.filter(field => doc[field.key]).forEach((field) => {
-      const value = doc[field.key]
-      const scope = `form.data-form .data-field-${field.key}`
-      if (field.category === 'data' && ['string', 'text'].includes(field.type)) {
-        // NOTE: needed force here, see: https://on.cypress.io/element-cannot-be-interacted-with
-        cy.get(`${scope} .form-control`).type(value, {force: true, delay: 1})
-      } else if (field.relationship) {
-        u.array(value).forEach((item) => {
-          cy.get(`${scope} input.search`).clear().type(item, {force: true, delay: 1})
-          cy.get(`${scope} .menu .item`).first().click()
-        })
-      }
-    })
-    saveDataForm()
-    const EDIT_URL_PATTERN = new RegExp(`/#/data/${model.coll}/([^/]+)/edit`)
-    cy.location('href').should('match', EDIT_URL_PATTERN)
-      .then((location) => {
-        doc.id = location.match(EDIT_URL_PATTERN)[1]
-      })
-  })
 }
 
 function verifyDocCreated (model, doc) {
@@ -239,7 +201,7 @@ function updateArticleData () {
   cy.get(`.data-field-categories .selected-results .category-${removeCategory.id} .remove-relationship`).click()
 
   cy.log('Save form and navigate back (refresh)')
-  saveDataForm()
+  cy.saveDataForm()
   navigateToDataEdit(Article, doc)
 
   cy.log('Verify changes')
@@ -257,7 +219,7 @@ function updateArticleData () {
   cy.get(`.data-field-categories .menu .item`).first().click()
 
   cy.log('Save form and navigate back (refresh)')
-  saveDataForm()
+  cy.saveDataForm()
   navigateToDataEdit(Article, doc)
 
   cy.log('verify changes (slot/category should be there again)')
@@ -277,7 +239,7 @@ function publishArticleData () {
   cy.get('.publish-status').first().should('have.text', 'Not Yet Published')
 
   cy.log('Click publish button - creates published version')
-  saveDataForm({publish: true})
+  cy.saveDataForm({publish: true})
   cy.get('.version').should('have.text', '1')
   cy.get('.published-version').should('have.text', '1')
   cy.get('.publish-status').first().should('have.text', 'Published')
@@ -295,7 +257,7 @@ function publishArticleData () {
   cy.get('.versions li').should('have.length', 2)
 
   cy.log('Click publish button - published version is updated')
-  saveDataForm({publish: true})
+  cy.saveDataForm({publish: true})
   cy.get('.version').should('have.text', '2')
   cy.get('.published-version').should('have.text', '2')
   cy.get('.publish-status').first().should('have.text', 'Published')
@@ -344,19 +306,19 @@ describe('Kitchensink', () => {
   })
 
   it('Create Author data', () => {
-    createData(Author)
+    cy.createData(Author, data[Author.name])
   })
 
   it('Create Slot data', () => {
-    createData(Slot)
+    cy.createData(Slot, data[Slot.name])
   })
 
   it('Create Category data', () => {
-    createData(Category)
+    cy.createData(Category, data[Category.name])
   })
 
   it('Create Article data', () => {
-    createData(Article)
+    cy.createData(Article, data[Article.name])
   })
 
   it('Verify Article data created', () => {
