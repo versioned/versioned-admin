@@ -14,7 +14,8 @@
     "heroku-postbuild": "yarn install --production=false && yarn build",
     "test": "yarn test:unit && yarn test:e2e --headless",
     "test:unit": "vue-cli-service test:unit",
-    "test:e2e": "vue-cli-service test:e2e"
+    "test:e2e": "vue-cli-service test:e2e",
+    "test:kitchensink": "vue-cli-service test:e2e --headless --spec tests/e2e/specs/kitchensink.js"
   },
   "dependencies": {
     "@vue/eslint-config-standard": "3.0.0-beta.9",

@@ -9,6 +9,8 @@ const user = {
 }
 const accountName = `Company ${userId}`
 
+const wait = 5000 // NOTE: the suite would fail in headless mode without this wait
+
 const Article = Model({
   name: 'Article',
   fields: [
@@ -100,11 +102,11 @@ describe('On Delete Cascade', () => {
   })
 
   it('Create author again', () => {
-    cy.createData(Author, [author])
+    cy.createData(Author, [author], {wait})
   })
 
   it('Create article again', () => {
-    cy.createData(Article, [article])
+    cy.createData(Article, [article], {wait})
   })
 
   it('Delete Author model', () => {
