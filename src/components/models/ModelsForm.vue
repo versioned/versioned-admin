@@ -172,13 +172,13 @@
             </label>
           </div>
           <div class="form-check">
-            <input v-model="field.required" class="form-check-input" type="checkbox">
+            <input v-model="field.required" class="form-check-input required" type="checkbox">
             <label class="form-check-label">
               Required
             </label>
           </div>
           <div class="form-check" v-show="showCascade(field)">
-            <input v-model="field.cascade" class="form-check-input" type="checkbox">
+            <input v-model="field.cascade" class="form-check-input cascade" type="checkbox">
             <label class="form-check-label">
               Cascade deletes (i.e. if relationship is removed, delete the document)
             </label>
@@ -231,7 +231,7 @@
     </div>
 
     <input v-if="model.fields.length > 0" type="submit" class="btn btn-primary" value="Save" />
-    <a v-if="model.id" href="#" @click.prevent="remove()">Delete</a>
+    <a v-if="model.id" href="#" @click.prevent="remove()" class="delete">Delete</a>
   </form>
 </template>
 
@@ -427,7 +427,7 @@ export default {
       }
     },
     fieldClass (field, index) {
-      return `form-group field field-${index + 1}`
+      return `form-group field field-${index + 1} ${field.key}`
     },
     getFields (model) {
       const schema = u.getIn(model, 'model.schema', {})

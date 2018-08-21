@@ -1,4 +1,5 @@
 import u from './util'
+import {truncated} from '../support/client_util'
 
 // ***********************************************
 // This example commands.js shows you how to
@@ -31,6 +32,11 @@ const TITLE_FIELD = {
   type: 'string'
 }
 
+function stringify (value) {
+  const stringValue = (u.isArray(value) ? value.join(', ') : value)
+  return truncated(stringValue)
+}
+
 function jsonEqual (obj1, obj2) {
   return JSON.stringify(obj1) === JSON.stringify(obj2)
 }
@@ -50,9 +56,28 @@ function waitForSave () {
   cy.get('.alert-success').contains('Saved')
 }
 
-function saveModelsForm () {
+function saveModelForm () {
   cy.get('form.models-form input[type="submit"]').last().click({force: true})
   waitForSave()
+}
+
+function navigateToAccount (user) {
+  cy.get('.user-profile').click()
+  cy.get('input#email').should('have.value', user.email)
+  if (user.role === 'admin') {
+    cy.get('.account-link.current-account').click()
+  } else {
+    cy.get('.account-link').should('not.exist')
+  }
+}
+
+function navigateToModelEdit (model) {
+  navigateHome()
+  const scope = `tr.models-row.${model.coll}`
+  cy.get(`${scope} td a.models-edit`).click({force: true})
+  cy.location('href').should('match', /#\/models\/[^\/]+\/edit/)
+  cy.get(`form.models-form input#name`).should('have.value', model.name)
+  cy.get(`form.models-form input#coll`).should('have.value', model.coll)
 }
 
 function verifyModelCreated (model) {
@@ -65,12 +90,7 @@ function verifyModelCreated (model) {
   const expectedRelationships = fields.filter(f => f.relationship !== undefined).map(f => f.name)
   cy.get(`${scope} td.relationships`).should('contain', expectedRelationships.join(', '))
 
-  // NOTE/FIXME: Cypress seems to think the link is not visible so need to use force here, see:
-  // https://docs.cypress.io/guides/references/error-messages.html#cy-failed-because-the-element-cannot-be-interacted-with
-  cy.get(`${scope} td a.models-edit`).click({force: true})
-  cy.location('href').should('match', /#\/models\/[^\/]+\/edit/)
-  cy.get(`form.models-form input#name`).should('have.value', model.name)
-  cy.get(`form.models-form input#coll`).should('have.value', model.coll)
+  navigateToModelEdit(model)
 
   fields.forEach((field, index) => {
     const scope = `div.form-group.field-${index + 1}`
@@ -107,9 +127,12 @@ function addModelField (field, index) {
     if (toField) cy.get(`${scope} input.to-field`).clear({force: true}).type(toField, {force: true})
     cy.get(`${scope} input.${type}`).click({force: true})
   }
+  if (field.required) {
+    cy.get(`${scope} input.required`).click({force: true})
+  }
 }
 
-function createModel (model) {
+function createModel (model, options = {}) {
   clickNewModel()
   cy.get('form input#name').type(model.name)
   const fields = model.fields || []
@@ -119,8 +142,8 @@ function createModel (model) {
     cy.get(`.field-1 select.data-type`).select(fields[0].type, {force: true})
   }
   fields.slice(1).forEach(addModelField)
-  saveModelsForm()
-  verifyModelCreated(model)
+  saveModelForm()
+  if (options.verify !== false) verifyModelCreated(model)
 }
 
 function clickNewData (model) {
@@ -161,6 +184,66 @@ function createData (model, docs) {
   })
 }
 
+function clickDataList (model) {
+  cy.navigateHome()
+  cy.get(`tr.models-row.${model.coll} a.data-list`).click({force: true})
+  cy.location('href').should('match', new RegExp(`#\/data\/${model.coll}$`))
+}
+
+function navigateToDataEdit (model, doc) {
+  clickDataList(model)
+  cy.get(`tr.${model.coll}-${doc.id} a.edit-data`).click({force: true})
+}
+
+function verifyDocCreated (model, doc) {
+  console.log(`verifyDocCreated for model=${model.name}`, doc)
+  cy.clickDataList(model)
+  const scope = `tr.${model.coll}-${doc.id}`
+  Object.entries(doc).filter(([key, _]) => key !== 'id').forEach(([key, value]) => {
+    cy.get(`${scope} .field-${key}`).contains(stringify(value))
+  })
+  cy.get(`${scope} a.edit-data`).click({force: true})
+  model.fields.filter(f => doc[f.key]).forEach((field) => {
+    const value = doc[field.key]
+    const scope = `.data-field-${field.key}`
+    if (field.category === 'data' && ['string', 'text'].includes(field.type)) {
+      cy.get(`${scope} .form-control`).should('have.value', value)
+    } else {
+      u.array(value).forEach((item) => {
+        cy.get(`${scope} .selected-results li`).should('contain', item)
+      })
+    }
+  })
+}
+
+function verifyDataCreated (model, docs) {
+  docs.forEach(doc => verifyDocCreated(model, doc))
+}
+
+function deleteDoc (model, doc) {
+  navigateToDataEdit(model, doc)
+  cy.get('.data-form a.delete').click()
+  cy.location('href').should('match', new RegExp(`/data/${model.coll}$`))
+  cy.get('.alert-success').contains('Deleted')
+  cy.get(`tr.${model.coll}-${doc.id} a.edit-data`).should('not.exist')
+}
+
+function deleteModel (model) {
+  navigateToModelEdit(model)
+  cy.get('form.models-form a.delete').click()
+  cy.location('href').should('match', /\/models$/)
+  cy.get('.alert-success').contains('Deleted')
+}
+
+function deleteCurrentSpace (user) {
+  navigateToAccount(user)
+  cy.get('a.space-link.current-space').click()
+  cy.location('href').should('match', /\/spaces\/[^/]+\/edit$/)
+  cy.get('form.spaces-form a.delete').click()
+  cy.location('href').should('match', /\/accounts\/[^/]+\/edit$/)
+  cy.get('.alert-success').contains(/Deleted/i)
+}
+
 function register (email, password, accountName) {
   cy.visit('/')
   cy.location('href').should('match', /#\/login$/)
@@ -189,8 +272,18 @@ const commands = [
   waitForSave,
   navigateHome,
   createModel,
+  verifyModelCreated,
   saveDataForm,
-  createData
+  saveModelForm,
+  createData,
+  clickDataList,
+  navigateToAccount,
+  navigateToModelEdit,
+  navigateToDataEdit,
+  verifyDataCreated,
+  deleteDoc,
+  deleteModel,
+  deleteCurrentSpace
 ]
 for (let command of commands) {
   Cypress.Commands.add(command.name, command)

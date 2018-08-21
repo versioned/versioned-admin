@@ -2,7 +2,7 @@
   <div>
     <h1>New Space</h1>
 
-    <form class="space-form" @submit.prevent="save">
+    <form class="spaces-form" @submit.prevent="save">
       <div class="form-group">
         <label for="name">Account:</label>
         {{account.name}}

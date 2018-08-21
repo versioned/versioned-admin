@@ -2,7 +2,7 @@
   <div>
     <h1>Space Config</h1>
 
-    <form class="space-form" @submit.prevent="save">
+    <form class="spaces-form" @submit.prevent="save">
       <div class="form-group" v-if="!currentSpace(space)">
         <a href="#" @click="makeCurrent()">Switch to this space</a>
       </div>
@@ -43,7 +43,7 @@
       </div>
 
       <input type="submit" class="btn btn-primary" value="Save" />
-      <a v-if="space.id" href="#" @click.prevent="remove()">Delete</a>
+      <a v-if="space.id" href="#" @click.prevent="remove()" class="delete">Delete</a>
     </form>
   </div>
 </template>
@@ -102,7 +102,7 @@ export default {
         try {
           await Space(this.accountId).remove(this.space.id)
           await session.refresh()
-          Alert.setNext('success', `Space ${this.space.name} removed`)
+          Alert.setNext('success', `Space ${this.space.name} deleted`)
           router.push(this.accountUrl())
         } catch (error) {
           Alert.set('warning', 'Could not delete space')

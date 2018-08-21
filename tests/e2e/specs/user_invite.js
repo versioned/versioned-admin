@@ -22,16 +22,6 @@ const existingUser = {
   accountName: `Existing Company ${userId}`
 }
 
-function navigateToAccount (user) {
-  cy.get('.user-profile').click()
-  cy.get('input#email').should('have.value', user.email)
-  if (user.role === 'admin') {
-    cy.get('.account-link.current-account').click()
-  } else {
-    cy.get('.account-link').should('not.exist')
-  }
-}
-
 const ACCOUNT_URL_PATTERN = new RegExp(`/#/accounts/([^/]+)/edit`)
 const INVITE_URL_PATTERN = new RegExp(`/#/accounts/([^/]+)/invite-user/([^/]+)`)
 
@@ -64,7 +54,7 @@ function acceptInvite (user) {
   cy.get('form.user-invite-accept input[type=submit]').click()
   cy.location('href').should('match', /\/#\/$/)
 
-  navigateToAccount(user)
+  cy.navigateToAccount(user)
 }
 
 describe('User Invite', () => {
@@ -73,7 +63,7 @@ describe('User Invite', () => {
   })
 
   it('Invite a new user to the account', () => {
-    navigateToAccount(user)
+    cy.navigateToAccount(user)
 
     cy.location('href').should('match', ACCOUNT_URL_PATTERN)
       .then((location) => {
@@ -118,13 +108,13 @@ describe('User Invite', () => {
 
   it('Log back in as first user, remove user, invite existing user', () => {
     cy.login(user.email, user.password)
-    navigateToAccount(user)
+    cy.navigateToAccount(user)
 
     cy.get('.users-list li').should('have.length', 2)
     cy.get('a.remove-user').click()
     cy.get('.account-form input[type=submit]').click()
 
-    navigateToAccount(user)
+    cy.navigateToAccount(user)
     cy.get('.users-list li').should('have.length', 1)
 
     inviteUser(existingUser)
@@ -140,13 +130,13 @@ describe('User Invite', () => {
 
   it('Log back in as first user, remove existing user and invite again', () => {
     cy.login(user.email, user.password)
-    navigateToAccount(user)
+    cy.navigateToAccount(user)
 
     cy.get('.users-list li').should('have.length', 2)
     cy.get('a.remove-user').click()
     cy.get('.account-form input[type=submit]').click()
 
-    navigateToAccount(user)
+    cy.navigateToAccount(user)
     cy.get('.users-list li').should('have.length', 1)
 
     inviteUser(existingUser)
@@ -159,7 +149,7 @@ describe('User Invite', () => {
     cy.visit(acceptInviteUrl(existingUser))
     cy.location('href').should('match', /\/#\/$/)
 
-    navigateToAccount(existingUser)
+    cy.navigateToAccount(existingUser)
 
     cy.get('.user-profile').click()
     cy.get('ul.accounts li').should('have.length', 2)

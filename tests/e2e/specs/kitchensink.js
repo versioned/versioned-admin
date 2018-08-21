@@ -1,8 +1,8 @@
 // https://docs.cypress.io/api/introduction/api.html
 
 import u from '../support/util'
-import {truncated} from '../support/client_util'
 import data from '../support/kitchensink_data'
+import {Model, TITLE_FIELD} from '../support/test_util'
 
 const userId = u.uuid()
 const user = {
@@ -10,11 +10,6 @@ const user = {
   password: 'admin'
 }
 const accountName = `Company ${userId}`
-
-const TITLE_FIELD = {
-  name: 'Title',
-  type: 'string'
-}
 
 const Article = Model({
   name: 'Article',
@@ -125,71 +120,10 @@ const Category = Model({
   ]
 })
 
-function Model (model) {
-  const modelDefaults = {
-    coll: u.dbFriendly(model.name)
-  }
-  const fieldDefaults = {
-    category: 'data',
-    type: 'string'
-  }
-  function fieldsWithDefaults (fields) {
-    return (fields || []).map((field) => {
-      const key = u.dbFriendly(field.name)
-      return Object.assign({key}, fieldDefaults, field)
-    })
-  }
-  return Object.assign({}, modelDefaults, model, {
-    fields: fieldsWithDefaults(model.fields),
-    expectedFields: fieldsWithDefaults(model.expectedFields)
-  })
-}
-
-function stringify (value) {
-  const stringValue = (u.isArray(value) ? value.join(', ') : value)
-  return truncated(stringValue)
-}
-
-function clickDataList (model) {
-  cy.navigateHome()
-  cy.get(`tr.models-row.${model.coll} a.data-list`).click({force: true})
-  cy.location('href').should('match', new RegExp(`#\/data\/${model.coll}$`))
-}
-
-function navigateToDataEdit (model, doc) {
-  clickDataList(model)
-  cy.get(`tr.${model.coll}-${doc.id} a.edit-data`).click({force: true})
-}
-
-function verifyDocCreated (model, doc) {
-  console.log(`verifyDocCreated for model=${model.name}`, doc)
-  clickDataList(model)
-  const scope = `tr.${model.coll}-${doc.id}`
-  Object.entries(doc).filter(([key, _]) => key !== 'id').forEach(([key, value]) => {
-    cy.get(`${scope} .field-${key}`).contains(stringify(value))
-  })
-  cy.get(`${scope} a.edit-data`).click({force: true})
-  model.fields.filter(f => doc[f.key]).forEach((field) => {
-    const value = doc[field.key]
-    const scope = `.data-field-${field.key}`
-    if (field.category === 'data' && ['string', 'text'].includes(field.type)) {
-      cy.get(`${scope} .form-control`).should('have.value', value)
-    } else {
-      u.array(value).forEach((item) => {
-        cy.get(`${scope} .selected-results li`).should('contain', item)
-      })
-    }
-  })
-}
-
-function verifyDataCreated (model) {
-  data[model.name].forEach(doc => verifyDocCreated(model, doc))
-}
-
 function updateArticleData () {
   const model = Article
   const doc = data[model.name][0]
-  navigateToDataEdit(Article, doc)
+  cy.navigateToDataEdit(Article, doc)
 
   cy.log('Make changes')
   const EDIT = ' EDIT'
@@ -202,7 +136,7 @@ function updateArticleData () {
 
   cy.log('Save form and navigate back (refresh)')
   cy.saveDataForm()
-  navigateToDataEdit(Article, doc)
+  cy.navigateToDataEdit(Article, doc)
 
   cy.log('Verify changes')
   cy.get('.version').should('have.text', '1')
@@ -220,7 +154,7 @@ function updateArticleData () {
 
   cy.log('Save form and navigate back (refresh)')
   cy.saveDataForm()
-  navigateToDataEdit(Article, doc)
+  cy.navigateToDataEdit(Article, doc)
 
   cy.log('verify changes (slot/category should be there again)')
   cy.get('.version').should('contain', '1')
@@ -233,7 +167,7 @@ function publishArticleData () {
   const model = Article
   const doc = data[model.name][1]
 
-  navigateToDataEdit(Article, doc)
+  cy.navigateToDataEdit(Article, doc)
   cy.get('.version').should('have.text', '1')
   cy.get('.published-version').should('not.exist')
   cy.get('.publish-status').first().should('have.text', 'Not Yet Published')
@@ -265,7 +199,7 @@ function publishArticleData () {
   cy.get('.versions li').should('have.length', 2)
 
   cy.log('Navigate away and back and check changes have persisted')
-  navigateToDataEdit(Article, doc)
+  cy.navigateToDataEdit(Article, doc)
   cy.get('.version').should('have.text', '2')
   cy.get('.published-version').should('have.text', '2')
 }
@@ -322,7 +256,7 @@ describe('Kitchensink', () => {
   })
 
   it('Verify Article data created', () => {
-    verifyDataCreated(Article)
+    cy.verifyDataCreated(Article, data[Article.name])
   })
 
   it('Update Article data', () => {
