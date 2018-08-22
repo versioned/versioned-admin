@@ -1,5 +1,5 @@
 <template>
-  <models-list v-if="currentSpace()"></models-list>
+  <models-list v-if="hasCurrentSpace()"></models-list>
 </template>
 
 <script>

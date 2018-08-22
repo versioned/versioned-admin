@@ -220,7 +220,7 @@ describe('Kitchensink', () => {
   })
 
   it('Check company name in Navbar', () => {
-    cy.get('.brand').should('contain', accountName)
+    cy.get('.brand').should('contain', 'Versioned')
   })
 
   it('Create Article model', () => {

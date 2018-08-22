@@ -9,7 +9,7 @@ export function isAdmin () {
   return session.isAdmin()
 }
 
-export function currentSpace () {
+export function hasCurrentSpace () {
   return u.notEmpty(session.get('space'))
 }
 
@@ -22,6 +22,6 @@ export function title (schema, doc) {
 export default {
   isLoggedIn,
   isAdmin,
-  currentSpace,
+  hasCurrentSpace,
   title
 }

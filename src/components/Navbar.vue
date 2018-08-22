@@ -8,16 +8,23 @@
 
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
           <ul class="navbar-nav mr-auto" v-show="$store.state.login">
+            <li class="nav-item dropdown" v-if="spaces().length > 0 && hasCurrentSpace()">
+              <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{currentSpace().name}}</a>
+              <div class="dropdown-menu" aria-labelledby="dropdown01">
+                <a class="dropdown-item" v-for="space in spaces()" href="#" @click="makeCurrentSpace(space)">{{space.name}}</a>
+              </div>
+            </li>
+
             <li class="nav-item">
-              <router-link class="nav-link" to="/models" v-show="currentSpace()">Models</router-link>
+              <router-link class="nav-link" to="/models" v-show="hasCurrentSpace()">Models</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" to="/changelog" v-show="currentSpace()">Changelog</router-link>
+              <router-link class="nav-link" to="/changelog" v-show="hasCurrentSpace()">Changelog</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" to="/api" v-show="currentSpace()">API</router-link>
+              <router-link class="nav-link" to="/api" v-show="hasCurrentSpace()">API</router-link>
             </li>
-            <li class="nav-item" v-show="isAdmin() && currentSpace()">
+            <li class="nav-item" v-show="isAdmin() && hasCurrentSpace()">
               <router-link class="nav-link" to="/config">Space Config</router-link>
             </li>
             <!-- <li class="nav-item">
@@ -58,17 +65,27 @@
 </template>
 
 <script>
+import u from '@/util'
 import session from '@/services/session'
+import router from '@/router'
 
 export default {
   methods: {
+    currentSpace () {
+      return session.get('space') || {}
+    },
+    spaces () {
+      const currentAccount = (session.get('user.accounts') || []).find(a => a.id === this.currentSpace().accountId)
+      return u.getIn(currentAccount, 'spaces', []).filter(s => s.id !== this.currentSpace().id)
+    },
+    makeCurrentSpace (space) {
+      const account = (session.get('user.accounts') || []).find(a => a.id === space.accountId)
+      session.set(u.merge(session.get(), {account}))
+      session.set(u.merge(session.get(), {space}))
+      router.go(router.currentRoute)
+    },
     brand () {
-      const spaceName = session.get('space.name')
-      if (spaceName) {
-        return spaceName
-      } else {
-        return process.env.VUE_APP_NAME || 'Versioned'
-      }
+      return process.env.VUE_APP_NAME || 'Versioned'
     },
     userEmail () {
       return session.get('user.email')
