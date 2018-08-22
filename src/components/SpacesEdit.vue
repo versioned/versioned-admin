@@ -26,10 +26,10 @@
         <h4>Dedicated Database and Search</h4>
 
         <div class="form-group">
-          <label for="databaseUrl">Database URL (MongoDB)</label>
-          <input type="text" v-model="space.databaseUrl" class="form-control" id="databaseUrl" v-bind:class="{ 'is-invalid': errors.databaseUrl}"/>
+          <label for="mongodbUrl">MongoDB URL</label>
+          <input type="text" v-model="space.mongodbUrl" class="form-control" id="mongodbUrl" v-bind:class="{ 'is-invalid': errors.mongodbUrl}"/>
           <div class="invalid-feedback">
-            {{errors.databaseUrl}}
+            {{errors.mongodbUrl}}
           </div>
         </div>
 
