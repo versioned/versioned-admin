@@ -49,13 +49,13 @@
           </div>
         </div>
 
-        <div class="form-group">
+        <!-- <div class="form-group">
           <label for="algoliaIndexName">Algolia Index Name</label>
           <input type="text" v-model="space.algoliaIndexName" class="form-control" id="algoliaIndexName" v-bind:class="{ 'is-invalid': errors.algoliaIndexName}"/>
           <div class="invalid-feedback">
             {{errors.algoliaIndexName}}
           </div>
-        </div>
+        </div> -->
       </div>
 
       <div class="form-group">
