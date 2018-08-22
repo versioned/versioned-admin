@@ -14,9 +14,9 @@ function filters (customFilter, spaceId) {
 }
 
 function create (options = {}) {
-  const applicationId = u.getIn(options, 'space.config.ALGOLIASEARCH_APPLICATION_ID') || process.env.VUE_APP_ALGOLIASEARCH_APPLICATION_ID
-  const apiKey = u.getIn(options, 'space.config.ALGOLIASEARCH_API_KEY') || u.getIn(options, 'space.algoliaApiKey')
-  const indexName = u.getIn(options, 'space.config.ALGOLIASEARCH_INDEX_NAME') || u.getIn(options, 'space.algoliaIndexName')
+  const applicationId = u.getIn(options, 'space.algoliaApplicationId') || process.env.VUE_APP_ALGOLIASEARCH_APPLICATION_ID
+  const apiKey = u.getIn(options, 'space.algoliaApiKey') || u.getIn(options, 'space.algoliaSharedApiKey')
+  const indexName = u.getIn(options, 'space.algoliaIndexName') || u.getIn(options, 'space.algoliaSharedIndexName')
   const spaceId = u.getIn(options, 'space.id')
   const baseUrl = `https://${applicationId}.algolia.net`
   const headers = {

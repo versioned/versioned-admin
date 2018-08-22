@@ -22,24 +22,44 @@
         </div>
       </div>
 
+      <div class="form-group card p-3">
+        <h4>Dedicated Database and Search</h4>
+
+        <div class="form-group">
+          <label for="databaseUrl">Database URL (MongoDB)</label>
+          <input type="text" v-model="space.databaseUrl" class="form-control" id="databaseUrl" v-bind:class="{ 'is-invalid': errors.databaseUrl}"/>
+          <div class="invalid-feedback">
+            {{errors.databaseUrl}}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="algoliaApplicationId">Algolia Application ID</label>
+          <input type="text" v-model="space.algoliaApplicationId" class="form-control" id="algoliaApplicationId" v-bind:class="{ 'is-invalid': errors.algoliaApplicationId}"/>
+          <div class="invalid-feedback">
+            {{errors.algoliaApplicationId}}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="algoliaApiKey">Algolia API Key</label>
+          <input type="text" v-model="space.algoliaApiKey" class="form-control" id="algoliaApiKey" v-bind:class="{ 'is-invalid': errors.algoliaApiKey}"/>
+          <div class="invalid-feedback">
+            {{errors.algoliaApiKey}}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="algoliaIndexName">Algolia Index Name</label>
+          <input type="text" v-model="space.algoliaIndexName" class="form-control" id="algoliaIndexName" v-bind:class="{ 'is-invalid': errors.algoliaIndexName}"/>
+          <div class="invalid-feedback">
+            {{errors.algoliaIndexName}}
+          </div>
+        </div>
+      </div>
+
       <div class="form-group">
         TODO: webhook URL
-      </div>
-
-      <div class="form-group">
-        TODO: spaces.config.ALGOLIASEARCH_APPLICATION_ID
-      </div>
-
-      <div class="form-group">
-        TODO: spaces.config.ALGOLIASEARCH_API_KEY
-      </div>
-
-      <div class="form-group">
-        TODO: spaces.config.ALGOLIASEARCH_INDEX_NAME
-      </div>
-
-      <div class="form-group">
-        TODO: spaces.databaseUrl
       </div>
 
       <input type="submit" class="btn btn-primary" value="Save" />
