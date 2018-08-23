@@ -9,8 +9,6 @@ const user = {
 }
 const accountName = `Company ${userId}`
 
-const wait = 5000 // NOTE: the suite would fail in headless mode without this wait
-
 const Article = Model({
   name: 'Article',
   fields: [
@@ -99,33 +97,5 @@ describe('On Delete Cascade', () => {
 
   it('Attempt to delete author - both author and article should now be gone', () => {
     cy.deleteDoc(Author, author)
-  })
-
-  it('Create author again', () => {
-    cy.createData(Author, [author], {wait})
-  })
-
-  it('Create article again', () => {
-    cy.createData(Article, [article], {wait})
-  })
-
-  it('Delete Author model', () => {
-    cy.deleteModel(Author)
-  })
-
-  it('Delete Article model', () => {
-    cy.deleteModel(Article)
-  })
-
-  it('Create Author model again', () => {
-    cy.createModel(Author, {verify: false})
-  })
-
-  it('Create author again', () => {
-    cy.createData(Author, [author])
-  })
-
-  it('Delete Space', () => {
-    cy.deleteCurrentSpace(user)
   })
 })
