@@ -110,6 +110,8 @@ export default {
     },
     async save () {
       try {
+        this.errors = {}
+        Alert.clear()
         await Space(this.accountId).update(this.space)
         await session.refresh()
         Alert.setBoth('success', 'Saved')

@@ -50,6 +50,8 @@ export default {
       this.space.accountId = this.account.id
     },
     save: async function () {
+      this.errors = {}
+      Alert.clear()
       try {
         this.space = await Space(this.account.id).create(this.space)
         await session.refresh()
