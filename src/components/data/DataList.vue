@@ -114,8 +114,8 @@ export default {
   },
   methods: {
     getModels () {
-      const accountId = u.getIn(session.get(), 'account.id')
-      Model(accountId).list().then(body => {
+      const spaceId = u.getIn(session.get(), 'space.id')
+      Model(spaceId).list().then(body => {
         // this.swagger = swagger
         // this.schemas = Swagger.schemas(swagger)
         this.models = body.data

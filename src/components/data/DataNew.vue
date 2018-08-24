@@ -29,9 +29,9 @@ export default {
     DataForm
   },
   created () {
-    const accountId = u.getIn(session.get(), 'account.id')
+    const spaceId = u.getIn(session.get(), 'space.id')
     const params = {'filter.coll': this.$route.params.model}
-    Model(accountId).list({params}).then(({data}) => {
+    Model(spaceId).list({params}).then(({data}) => {
       if (data.length > 0) {
         const model = data[0]
         this.model = model.coll

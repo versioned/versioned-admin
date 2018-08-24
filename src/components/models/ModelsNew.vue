@@ -31,8 +31,8 @@ export default {
   methods: {
     save: async function (model) {
       try {
-        const accountId = u.getIn(session.get(), 'account.id')
-        const createdModel = await Model(accountId).create(model)
+        const spaceId = u.getIn(session.get(), 'space.id')
+        const createdModel = await Model(spaceId).create(model)
         router.push(`/models/${createdModel.id}/edit`)
         Alert.setBoth('Saved')
       } catch (error) {

@@ -72,11 +72,9 @@ export default {
   },
   methods: {
     fetchChangelog () {
-      const accountId = u.getIn(session.get(), 'account.id')
       const spaceId = u.getIn(session.get(), 'space.id')
-      const params = {'filter.spaceId': spaceId}
-      const changelog = Changelog({accountId})
-      changelog.list({params})
+      const changelog = Changelog({spaceId})
+      changelog.list()
         .then(({data}) => {
           this.changelog = data
           this.deleted = data.reduce((acc, item) => {

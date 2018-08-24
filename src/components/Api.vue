@@ -73,11 +73,10 @@ export default {
   },
   methods: {
     async getData () {
-      const accountId = u.getIn(session.get(), 'account.id')
       const spaceId = u.getIn(session.get(), 'space.id')
       const params = {sort: 'name'}
       this.apiKey = u.getIn(session.get(), 'space.apiKey')
-      this.models = (await Model(accountId).list({params})).data
+      this.models = (await Model(spaceId).list({params})).data
       this.dbStats = await DbStats(spaceId).get()
       this.examples = await this.getExamples()
     },

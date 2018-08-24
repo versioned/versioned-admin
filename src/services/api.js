@@ -18,11 +18,11 @@ function urlWithQuery (url, query) {
 }
 
 function listPath (contentType, options = {}) {
-  const {accountId, spaceId} = (getIn(options, 'scope') || {})
-  if (spaceId) {
+  const {data, accountId, spaceId} = (getIn(options, 'scope') || {})
+  if (data) {
     return `/data/${spaceId}/${contentType}`
-  } else if (accountId) {
-    return `/${accountId}/${contentType}`
+  } else if (spaceId || accountId) {
+    return `/${spaceId || accountId}/${contentType}`
   } else {
     return `/${contentType}`
   }

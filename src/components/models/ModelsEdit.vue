@@ -30,16 +30,16 @@ export default {
   },
   methods: {
     getModel: async function () {
-      const accountId = u.getIn(session.get(), 'account.id')
-      const model = await Model(accountId).get(this.$route.params.id)
+      const spaceId = u.getIn(session.get(), 'space.id')
+      const model = await Model(spaceId).get(this.$route.params.id)
       const fields = ModelsForm.methods.getFields(model)
       this.model = u.merge(model, {fields})
     },
     save: async function (model) {
       Alert.clear()
       try {
-        const accountId = u.getIn(session.get(), 'account.id')
-        const updatedModel = await Model(accountId).update(model)
+        const spaceId = u.getIn(session.get(), 'space.id')
+        const updatedModel = await Model(spaceId).update(model)
         if (updatedModel) {
           Alert.setBoth('Saved')
         } else {
@@ -51,8 +51,8 @@ export default {
     },
     remove: async function (model) {
       if (confirm('Are you sure?')) {
-        const accountId = u.getIn(session.get(), 'account.id')
-        await Model(accountId).remove(model.id)
+        const spaceId = u.getIn(session.get(), 'space.id')
+        await Model(spaceId).remove(model.id)
         Alert.setNext('Deleted')
         router.push(`/models`)
       }
