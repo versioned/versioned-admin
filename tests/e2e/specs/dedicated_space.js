@@ -19,7 +19,16 @@ const dedicatedSpace = {
 const Article = Model({
   name: 'Article',
   fields: [
-    TITLE_FIELD
+    TITLE_FIELD,
+    {
+      name: 'Author',
+      category: 'two-way-relationship',
+      relationship: {
+        toType: 'author',
+        toField: 'articles',
+        type: 'many-to-one'
+      }
+    }
   ]
 })
 
@@ -29,15 +38,6 @@ const Author = Model({
     {
       name: 'Name',
       type: 'string'
-    },
-    {
-      name: 'Articles',
-      category: 'two-way-relationship',
-      relationship: {
-        type: 'one-to-many',
-        toType: 'article',
-        toField: 'author'
-      }
     }
   ]
 })
