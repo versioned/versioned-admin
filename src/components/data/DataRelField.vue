@@ -9,7 +9,7 @@
     <model-list-select v-show="showSelect()"
                        :list="results"
                        option-value="id"
-                       option-text="title"
+                       option-text="_title"
                        v-model="selected"
                        :placeholder="placeholder"
                        @searchchange="search">

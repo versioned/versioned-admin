@@ -12,7 +12,7 @@
       </div>
     </div>
 
-    <div class="rows-count" v-if="count === 0">
+    <div class="rows-count" v-if="count === 0 && !$store.state.loading">
       No models created yet
     </div>
 

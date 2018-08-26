@@ -54,7 +54,7 @@ function clickNewModel () {
 }
 
 function waitForSave () {
-  cy.get('.alert-success').contains('Saved')
+  cy.get('.alert-success').contains(/Saved/i)
 }
 
 function saveModelForm () {
@@ -130,6 +130,21 @@ function addModelField (field, index) {
   }
   if (field.required) {
     cy.get(`${scope} input.required`).click({force: true})
+  }
+}
+
+function createSpace (user, space) {
+  navigateToAccount(user)
+  cy.get('a.new-space').click()
+  cy.get('.spaces-form input#name').type(space.name)
+  cy.get('.spaces-form input[type=submit]').click()
+  waitForSave()
+  if (space.mongodbUrl) {
+    ['mongodbUrl', 'algoliaApplicationId', 'algoliaApiKey'].forEach(key => {
+      cy.get(`.spaces-form input#${key}`).type(space[key], {force: true})
+    })
+    cy.get('.spaces-form input[type=submit]').click()
+    waitForSave()
   }
 }
 
@@ -273,6 +288,7 @@ const commands = [
   login,
   waitForSave,
   navigateHome,
+  createSpace,
   createModel,
   verifyModelCreated,
   saveDataForm,

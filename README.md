@@ -59,7 +59,21 @@ See [@vue/cli-plugin-unit-jest](https://github.com/vuejs/vue-cli/tree/dev/packag
 
 ## End-to-End/Integration Tests
 
-Setup:
+The dedicated_space.js spec requires these environment variables:
+
+```
+  CYPRESS_MONGODB_URL
+  CYPRESS_ALGOLIASEARCH_APPLICATION_ID
+  CYPRESS_ALGOLIASEARCH_API_KEY
+```
+
+Running:
+
+```
+yarn test:e2e --headless
+```
+
+How Cypress tests were added to the project:
 
 ```
 vue add @vue/e2e-cypress
@@ -76,12 +90,6 @@ tests/e2e/support/commands.js
 tests/e2e/support/index.js
 package.json
 yarn.lock
-```
-
-Running:
-
-```
-yarn test:e2e --headless
 ```
 
 ## Resources
