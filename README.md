@@ -67,10 +67,22 @@ The dedicated_space.js spec requires these environment variables:
   CYPRESS_ALGOLIASEARCH_API_KEY
 ```
 
-Running:
+Running in the browser (all specs or single spec):
+
+```
+yarn test:e2e
+```
+
+Running headless:
 
 ```
 yarn test:e2e --headless
+```
+
+Running single spec headless:
+
+```
+yarn test:e2e --headless --spec tests/e2e/specs/dedicated_space.js
 ```
 
 How Cypress tests were added to the project:
