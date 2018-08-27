@@ -56,10 +56,10 @@
 </template>
 
 <script>
-import u from '@/util'
 import session from '@/services/session'
 import User from '@/services/user'
 import Alert from '@/services/alert'
+import FormUtil from '@/form_util'
 
 export default {
   data: () => {
@@ -93,20 +93,7 @@ export default {
         await User.update(this.user)
         Alert.setBoth('success', 'Saved')
       } catch (error) {
-        if (error.status === 422) {
-          if (u.notEmpty(error.errors)) {
-            this.baseErrors = u.filter(error.errors, e => u.nil(e.field))
-            this.errors = error.errors.reduce((acc, error) => {
-              if (error.field) {
-                acc[error.field] = error.message
-              }
-              return acc
-            }, {})
-          }
-          Alert.set('warning', `Could not save user profile. Please fix the erorrs in the form and try again`)
-        } else {
-          Alert.set('warning', `Could not save user profile. Please try again (status=${error.status})`)
-        }
+        this.errors = FormUtil.handleError(error)
       }
     }
   }

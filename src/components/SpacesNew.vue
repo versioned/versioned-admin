@@ -22,12 +22,12 @@
 </template>
 
 <script>
-import u from '@/util'
 import router from '@/router'
 import session from '@/services/session'
 import Account from '@/services/account'
 import Space from '@/services/space'
 import Alert from '@/services/alert'
+import FormUtil from '@/form_util'
 
 export default {
   data: () => {
@@ -58,20 +58,7 @@ export default {
         Alert.setNext('success', `Space ${this.space.name} saved. <a href="/#/models/new">Create a model</a>`)
         router.push(`/accounts/${this.space.accountId}/spaces/${this.space.id}/edit?makeCurrent=1`)
       } catch (error) {
-        if (error.status === 422) {
-          if (u.notEmpty(error.errors)) {
-            this.baseErrors = u.filter(error.errors, e => u.nil(e.field))
-            this.errors = error.errors.reduce((acc, error) => {
-              if (error.field) {
-                acc[error.field] = error.message
-              }
-              return acc
-            }, {})
-          }
-          Alert.set('errors', {title: `Could not save space. Please fix the erorrs in the form and try again`, errors: error.errors})
-        } else {
-          Alert.set('warning', `Could not save space. Please try again`)
-        }
+        this.errors = FormUtil.handleError(error)
       }
     }
   }

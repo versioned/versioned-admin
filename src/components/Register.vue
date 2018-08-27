@@ -49,6 +49,7 @@ import Account from '@/services/account'
 import Space from '@/services/space'
 import Alert from '@/services/alert'
 import router from '@/router'
+import FormUtil from '@/form_util'
 
 export default {
   data: () => {
@@ -61,7 +62,6 @@ export default {
         name: ''
       },
       errors: {},
-      baseErrors: [],
       userCreated: false,
       accountCreated: false
     }
@@ -96,23 +96,7 @@ export default {
         Alert.setNext(messages.join('. '))
         router.push('/')
       } catch (error) {
-        if (error.status === 500) {
-          Alert.set('warning', 'We are having technical difficulties. Please try again!')
-        } else if (error.status === 422) {
-          if (u.notEmpty(error.errors)) {
-            this.baseErrors = u.filter(error.errors, e => u.nil(e.field))
-            this.errors = error.errors.reduce((acc, error) => {
-              if (error.field) {
-                const name = (error.field === 'name' ? 'accountName' : error.field)
-                acc[name] = error.message
-              }
-              return acc
-            }, {})
-          }
-          Alert.set('warning', `Registration failed. Please fix the erorrs in the form and try again`)
-        } else {
-          Alert.set('warning', `Registration failed. Please try again`)
-        }
+        this.errors = u.rename(FormUtil.handleError(error), {name: 'accountName'})
       }
     }
   }
