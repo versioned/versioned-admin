@@ -46,6 +46,7 @@
             </li> -->
           </ul>
           <li v-show="$store.state.login" class="logged-in-user">
+            <router-link class="search" to="/search">Search</router-link> |
             <router-link class="user-profile" to="/profile">User Profile</router-link> |
             <a href="#" class="logout" data-toggle="tooltip" title="Logga ut" @click.prevent="logout">
               Logout

@@ -4,6 +4,7 @@ import guards from '@/router/guards'
 import PageNotFound from '@/components/PageNotFound'
 import Home from '@/components/Home'
 import Changelog from '@/components/Changelog'
+import SearchPage from '@/components/SearchPage'
 import Api from '@/components/Api'
 import Profile from '@/components/Profile'
 import AccountsEdit from '@/components/AccountsEdit'
@@ -37,6 +38,11 @@ const router = new Router({
       path: '/changelog',
       name: 'Changelog',
       component: Changelog
+    },
+    {
+      path: '/search',
+      name: 'Search',
+      component: SearchPage
     },
     {
       path: '/api',

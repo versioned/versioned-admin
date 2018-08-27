@@ -6,21 +6,29 @@
       <input type="text" ref="query" v-model="query"/>
     </div>
 
-    <div class="row" v-if="results.length > 0">
+    <div class="row" v-if="results && results.length > 0">
       <table class="table table-striped">
         <thead>
           <tr>
-            <th>ID</th>
             <th>Title</th>
+            <th>Type</th>
+            <th>Created At</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="doc in results" v-bind:key="doc">
+          <tr v-for="doc in results" v-bind:key="doc.objectID">
             <td>
-              {{doc.objectID}}
+              <router-link v-if="editUrl(doc)" :to="editUrl(doc)">
+                {{doc._title}}
+              </router-link>
+              <span v-else>{{doc._title}}</span>
             </td>
             <td>
-              {{doc.title}}
+              {{doc.type}}
+            </td>
+            <td>
+                {{doc.createdAt | date('YYYY-MM-DD hh:mm') }}<br />
+                ({{doc.createdAt | timeAgo}})
             </td>
           </tr>
         </tbody>
@@ -30,7 +38,9 @@
 </template>
 
 <script>
+import u from '@/util'
 import Search from '@/services/search'
+import session from '@/services/session'
 
 export default {
   data () {
@@ -40,12 +50,23 @@ export default {
     }
   },
   mounted () {
+    const space = u.getIn(session.get(), 'space')
     this.$refs.query.focus()
     this.$watch('query', () => {
-      Search.search(this.query).then((data) => {
-        this.results = data.hits
+      Search({space}).search(this.query).then((data) => {
+        const results = u.getIn(data, 'data.hits')
+        if (results) this.results = results
       })
     })
+  },
+  methods: {
+    editUrl (doc) {
+      if (doc.type === 'models') {
+        return `/models/${doc.id}/edit`
+      } else {
+        return `/data/${doc.type}/${doc.id}/edit`
+      }
+    }
   }
 }
 </script>

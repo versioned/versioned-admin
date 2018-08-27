@@ -38,6 +38,9 @@ function create (options = {}) {
   }
 
   return {
+    applicationId,
+    apiKey,
+    indexName,
     search
   }
 }
