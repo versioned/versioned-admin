@@ -53,11 +53,11 @@
               {{relationships(model).join(', ')}}
             </td>
             <td>
-              {{(model.updatedAt || model.createdAt) | date('YYYY-MM-DD hh:mm') }}<br />
-              ({{(model.updatedAt || model.createdAt) | timeAgo}})
+              {{model.updatedAt | date('YYYY-MM-DD hh:mm') }}<br />
+              ({{model.updatedAt | timeAgo}})
             </td>
             <td>
-              {{(model.updatedBy || model.createdBy).email}}
+              {{model.updatedBy.email}}
             </td>
           </tr>
         </tbody>

@@ -56,11 +56,11 @@
               <publish-status :doc="doc"></publish-status>
             </td>
             <td>
-              {{(doc.updatedAt || doc.createdAt) | date('YYYY-MM-DD hh:mm') }}<br />
-              ({{(doc.updatedAt || doc.createdAt) | timeAgo}})
+              {{doc.updatedAt | date('YYYY-MM-DD hh:mm') }}<br />
+              ({{doc.updatedAt | timeAgo}})
             </td>
             <td>
-              {{(doc.updatedBy || doc.createdBy).email}}
+              {{doc.updatedBy.email}}
             </td>
           </tr>
         </tbody>
