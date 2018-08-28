@@ -59,7 +59,11 @@
       </div>
 
       <div class="form-group">
-        TODO: webhook URL
+        <label for="webhookUrl">Webhook URL</label>
+        <input type="text" v-model="space.webhookUrl" class="form-control" id="webhookUrl" v-bind:class="{ 'is-invalid': errors.webhookUrl}"/>
+        <div class="invalid-feedback">
+          {{errors.webhookUrl}}
+        </div>
       </div>
 
       <input type="submit" class="btn btn-primary" value="Save" />
