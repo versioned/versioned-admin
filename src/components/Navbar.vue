@@ -19,6 +19,9 @@
               <router-link class="nav-link" to="/models" v-show="hasCurrentSpace()">Models</router-link>
             </li>
             <li class="nav-item">
+              <router-link class="nav-link" to="/assets" v-show="hasCurrentSpace()">Assets</router-link>
+            </li>
+            <li class="nav-item">
               <router-link class="nav-link" to="/changelog" v-show="hasCurrentSpace()">Changelog</router-link>
             </li>
             <li class="nav-item">

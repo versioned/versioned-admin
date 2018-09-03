@@ -45,7 +45,7 @@
               <router-link v-if="canUpdate() && index === 0" :to="editUrl(doc)" class="edit-data">
                 {{stringify(attribute, doc[attribute.key]) || '[edit]'}}
               </router-link>
-              <span v-else-if="attribute.meta.relationship" v-html="relationshipLinks(attribute, doc)">
+              <span v-else-if="attribute.meta && attribute.meta.relationship" v-html="relationshipLinks(attribute, doc)">
               </span>
               <span v-else>
                 {{stringify(attribute, doc[attribute.key])}}

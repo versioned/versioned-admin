@@ -88,14 +88,11 @@ function help (key, propertySchema) {
 }
 
 function canReadProperty (propertySchema) {
-  return u.getIn(propertySchema, 'x-meta.admin') !== false &&
-    u.getIn(propertySchema, 'x-meta.admin_read') !== false
+  return u.getIn(propertySchema, 'x-meta.readable') !== false
 }
 
 function canWriteProperty (propertySchema) {
-  return u.getIn(propertySchema, 'x-meta.api_writable') !== false &&
-    u.getIn(propertySchema, 'x-meta.admin') !== false &&
-    u.getIn(propertySchema, 'x-meta.admin_write') !== false
+  return u.getIn(propertySchema, 'x-meta.writable') !== false
 }
 
 function attributes (schema, doc) {

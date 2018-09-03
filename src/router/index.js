@@ -24,6 +24,9 @@ import ModelsEdit from '@/components/models/ModelsEdit'
 import DataList from '@/components/data/DataList'
 import DataNew from '@/components/data/DataNew'
 import DataEdit from '@/components/data/DataEdit'
+import AssetsList from '@/components/AssetsList'
+import AssetsNew from '@/components/AssetsNew'
+import AssetsEdit from '@/components/AssetsEdit'
 
 Vue.use(Router)
 
@@ -161,6 +164,21 @@ const router = new Router({
       path: '/data/:model/:id/edit',
       name: 'Data Edit',
       component: DataEdit
+    },
+    {
+      path: '/assets',
+      name: 'Assets',
+      component: AssetsList
+    },
+    {
+      path: '/assets/new',
+      name: 'New Asset',
+      component: AssetsNew
+    },
+    {
+      path: '/assets/:id/edit',
+      name: 'Edit Asset',
+      component: AssetsEdit
     },
     {
       path: '*',

@@ -33,7 +33,7 @@
       <h2 :class="{'field-heading': true, 'required': field.required}">
         <a href="#" @click.prevent="toggleCollapsed(field.key)" class="expand-field">
           <span v-if="!field.name">Field {{index + 1}}</span>
-          <span v-else-if="field.category !== 'data'">
+          <span v-else-if="isRelationship(field)">
             {{field.name}} relationship
           </span>
           <span v-else>
@@ -79,6 +79,13 @@
               Two-way Relationship
             </label>
           </div>
+
+          <div class="form-check">
+            <input v-model="field.category" class="form-check-input sequence" type="radio" value="sequence">
+            <label class="form-check-label">
+              Integer Sequence (1, 2, 3...)
+            </label>
+          </div>
         </div>
 
         <div v-if="field.category === 'data'" class="form-group">
@@ -101,7 +108,7 @@
           </div>
         </div>
 
-        <div v-if="field.category !== 'data'" class="form-group required">
+        <div v-if="isRelationship(field)" class="form-group required">
           <label>Target model (key)</label>
           <input type="text" v-model="field.relationship.toType" :maxlength="COLL_LENGTH" @change="makeDbFriendly(field.relationship, 'toType')" class="form-control to-type" required/>
         </div>
@@ -159,10 +166,10 @@
           </div>
         </div>
 
-        <div v-if="field.category !== 'data'" class="form-group">
+        <!-- <div v-if="field.category !== 'data'" class="form-group">
           <label>Relationship name (if field key is "userId" then a good relationship name might be "user" - optional)</label>
           <input type="text" v-model="field.relationship.name" :maxlength="KEY_LENGTH" @change="makeDbFriendly(field.relationship, 'name')" class="form-control"/>
-        </div>
+        </div> -->
 
         <div class="form-group">
           <div v-if="field.category === 'data' && field.type !== 'text'" class="form-check">
@@ -171,7 +178,7 @@
               Array (multiple {{field.type}} values)
             </label>
           </div>
-          <div class="form-check">
+          <div v-if="field.category !== 'sequence'" class="form-check">
             <input v-model="field.required" class="form-check-input required" type="checkbox">
             <label class="form-check-label">
               Required
@@ -315,6 +322,9 @@ export default {
     setProperty (obj, property, value) {
       obj[property] = value
     },
+    isRelationship (field) {
+      return ['oneWayRelationship', 'twoWayRelationship'].includes(field.category)
+    },
     makeField (field = {}) {
       const defaults = {
         key: dbFriendly(field.name),
@@ -446,6 +456,7 @@ export default {
       let isArray = field.array
       const fieldType = field.type || 'string'
       let property = FIELD_TYPES_PROPERTIES[fieldType] || {}
+      let writable = true
       if (field.category === 'data') {
         if (field.hasValidation) {
           property = u.merge(property, u.evolve(field.validation, {
@@ -455,6 +466,10 @@ export default {
             pattern: (v) => v
           }))
         }
+      } else if (field.category === 'sequence') {
+        property.type = 'integer'
+        field.unique = true
+        writable = false
       } else {
         // Relationship
         property.type = 'string'
@@ -462,11 +477,14 @@ export default {
       }
       const xMeta = u.compact({
         unique: field.unique,
+        writable: (writable ? undefined : false),
         field: {
           name: field.name,
-          type: fieldType
+          type: fieldType,
+          category: field.category
         },
-        relationship: (field.category === 'data' ? undefined : field.relationship)
+        relationship: (this.isRelationship(field) ? field.relationship : undefined),
+        sequence: (field.category === 'sequence' ? true : undefined)
       })
       if (xMeta.relationship) {
         xMeta.relationship.onDelete = (field.cascade ? 'cascade' : null)
@@ -485,10 +503,13 @@ export default {
       const name = u.getIn(property, 'x-meta.field.name', capitalize(key))
       const defaults = FIELD_TYPES_PROPERTIES[type] || {}
       const relationship = u.getIn(property, 'x-meta.relationship')
+      const sequence = u.getIn(property, 'x-meta.sequence')
       const cascade = (u.getIn(property, 'x-meta.relationship.onDelete') === 'cascade')
       let category = 'data'
       if (relationship) {
         category = relationship.toField ? 'twoWayRelationship' : 'oneWayRelationship'
+      } else if (sequence) {
+        category = 'sequence'
       }
       return u.compact({
         name,

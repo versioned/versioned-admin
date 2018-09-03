@@ -9,7 +9,7 @@ import Alert from '@/services/alert'
 
 export default {
   created () {
-    Alert.setNext('warning', 'Page not found')
+    Alert.setNext('error', 'Page not found')
     router.push('/')
   }
 }

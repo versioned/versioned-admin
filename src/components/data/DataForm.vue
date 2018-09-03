@@ -98,7 +98,7 @@ export default {
   },
   computed: {
     readAttributes: function () {
-      if (this.doc && this.schema) {
+      if (u.getIn(this.doc, 'id') && this.schema) {
         return Swagger.readAttributes(this.schema, this.doc)
       } else {
         return null

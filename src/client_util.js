@@ -58,10 +58,18 @@ export function rootUrl (urlString) {
   return `${url.protocol}//${url.host}`
 }
 
+export function extract (value, pattern, options = {}) {
+  if (!value) return undefined
+  const group = options.group || 0
+  const match = value.toString().match(pattern)
+  return match && match[group]
+}
+
 export default {
   capitalize,
   timeAgo,
   debounce,
   truncated,
-  parseUrl
+  parseUrl,
+  extract
 }

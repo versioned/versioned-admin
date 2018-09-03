@@ -58,6 +58,26 @@
         </div> -->
       </div>
 
+      <div class="form-group card p-3">
+        <h4>Assets</h4>
+
+        <div class="form-group">
+          <label for="contentfulUrl">Contentful URL</label>
+          <input type="text" v-model="space.contentfulUrl" class="form-control" id="contentfulUrl" v-bind:class="{ 'is-invalid': errors.contentfulUrl}"/>
+          <div class="invalid-feedback">
+            {{errors.contentfulUrl}}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="contentfulPreset">Contentful Preset</label>
+          <input type="text" v-model="space.contentfulPreset" class="form-control" id="contentfulPreset" v-bind:class="{ 'is-invalid': errors.contentfulPreset}"/>
+          <div class="invalid-feedback">
+            {{errors.contentfulPreset}}
+          </div>
+        </div>
+      </div>
+
       <div class="form-group">
         <label for="webhookUrl">Webhook URL</label>
         <input type="text" v-model="space.webhookUrl" class="form-control" id="webhookUrl" v-bind:class="{ 'is-invalid': errors.webhookUrl}"/>
