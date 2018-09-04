@@ -31,7 +31,7 @@ export default {
   main {
     margin-bottom: 20px;
   }
-  .btn-primary {
+  .btn {
     margin-bottom: 10px;
   }
   .form-group.buttons {
