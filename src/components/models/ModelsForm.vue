@@ -172,7 +172,7 @@
         </div> -->
 
         <div class="form-group">
-          <div v-if="field.category === 'data' && field.type !== 'text'" class="form-check">
+          <div v-if="enabledField('array', field)" class="form-check">
             <input v-model="field.array" class="form-check-input" type="checkbox">
             <label class="form-check-label">
               Array (multiple {{field.type}} values)
@@ -292,6 +292,24 @@ const FIELD_TYPES_PROPERTIES = {
   date: {type: 'string', format: 'date-time'}
 }
 
+function textType (type, maxLength) {
+  return (type === 'string' || type === 'text') && maxLength && maxLength > FIELD_TYPES_PROPERTIES['string'].maxLength
+}
+
+function textField (field) {
+  return textType(field.type, u.getIn(field, 'validation.maxLength'))
+}
+
+function fieldType (property) {
+  if (textType(property.type, property.maxLength)) {
+    return 'text'
+  } else if (property.type === 'string' && property.format === 'date-time') {
+    return 'date'
+  } else {
+    return property.type
+  }
+}
+
 export default {
   props: ['model'],
   data: function () {
@@ -394,15 +412,17 @@ export default {
     },
     enabledField (fieldName, field) {
       if (fieldName === 'unique') {
-        return field.category === 'data' && !field.array && ['string', 'integer', 'number'].includes(field.type)
+        return field.category === 'data' && !field.array && ['string', 'integer', 'number'].includes(field.type) && !textField(field)
       } else if (fieldName === 'validation') {
         return field.category === 'data' && ['string', 'text', 'integer', 'number'].includes(field.type)
       } else if (fieldName.endsWith('minLength') || fieldName.endsWith('maxLength')) {
         return field.category === 'data' && (field.type === 'string' || field.type === 'text')
       } else if (fieldName === 'validation.pattern') {
-        return field.category === 'data' && field.type === 'string'
+        return field.category === 'data' && field.type === 'string' && !textField(field)
       } else if (fieldName === 'validation.enum') {
-        return field.category === 'data' && ['string', 'integer', 'number'].includes(field.type)
+        return field.category === 'data' && ['string', 'integer', 'number'].includes(field.type) && !textField(field)
+      } else if (fieldName === 'array') {
+        return field.category === 'data' && !textField(field)
       }
     },
     validatePattern (field) {
@@ -479,9 +499,7 @@ export default {
         unique: field.unique,
         writable: (writable ? undefined : false),
         field: {
-          name: field.name,
-          type: fieldType,
-          category: field.category
+          name: field.name
         },
         relationship: (this.isRelationship(field) ? field.relationship : undefined),
         sequence: (field.category === 'sequence' ? true : undefined)
@@ -499,7 +517,7 @@ export default {
       }))
     },
     propertyToField (key, property, required, titleProperty) {
-      const type = u.getIn(property, 'x-meta.field.type', property.type)
+      let type = fieldType(property)
       const name = u.getIn(property, 'x-meta.field.name', capitalize(key))
       const defaults = FIELD_TYPES_PROPERTIES[type] || {}
       const relationship = u.getIn(property, 'x-meta.relationship')
