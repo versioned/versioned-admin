@@ -17,7 +17,7 @@
 
     <input v-else-if="attribute.schema.type === 'boolean'" type="checkbox" v-model="doc[attribute.key]" @input="updateValue($event.target.value)"/>
 
-    <textarea v-else-if="attribute.field.type === 'text'" type="text" v-model="doc[attribute.key]" @input="updateValue($event.target.value)" class="form-control" rows="5"/>
+    <textarea v-else-if="isTextAttribute()" type="text" v-model="doc[attribute.key]" @input="updateValue($event.target.value)" class="form-control" rows="5"/>
 
     <data-rel-field v-else-if="attribute.relationship" :attribute="attribute" @fieldInput="updateValue($event)" :error="error"></data-rel-field>
 
@@ -50,6 +50,10 @@ export default {
     },
     isJsonField () {
       return !this.attribute.relationship && (this.attribute.schema.type === 'object' || this.attribute.schema.type === 'array')
+    },
+    isTextAttribute () {
+      const schema = this.attribute.schema
+      return schema.type === 'string' && schema.maxLength && schema.maxLength > 256
     },
     enumOptions () {
       return u.concat([null], this.attribute.schema.enum)

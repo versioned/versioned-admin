@@ -122,19 +122,19 @@
           <div class="form-check">
             <input class="form-check-input one-to-many" type="radio" v-model="field.relationship.type" value="one-to-many">
             <label class="form-check-label">
-              Multiple ID references ("has many" relationship, i.e. an array of string IDs)
+              Multiple ID references ("has many" relationship, i.e. an array of IDs)
             </label>
           </div>
           <div class="form-check">
             <input class="form-check-input many-to-one" type="radio" v-model="field.relationship.type" value="many-to-one">
             <label class="form-check-label">
-              Single ID reference ("belongs to" relationship, i.e. a single string ID)
+              Single ID reference ("belongs to" relationship, i.e. a single ID)
             </label>
           </div>
           <div class="form-check">
             <input class="form-check-input one-to-one" type="radio" v-model="field.relationship.type" value="one-to-one">
             <label class="form-check-label">
-              Single Unique ID reference ("belongs to" relationship, i.e. a single string ID)
+              Single Unique ID reference ("belongs to" relationship, i.e. a single ID)
             </label>
           </div>
         </div>
@@ -143,25 +143,25 @@
           <div class="form-check">
             <input class="form-check-input one-to-many" type="radio" v-model="field.relationship.type" value="one-to-many">
             <label class="form-check-label">
-              One to Many - multiple ID references (array of string IDs in this model, single string ID in target model)
+              One to Many - multiple ID references (array of IDs in this model, single ID in target model)
             </label>
           </div>
           <div class="form-check">
             <input class="form-check-input many-to-many" type="radio" v-model="field.relationship.type" value="many-to-many">
             <label class="form-check-label">
-              Many to Many - multiple ID references (array of string IDs in this model, array of string IDs in target model)
+              Many to Many - multiple ID references (array of IDs in this model, array of IDs in target model)
             </label>
           </div>
           <div class="form-check">
             <input class="form-check-input many-to-one" type="radio" v-model="field.relationship.type" value="many-to-one">
             <label class="form-check-label">
-              Many to One - single ID reference (single string ID in this model, array of string IDs in target model)
+              Many to One - single ID reference (single ID in this model, array of IDs in target model)
             </label>
           </div>
           <div class="form-check">
             <input class="form-check-input one-to-one" type="radio" v-model="field.relationship.type" value="one-to-one">
             <label class="form-check-label">
-              One to One - single unique ID reference (single unique string ID in this model, single unique string ID in target model)
+              One to One - single unique ID reference (single unique ID in this model, single unique ID in target model)
             </label>
           </div>
         </div>

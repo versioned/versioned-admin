@@ -6,12 +6,12 @@ function create (spaceId) {
 }
 
 function cloudinaryOptions (space) {
-  const cloudName = extract(space.contentfulUrl, /@(.+)$/, {group: 1})
-  if (cloudName && space.contentfulPreset) {
+  const cloudName = extract(space.cloudinaryUrl, /@(.+)$/, {group: 1})
+  if (cloudName && space.cloudinaryPreset) {
     // See: https://cloudinary.com/documentation/upload_widget
     return {
       cloud_name: cloudName,
-      upload_preset: space.contentfulPreset,
+      upload_preset: space.cloudinaryPreset,
       multiple: false,
       sources: ['local', 'url', 'dropbox', 'image_search', 'facebook', 'instagram'],
       google_api_key: process.env.VUE_APP_GOOGLE_API_KEY

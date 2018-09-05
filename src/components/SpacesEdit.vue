@@ -62,18 +62,18 @@
         <h4>Assets</h4>
 
         <div class="form-group">
-          <label for="contentfulUrl">Contentful URL</label>
-          <input type="text" v-model="space.contentfulUrl" class="form-control" id="contentfulUrl" v-bind:class="{ 'is-invalid': errors.contentfulUrl}"/>
+          <label for="cloudinaryUrl">Cloudinary URL</label>
+          <input type="text" v-model="space.cloudinaryUrl" class="form-control" id="cloudinaryUrl" v-bind:class="{ 'is-invalid': errors.cloudinaryUrl}"/>
           <div class="invalid-feedback">
-            {{errors.contentfulUrl}}
+            {{errors.cloudinaryUrl}}
           </div>
         </div>
 
         <div class="form-group">
-          <label for="contentfulPreset">Contentful Preset</label>
-          <input type="text" v-model="space.contentfulPreset" class="form-control" id="contentfulPreset" v-bind:class="{ 'is-invalid': errors.contentfulPreset}"/>
+          <label for="cloudinaryPreset">Cloudinary Preset</label>
+          <input type="text" v-model="space.cloudinaryPreset" class="form-control" id="cloudinaryPreset" v-bind:class="{ 'is-invalid': errors.cloudinaryPreset}"/>
           <div class="invalid-feedback">
-            {{errors.contentfulPreset}}
+            {{errors.cloudinaryPreset}}
           </div>
         </div>
       </div>
