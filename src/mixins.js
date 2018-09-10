@@ -19,9 +19,19 @@ export function title (schema, doc) {
   return doc[titleProperty] || defaultTitle
 }
 
+export function thumbnailUrl (asset) {
+  const IMAGE_PATH = '/image/upload/'
+  if (asset.url && asset.url.includes(IMAGE_PATH) && asset.fileType === 'image' && asset.fileExtension !== 'pdf') {
+    return asset.url.replace(IMAGE_PATH, `${IMAGE_PATH}g_face,c_thumb,w_150,h_150/`)
+  } else {
+    return undefined
+  }
+}
+
 export default {
   isLoggedIn,
   isAdmin,
   hasCurrentSpace,
-  title
+  title,
+  thumbnailUrl
 }

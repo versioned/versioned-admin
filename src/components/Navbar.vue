@@ -30,6 +30,9 @@
             <li class="nav-item" v-show="isAdmin() && hasCurrentSpace()">
               <router-link class="nav-link" to="/config">Space Config</router-link>
             </li>
+            <li class="nav-item" v-show="hasCurrentSpace()">
+              <router-link class="nav-link" to="/search">Search</router-link>
+            </li>
             <!-- <li class="nav-item">
               <router-link class="nav-link" to="/data">Data</router-link>
             </li> -->
@@ -49,7 +52,6 @@
             </li> -->
           </ul>
           <li v-show="$store.state.login" class="logged-in-user">
-            <router-link class="search" to="/search">Search</router-link> |
             <router-link class="user-profile" to="/profile">User Profile</router-link> |
             <a href="#" class="logout" data-toggle="tooltip" title="Logga ut" @click.prevent="logout">
               Logout

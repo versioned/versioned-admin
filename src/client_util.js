@@ -65,11 +65,21 @@ export function extract (value, pattern, options = {}) {
   return match && match[group]
 }
 
+export function escapeHtml (unsafe) {
+  return unsafe
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
 export default {
   capitalize,
   timeAgo,
   debounce,
   truncated,
   parseUrl,
-  extract
+  extract,
+  escapeHtml
 }

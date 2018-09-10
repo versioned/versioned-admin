@@ -55,4 +55,12 @@ export default {
   .loader {
     margin-top: 20px;
   }
+  .image-thumbnail {
+    width: 50px;
+    height: 50px;
+  }
+  .image-thumbnail-large {
+    width: 100px;
+    height: 100px;
+  }
 </style>

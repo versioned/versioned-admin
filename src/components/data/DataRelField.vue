@@ -1,8 +1,13 @@
 <template lang="html">
   <div class="form-group">
     <ul v-if="selectedResults && selectedResults.length > 0" class="selected-results list-group">
-        <li v-for="result in selectedResults" :key="result.id" :class="selectedResultClass(result)" @click.prevent="removeSelectedResult(result)">
-          {{itemTitle(result)}}
+        <li v-for="result in selectedResults" :key="result.id" :class="selectedResultClass(result)">
+          <router-link v-if="thumbnailUrl(result)" :to="itemUrl(result)" target="_blank">
+            <img :src="thumbnailUrl(result)" class="image-thumbnail">
+          </router-link>
+          <router-link :to="itemUrl(result)" target="_blank" data-toggle="tooltip" :title="itemTooltip(result)">
+            {{itemTitle(result)}}
+          </router-link>
           <a href="#" class="remove-relationship" @click.prevent="removeSelectedResult(result)">[-]</a>
         </li>
     </ul>
@@ -10,6 +15,7 @@
                        :list="results"
                        option-value="id"
                        option-text="_title"
+                       :custom-text="optionText"
                        v-model="selected"
                        :placeholder="placeholder"
                        @searchchange="search">
@@ -68,13 +74,26 @@ export default {
       }
     },
     itemTitle (item) {
-      return item.title || item.name || [item.type, item.id].join('-')
+      return item._title || item.title || item.name || [item.type, item.id].join('-')
+    },
+    itemUrl (item) {
+      if (item.type === 'assets') {
+        return `/assets/${item.id}/edit`
+      } else {
+        return `/data/${item.type}/${item.id}/edit`
+      }
+    },
+    itemTooltip (item) {
+      return u.prettyJson(item)
     },
     isArray () {
       return u.getIn(this.attribute, 'schema.type') === 'array'
     },
     showSelect () {
       return this.isArray() || u.empty(this.selectedResults)
+    },
+    optionText (item) {
+      return item._title
     },
     removeSelectedResult (result) {
       this.selectedResults = this.selectedResults.filter(r => r.id !== result.id)

@@ -6,9 +6,14 @@
       </div>
 
       <div class="form-group">
-        <label for="url" v-show="doc.url">File:</label>
-        <a v-show="doc.url" :href="doc.url" target="_blank">{{doc.originalFilename}}</a>
+        <a v-if="doc.fileType === 'image'" :href="doc.url" target="_blank">
+          <img class="image-thumbnail-large" :src="thumbnailUrl(doc)">
+        </a>
         <ul v-show="doc.url">
+          <li>
+            original filename:
+            <a :href="doc.url" target="_blank">{{doc.originalFilename}}</a>
+          </li>
           <li>file extension: {{doc.fileExtension}}</li>
           <li>file type: {{doc.fileType}}</li>
           <li v-for="(value, key) in metaData()" v-bind:key="key">
@@ -99,4 +104,7 @@ export default {
 </script>
 
 <style lang="css">
+  .image-thumbnail-large {
+    margin-bottom: 10px;
+  }
 </style>
