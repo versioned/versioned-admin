@@ -10,6 +10,7 @@
       <table class="table table-striped">
         <thead>
           <tr>
+            <th></th>
             <th>Title</th>
             <th>Type</th>
             <th>Created At</th>
@@ -17,6 +18,11 @@
         </thead>
         <tbody>
           <tr v-for="doc in results" v-bind:key="doc.objectID">
+            <td>
+              <router-link v-if="thumbnailUrl(doc)" :to="assetUrl(doc)">
+                <img :src="thumbnailUrl(doc)" class="image-thumbnail">
+              </router-link>
+            </td>
             <td>
               <router-link v-if="editUrl(doc)" :to="editUrl(doc)">
                 {{doc._title}}
@@ -66,6 +72,9 @@ export default {
       } else {
         return `/data/${doc.type}/${doc.id}/edit`
       }
+    },
+    assetUrl (doc) {
+      return `/assets/${doc.id}/edit`
     }
   }
 }

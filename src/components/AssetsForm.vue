@@ -6,7 +6,7 @@
       </div>
 
       <div class="form-group">
-        <a v-if="doc.fileType === 'image'" :href="doc.url" target="_blank">
+        <a v-if="thumbnailUrl(doc)" :href="doc.url" target="_blank">
           <img class="image-thumbnail-large" :src="thumbnailUrl(doc)">
         </a>
         <ul v-show="doc.url">

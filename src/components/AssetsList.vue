@@ -24,6 +24,7 @@
       <table v-if="count > 0" class="table table-striped">
         <thead>
           <tr>
+            <th></th>
             <th>Title</th>
             <th>File Type/Extension</th>
             <th>File</th>
@@ -34,6 +35,11 @@
         </thead>
         <tbody>
           <tr v-for="doc in docs">
+            <td>
+              <router-link :to="editUrl(doc)" v-if="thumbnailUrl(doc)" class="assets-edit">
+                <img :src="thumbnailUrl(doc)" class="image-thumbnail">
+              </router-link>
+            </td>
             <td>
               <router-link :to="editUrl(doc)" class="assets-edit">
                 {{doc.title}}

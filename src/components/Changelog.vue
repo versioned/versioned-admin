@@ -24,6 +24,7 @@
               </td>
               <td>
                 <router-link v-if="editUrl(item)" :to="editUrl(item)">
+                  <img :src="thumbnailUrl(item.doc)" v-if="thumbnailUrl(item.doc)" class="image-thumbnail">
                   {{itemTitle(item)}}
                 </router-link>
                 <span v-else>{{itemTitle(item)}}</span>
@@ -113,8 +114,8 @@ export default {
       if (!this.deleted[key]) {
         if (u.getIn(item, 'model.schema.x-meta.dataModel')) {
           return `/data/${item.doc.type}/${item.doc.id}/edit`
-        } else if (item.model.type === 'models') {
-          return `/models/${item.doc.id}/edit`
+        } else if (['models', 'assets'].includes(item.model.type)) {
+          return `/${item.model.type}/${item.doc.id}/edit`
         }
       }
     },
