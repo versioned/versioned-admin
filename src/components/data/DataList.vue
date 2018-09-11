@@ -30,7 +30,7 @@
     <json-data :jsonData="jsonData" :jsonUrl="jsonUrl"></json-data>
 
     <div class="row" v-if="count">
-      <table class="table table-striped">
+      <table class="table table-striped data-table">
         <thead>
           <tr>
             <th v-for="attribute in attributes">{{attribute.label}}</th>
@@ -40,7 +40,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="doc in docs" :class="rowClass(doc)">
+          <tr v-for="(doc, index) in docs" :class="rowClass(doc, index)">
             <td v-for="(attribute, index) in attributes" :class="attributeClass(attribute)">
               <router-link v-if="canUpdate() && index === 0" :to="editUrl(doc)" class="edit-data">
                 {{stringify(attribute, doc[attribute.key]) || '[edit]'}}
@@ -65,6 +65,10 @@
           </tr>
         </tbody>
       </table>
+
+      <p>
+        <a href="#" ref="loadMore" class="load-more" @click="loadMoreRows()">Load more rows</a>
+      </p>
     </div>
   </section>
 </template>
@@ -81,6 +85,7 @@ import Swagger from '@/services/swagger'
 import JsonData from '@/components/JsonData'
 import PublishStatus from '@/components/data/PublishStatus'
 
+const LIMIT = 100
 const ATTRIBUTES_LIMIT = 10
 const ARRAY_LIMIT = 10
 
@@ -95,6 +100,7 @@ export default {
       models: [],
       labels: [],
       docs: [],
+      skip: 0,
       count: 0
     }
   },
@@ -104,6 +110,7 @@ export default {
   watch: {
     '$route': 'getModels',
     coll: function (coll) {
+      router.push(`/data/${coll}`)
       this.getData(coll)
     }
   },
@@ -116,8 +123,6 @@ export default {
     getModels () {
       const spaceId = u.getIn(session.get(), 'space.id')
       Model(spaceId).list().then(body => {
-        // this.swagger = swagger
-        // this.schemas = Swagger.schemas(swagger)
         this.models = body.data
         this.coll = this.$route.params.model || u.getIn(this.models, '0.coll')
       })
@@ -126,18 +131,24 @@ export default {
       return this.models.find(m => m.coll === coll)
     },
     getData (coll) {
-      const schema = u.getIn(this.lookupModel(coll), 'model.schema')
-      const params = {relationshipLevels: 1}
+      this.schema = u.getIn(this.lookupModel(coll), 'model.schema')
+      this.attributes = this.getAttributes(this.schema)
+      const params = {relationshipLevels: 1, limit: LIMIT, skip: this.skip}
       const api = Data(coll)
       this.jsonUrl = api.listUrl(params)
       return Api.listRequest(this.jsonUrl).then(body => {
-        this.schema = schema
-        this.attributes = this.getAttributes(schema)
-        this.docs = body.data
+        this.docs = this.docs.concat(body.data)
         this.count = body.count
         this.jsonData = u.prettyJson(this.docs)
-        router.push(`/data/${coll}`)
       })
+    },
+    async loadMoreRows () {
+      this.skip += LIMIT
+      await this.getData(this.coll)
+      this.scrollToEnd()
+    },
+    scrollToEnd () {
+      this.$el.querySelector(`.row-${this.skip - 1}`).scrollIntoView()
     },
     array (value) {
       if (u.empty(value)) return []
@@ -170,25 +181,13 @@ export default {
       return `/data/${this.coll}/new`
     },
     canCreate () {
-      // TODO
       return true
-      // if (this.swagger && this.model) {
-      //   return Swagger.canCreate(this.swagger, this.model)
-      // } else {
-      //   return false
-      // }
     },
     canUpdate () {
-      // TODO
       return true
-      // if (this.swagger && this.model) {
-      //   return Swagger.canUpdate(this.swagger, this.model)
-      // } else {
-      //   return false
-      // }
     },
-    rowClass (doc) {
-      return `data-list-row ${doc.type}-${doc.id}`
+    rowClass (doc, index) {
+      return `data-list-row ${doc.type}-${doc.id} row-${index}`
     },
     attributeClass (attribute) {
       return `field-${attribute.key}`
