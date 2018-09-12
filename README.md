@@ -1,4 +1,6 @@
-# versioned-ui - A CMS Admin UI
+# Versioned Admin
+
+This is the admin web UI that talks to the Versioned CMS REST API.
 
 ## Starting the Development Server
 
@@ -10,44 +12,13 @@ open http://localhost:8080
 
 To create a production build, run `yarn build`
 
-## Debuggning
-
-User:
-
-```
-localStorage.getItem('user')
-```
-
-## How this App Was Created
-
-```
-npm install -g @vue/cli
-vue create versioned-ui
-```
-
 ## Heroku Deploy
 
 ```
-heroku config:set VUE_APP_API_URL=https://versioned2.herokuapp.com/v1
+heroku config:set VUE_APP_API_URL=https://name-of-versioned-api-app.herokuapp.com/v1
 ```
 
 ## Unit Tests
-
-Setting up with Jest:
-
-```
-vue add @vue/unit-jest
-```
-
-Updated/added files:
-
-```
-jest.config.js
-tests/unit/.eslintrc.js
-tests/unit/HelloWorld.spec.js
-package.json
-yarn.lock
-```
 
 Running:
 
@@ -83,25 +54,6 @@ Running single spec headless:
 
 ```
 yarn test:e2e --headless --spec tests/e2e/specs/dedicated_space.js
-```
-
-How Cypress tests were added to the project:
-
-```
-vue add @vue/e2e-cypress
-```
-
-Updated/added files:
-
-```
-cypress.json
-tests/e2e/.eslintrc
-tests/e2e/plugins/index.js
-tests/e2e/specs/test.js
-tests/e2e/support/commands.js
-tests/e2e/support/index.js
-package.json
-yarn.lock
 ```
 
 ## Resources
