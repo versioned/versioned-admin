@@ -4,7 +4,7 @@
         <h1>Edit {{model.name}}</h1>
     </div>
 
-    <json-data :jsonData="jsonData" :jsonUrl="jsonUrl"></json-data>
+    <json-data :jsonData="jsonData" :jsonUrl="jsonUrl" :published="isPublished"></json-data>
 
     <data-form ref="dataForm" :doc="doc" :docOrig="docOrig" :schema="schema" :model="model.coll" :isPublished="isPublished" :versions="versions" @fieldChange="fieldChange($event)" @formSubmit="save($event)" @remove="remove($event)"></data-form>
     <div>
@@ -66,9 +66,10 @@ export default {
           this.schema = u.getIn(this.model, 'model.schema')
           const api = Data(this.model.coll)
           const params = {relationshipLevels: 1}
-          if (this.isPublished) params.versions = 1
           this.jsonUrl = api.getUrl(this.id, params)
-          Api.getRequest(this.jsonUrl).then(doc => {
+          if (this.isPublished) params.versions = 1
+          const url = api.getUrl(this.id, params)
+          Api.getRequest(url).then(doc => {
             this.doc = doc
             if (!this.docOrig) this.docOrig = JSON.parse(JSON.stringify(doc))
             this.versions = u.getIn(doc, 'sys.versions', [])

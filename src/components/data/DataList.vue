@@ -27,7 +27,7 @@
       Number of documents: {{count}}
     </div>
 
-    <json-data :jsonData="jsonData" :jsonUrl="jsonUrl"></json-data>
+    <json-data :jsonData="jsonData" :jsonUrl="jsonUrl" :published="published"></json-data>
 
     <div class="row" v-if="count">
       <table class="table table-striped data-table">
@@ -94,6 +94,7 @@ export default {
     return {
       jsonData: null,
       jsonUrl: null,
+      published: null,
       coll: null,
       schema: null,
       attributes: [],
@@ -131,6 +132,7 @@ export default {
       return this.models.find(m => m.coll === coll)
     },
     getData (coll) {
+      this.published = u.getIn(this.lookupModel(coll), 'features', []).includes('published')
       this.schema = u.getIn(this.lookupModel(coll), 'model.schema')
       this.attributes = this.getAttributes(this.schema)
       const params = {relationshipLevels: 1, limit: LIMIT, skip: this.skip}

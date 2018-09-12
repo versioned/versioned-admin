@@ -83,19 +83,20 @@ export default {
     async getExamples (models, dbStats) {
       const result = []
       const exampleModel = this.models.find(model => u.getIn(this.dbStats, `${model.coll}.count`) > 0)
+      const published = (exampleModel.features || []).includes('published')
       if (exampleModel) {
         const api = Data(exampleModel.coll)
-        result.push({name: `List ${exampleModel.name} Data`, httpie: this.httpie(api.listUrl())})
+        result.push({name: `List ${exampleModel.name} Data`, httpie: this.httpie(api.listUrl(), {published})})
 
         const docs = (await Api.listRequest(api.listUrl({limit: 1}))).data
         const id = u.getIn(docs, '0.id')
         const getUrl = api.getUrl(id)
-        result.push({name: `Get Data for One ${exampleModel.name}`, httpie: this.httpie(getUrl)})
+        result.push({name: `Get Data for One ${exampleModel.name}`, httpie: this.httpie(getUrl, {published})})
       }
       return result
     },
-    httpie (url) {
-      return Api.httpie(url, {apiKey: this.apiKey})
+    httpie (url, options = {}) {
+      return Api.httpie(url, {apiKey: this.apiKey, published: options.published})
     }
   }
 }

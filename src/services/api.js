@@ -57,7 +57,9 @@ function listRequest (url) {
 
 function httpie (url, options = {}) {
   if (options.apiKey) {
-    return `http GET '${urlWithQuery(url, {apiKey: options.apiKey, published: 1})}'`
+    const query = {apiKey: options.apiKey}
+    if (options.published) query.published = '1'
+    return `http GET '${urlWithQuery(url, query)}'`
   } else {
     const headerString = Object.entries(headers()).map(([key, value]) => {
       return `${key}:"${value}"`

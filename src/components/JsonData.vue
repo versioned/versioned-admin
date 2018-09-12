@@ -21,7 +21,7 @@ import Api from '@/services/api'
 import session from '@/services/session'
 
 export default {
-  props: ['jsonData', 'jsonUrl'],
+  props: ['jsonData', 'jsonUrl', 'published'],
   data () {
     return {
       showJson: false
@@ -30,7 +30,7 @@ export default {
   computed: {
     apiCall () {
       const apiKey = u.getIn(session.get(), 'space.apiKey')
-      return Api.httpie(this.jsonUrl, {apiKey})
+      return Api.httpie(this.jsonUrl, {apiKey, published: this.published})
     }
   }
 }
