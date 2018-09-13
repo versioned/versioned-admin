@@ -108,9 +108,22 @@
           </div>
         </div>
 
-        <div v-if="isRelationship(field)" class="form-group required">
+        <div v-if="isRelationship(field)" class="form-group required to-type">
           <label>Target model (key)</label>
-          <input type="text" v-model="field.relationship.toType" :maxlength="COLL_LENGTH" @change="makeDbFriendly(field.relationship, 'toType')" class="form-control to-type" required/>
+          <input type="text" v-model="field.relationship.toType" :maxlength="COLL_LENGTH" class="form-control to-type" required/>
+          <div v-show="toTypeWarning(field)">
+            <p class="alert alert-warning">
+              {{toTypeWarning(field)}}
+            </p>
+            <p>
+              Existing models:
+            </p>
+            <ul>
+              <li v-for="coll in existingModels">
+                <a href="#" @click="selectModel(field, coll, index)">{{coll}}</a>
+              </li>
+            </ul>
+          </div>
         </div>
 
         <div v-if="field.category === 'twoWayRelationship'" class="form-group required">
@@ -245,7 +258,9 @@
 <script>
 import Vue from 'vue'
 import u from '@/util'
+import session from '@/services/session'
 import Alert from '@/services/alert'
+import Model from '@/services/model'
 import {capitalize} from '@/client_util'
 import {propertiesOrder} from '@/models_util'
 import JsonField from '@/components/form/JsonField'
@@ -314,6 +329,8 @@ export default {
   props: ['model'],
   data: function () {
     return {
+      models: [],
+      existingModels: [],
       NAME_LENGTH,
       FIELD_LENGTH,
       KEY_LENGTH,
@@ -324,6 +341,9 @@ export default {
       collapsed: this.getCollapsed(this.model.fields)
     }
   },
+  created () {
+    this.getData()
+  },
   watch: {
     model (model) {
       this.collapsed = this.getCollapsed(model.fields)
@@ -331,6 +351,13 @@ export default {
     }
   },
   methods: {
+    getData () {
+      const spaceId = u.getIn(session.get(), 'space.id')
+      Model(spaceId).list().then(({data}) => {
+        this.models = data
+        this.existingModels = ['assets'].concat(this.models.map(u.property('coll')))
+      })
+    },
     makeFeatures (model) {
       return u.makeObj(model.features || [], () => true)
     },
@@ -350,7 +377,7 @@ export default {
         type: 'string',
         required: false,
         titleProperty: false,
-        relationship: {type: 'one-to-many'},
+        relationship: {type: 'one-to-many', toType: ''},
         validation: {},
         errors: {}
       }
@@ -391,6 +418,19 @@ export default {
       return field.required &&
         field.category === 'twoWayRelationship' &&
         ['many-to-one', 'one-to-one'].includes(field.relationship.type)
+    },
+    toTypeExists (toType) {
+      return this.existingModels.includes(toType)
+    },
+    toTypeWarning (field) {
+      if (u.notEmpty(field.relationship.toType) && !this.toTypeExists(field.relationship.toType)) {
+        return `Model ${field.relationship.toType} does not exist yet. To create a relationship to an image or other file specify "assets" as target model.`
+      } else {
+        return null
+      }
+    },
+    selectModel (field, coll, index) {
+      field.relationship.toType = coll
     },
     makeDbFriendly (obj, prop) {
       obj[prop] = dbFriendly(obj[prop])
