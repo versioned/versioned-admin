@@ -185,12 +185,12 @@
         </div> -->
 
         <div class="form-group">
-          <div v-if="enabledField('array', field)" class="form-check">
+          <!-- <div v-if="enabledField('array', field)" class="form-check">
             <input v-model="field.array" class="form-check-input" type="checkbox">
             <label class="form-check-label">
               Array (multiple {{field.type}} values)
             </label>
-          </div>
+          </div> -->
           <div v-if="field.category !== 'sequence'" class="form-check">
             <input v-model="field.required" class="form-check-input required" type="checkbox">
             <label class="form-check-label">
@@ -320,6 +320,8 @@ function fieldType (property) {
     return 'text'
   } else if (property.type === 'string' && property.format === 'date-time') {
     return 'date'
+  } else if (property.type === 'array') {
+    return fieldType(property.items)
   } else {
     return property.type
   }

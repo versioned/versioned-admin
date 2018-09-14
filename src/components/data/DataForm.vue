@@ -69,7 +69,7 @@
         <input type="submit" class="btn btn-primary save" value="Save" />
         <button v-if="isPublished" class="btn btn-secondary save-and-publish" @click.prevent="saveAndPublish()">Save and Publish</button>
         <button v-if="isPublished && doc.publishedVersion" class="btn btn-secondary unpublish" @click.prevent="unpublish()">Unpublish</button>
-        <a v-if="doc.id" href="#" class="delete" @click.prevent="remove()">Delete</a>
+        <a v-if="doc.id && !doc.publishedVersion" href="#" class="delete" @click.prevent="remove()">Delete</a>
       </div>
     </div>
   </form>
@@ -134,6 +134,7 @@ export default {
     },
     formSubmit () {
       Alert.clear()
+      this.errors = {}
       this.$emit('formSubmit', this.coerceDoc(this.doc))
     },
     remove () {

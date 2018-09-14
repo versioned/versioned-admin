@@ -67,7 +67,7 @@
       </table>
 
       <p>
-        <a href="#" ref="loadMore" class="load-more" @click="loadMoreRows()">Load more rows</a>
+        <a href="#" ref="loadMore" class="load-more" v-show="hasMoreRows()" @click="loadMoreRows()">Load more rows</a>
       </p>
     </div>
   </section>
@@ -143,6 +143,9 @@ export default {
         this.count = body.count
         this.jsonData = u.prettyJson(this.docs)
       })
+    },
+    hasMoreRows () {
+      return this.count > (this.skip + LIMIT)
     },
     async loadMoreRows () {
       this.skip += LIMIT
