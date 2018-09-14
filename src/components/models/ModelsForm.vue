@@ -86,6 +86,13 @@
               Integer Sequence (1, 2, 3...)
             </label>
           </div>
+
+          <div class="form-check">
+            <input v-model="field.category" class="form-check-input slug" type="radio" value="slug">
+            <label class="form-check-label">
+              Slug (for SEO-friendly URLs, generated from the title field)
+            </label>
+          </div>
         </div>
 
         <div v-if="field.category === 'data'" class="form-group">
@@ -532,6 +539,9 @@ export default {
         property.type = 'integer'
         field.unique = true
         writable = false
+      } else if (field.category === 'slug') {
+        property.type = 'string'
+        field.unique = true
       } else {
         // Relationship
         property.type = 'string'
@@ -544,7 +554,8 @@ export default {
           name: field.name
         },
         relationship: (this.isRelationship(field) ? field.relationship : undefined),
-        sequence: (field.category === 'sequence' ? true : undefined)
+        sequence: (field.category === 'sequence' ? true : undefined),
+        slug: (field.category === 'slug' ? true : undefined),
       })
       if (xMeta.relationship) {
         xMeta.relationship.onDelete = (field.cascade ? 'cascade' : null)
@@ -564,12 +575,15 @@ export default {
       const defaults = FIELD_TYPES_PROPERTIES[type] || {}
       const relationship = u.getIn(property, 'x-meta.relationship')
       const sequence = u.getIn(property, 'x-meta.sequence')
+      const slug = u.getIn(property, 'x-meta.slug')
       const cascade = (u.getIn(property, 'x-meta.relationship.onDelete') === 'cascade')
       let category = 'data'
       if (relationship) {
         category = relationship.toField ? 'twoWayRelationship' : 'oneWayRelationship'
       } else if (sequence) {
         category = 'sequence'
+      } else if (slug) {
+        category = 'slug'
       }
       return u.compact({
         name,
