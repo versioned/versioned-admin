@@ -555,7 +555,7 @@ export default {
         },
         relationship: (this.isRelationship(field) ? field.relationship : undefined),
         sequence: (field.category === 'sequence' ? true : undefined),
-        slug: (field.category === 'slug' ? true : undefined),
+        slug: (field.category === 'slug' ? true : undefined)
       })
       if (xMeta.relationship) {
         xMeta.relationship.onDelete = (field.cascade ? 'cascade' : null)
