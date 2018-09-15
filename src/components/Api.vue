@@ -27,6 +27,14 @@
       <div v-if="examples.length > 0" class="example-container">
         <h2>API Call Examples</h2>
 
+        <p class="alert alert-warning">
+          In order to deliver production content to your clients (website, mobile apps etc.) you should
+          put a CDN (i.e. a service like <a href="https://www.fastly.com">Fastly</a>, <a href="https://www.cloudflare.com">Cloudflare</a>,
+          or <a href="https://aws.amazon.com/cloudfront">CloudFront</a>) in between your clients and this API.
+          Setting up such a CDN is straightforward and relatively cheap (i.e. Fastly offers <a href="https://elements.heroku.com/addons/fastly">10 million requests</a> per month at 25 USD/month).
+          You can expect this API to be rate limited at around 10 requests per second.
+        </p>
+
         <p>
           Examples use the <a href="https://httpie.org" target="_blanke">httpie</a> client.
         </p>
