@@ -6,7 +6,7 @@
 
     <json-data :jsonData="jsonData" :jsonUrl="jsonUrl" :published="isPublished"></json-data>
 
-    <data-form ref="dataForm" :doc="doc" :docOrig="docOrig" :schema="schema" :model="model.coll" :isPublished="isPublished" :versions="versions" @fieldChange="fieldChange($event)" @formSubmit="save($event)" @remove="remove($event)"></data-form>
+    <data-form ref="dataForm" :doc="doc" :docOrig="docOrig" :schema="schema" :model="model.coll" :isPublished="isPublished" :versions="versions" :previewUrl="model.previewUrl" @fieldChange="fieldChange($event)" @formSubmit="save($event)" @remove="remove($event)"></data-form>
     <div>
       <router-link :to="listUrl()">Return to {{model.name}} Data</router-link>
     </div>

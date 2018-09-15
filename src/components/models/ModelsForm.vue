@@ -29,6 +29,14 @@
       </div>
     </div>
 
+    <div class="form-group">
+      <label for="previewUrl">Preview URL</label>
+      <input type="text" v-model="model.previewUrl" class="form-control" id="previewUrl" v-bind:class="{ 'is-invalid': errors.previewUrl}" placeholder="https://my-website.example.com/articles/{id}"/>
+      <div class="invalid-feedback">
+        {{errors.previewUrl}}
+      </div>
+    </div>
+
     <div :class="fieldClass(field, index)" v-for="(field, index) in model.fields">
       <h2 :class="{'field-heading': true, 'required': field.required}">
         <a href="#" @click.prevent="toggleCollapsed(field.key)" class="expand-field">

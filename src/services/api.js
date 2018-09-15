@@ -5,7 +5,7 @@ import store from '@/store'
 import u from '@/util'
 const {getIn, merge} = u
 
-function urlWithQuery (url, query) {
+export function urlWithQuery (url, query) {
   if (u.notEmpty(query)) {
     const sep = (url.includes('?') ? '&' : '?')
     const queryString = Object.entries(query).map(([key, value]) => {

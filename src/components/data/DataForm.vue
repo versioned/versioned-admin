@@ -5,6 +5,7 @@
         <input type="submit" class="btn btn-primary" value="Save" />
         <button v-if="isPublished" class="btn btn-secondary" @click.prevent="saveAndPublish()">Save and Publish</button>
         <button v-if="isPublished && doc.publishedVersion" class="btn btn-secondary" @click.prevent="unpublish()">Unpublish</button>
+        <a v-if="doc.id && previewUrl" :href="formattedPreviewUrl()" target="preview" class="btn btn-secondary preview">Preview</a>
       </div>
 
       <a v-show="hasChanges()" class="text-warning" href="#" @click.prevent="showUnsavedChanges = !showUnsavedChanges">Unsaved Changes</a>
@@ -69,6 +70,7 @@
         <input type="submit" class="btn btn-primary save" value="Save" />
         <button v-if="isPublished" class="btn btn-secondary save-and-publish" @click.prevent="saveAndPublish()">Save and Publish</button>
         <button v-if="isPublished && doc.publishedVersion" class="btn btn-secondary unpublish" @click.prevent="unpublish()">Unpublish</button>
+        <a v-if="doc.id && previewUrl" :href="formattedPreviewUrl()" target="preview" class="btn btn-secondary preview">Preview</a>
         <a v-if="doc.id && !doc.publishedVersion" href="#" class="delete" @click.prevent="remove()">Delete</a>
       </div>
     </div>
@@ -77,6 +79,7 @@
 
 <script>
 import u from '@/util'
+import {urlWithQuery} from '@/services/api'
 import Alert from '@/services/alert'
 import Swagger from '@/services/swagger'
 import DataFormField from '@/components/data/DataFormField'
@@ -86,7 +89,7 @@ import DataUtil from '@/data_util'
 import FormUtil from '@/form_util'
 
 export default {
-  props: ['model', 'doc', 'docOrig', 'schema', 'isPublished', 'versions'],
+  props: ['model', 'doc', 'docOrig', 'schema', 'isPublished', 'versions', 'previewUrl'],
   data: function () {
     return {
       errors: {},
@@ -136,6 +139,17 @@ export default {
       Alert.clear()
       this.errors = {}
       this.$emit('formSubmit', this.coerceDoc(this.doc))
+    },
+    formattedPreviewUrl () {
+      if (!this.doc.id || !this.previewUrl) return
+      let url = this.previewUrl.replace(/{[^}]+}/g, (m) => {
+        const key = m.substring(1, m.length - 1)
+        return encodeURIComponent(this.doc[key])
+      })
+      if (this.doc.versionToken) {
+        url = urlWithQuery(url, {versionToken: this.doc.versionToken})
+      }
+      return url
     },
     remove () {
       this.$emit('remove', this.doc)
