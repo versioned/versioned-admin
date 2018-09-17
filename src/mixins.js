@@ -1,5 +1,12 @@
 import u from './util'
+import {truncated} from '@/client_util'
 import session from '@/services/session'
+import {languageToCode} from '@/language_codes'
+import Swagger from '@/services/swagger'
+
+export function empty (value) {
+  return u.empty(value)
+}
 
 export function isLoggedIn () {
   return session.isLoggedIn()
@@ -28,10 +35,23 @@ export function thumbnailUrl (asset) {
   }
 }
 
+export function stringify (value, schema) {
+  if (u.empty(value)) return undefined
+  const languages = u.getIn(session.get(), 'space.languages')
+  const translated = u.getIn(schema, 'x-meta.translated')
+  if ((translated || !schema) && u.notEmpty(languages) && typeof value === 'object') {
+    const languageCode = languages.map(languageToCode).find((code) => value[code])
+    if (languageCode) value = value[languageCode]
+  }
+  return truncated(Swagger.stringify(value, schema))
+}
+
 export default {
+  empty,
   isLoggedIn,
   isAdmin,
   hasCurrentSpace,
   title,
-  thumbnailUrl
+  thumbnailUrl,
+  stringify
 }

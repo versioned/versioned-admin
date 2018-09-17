@@ -43,12 +43,12 @@
           <tr v-for="(doc, index) in docs" :class="rowClass(doc, index)">
             <td v-for="(attribute, index) in attributes" :class="attributeClass(attribute)">
               <router-link v-if="canUpdate() && index === 0" :to="editUrl(doc)" class="edit-data">
-                {{stringify(attribute, doc[attribute.key]) || '[edit]'}}
+                {{stringify(doc[attribute.key], attribute.schema) || '[edit]'}}
               </router-link>
               <span v-else-if="attribute.meta && attribute.meta.relationship" v-html="relationshipLinks(attribute, doc)">
               </span>
               <span v-else>
-                {{stringify(attribute, doc[attribute.key])}}
+                {{stringify(doc[attribute.key], attribute.schema)}}
               </span>
             </td>
 
@@ -78,7 +78,6 @@ import u from '@/util'
 import Api from '@/services/api'
 import session from '@/services/session'
 import Data from '@/services/data'
-import {truncated} from '@/client_util'
 import router from '@/router'
 import Model from '@/services/model'
 import Swagger from '@/services/swagger'
@@ -171,10 +170,6 @@ export default {
         links.push('...')
       }
       return links.join(', ')
-    },
-    stringify (attribute, value) {
-      if (u.empty(value)) return undefined
-      return truncated(Swagger.stringify(attribute.schema, value))
     },
     getAttributes (schema) {
       return Swagger.attributes(schema).slice(0, ATTRIBUTES_LIMIT)

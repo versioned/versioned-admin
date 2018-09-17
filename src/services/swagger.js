@@ -130,10 +130,10 @@ function getTitle (value) {
   return value.title || value.name || value.id
 }
 
-function stringify (propertySchema, value) {
+function stringify (value, propertySchema) {
   if (u.nil(value)) {
     return ''
-  } else if (propertySchema.type === 'date') {
+  } else if (u.getIn(propertySchema, 'type') === 'date') {
     return new Date(value).toString()
   // } else if (u.getIn(propertySchema, 'x-meta', 'translated')) {
   //   return LANGUAGES.map(site => value[site]).find(u.notNil)

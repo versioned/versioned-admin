@@ -25,9 +25,9 @@
             </td>
             <td>
               <router-link v-if="editUrl(doc)" :to="editUrl(doc)">
-                {{doc._title}}
+                {{stringify(doc._title)}}
               </router-link>
-              <span v-else>{{doc._title}}</span>
+              <span v-else>{{stringify(doc._title)}}</span>
             </td>
             <td>
               {{doc.type}}

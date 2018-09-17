@@ -86,6 +86,14 @@
         </div>
       </div>
 
+      <div class="form-group">
+        <label for="languages">Languages</label>
+        <input type="text" v-model="space.languages" class="form-control" id="languages" v-bind:class="{ 'is-invalid': errors.languages}" placeholder="English, Spanish, German"/>
+        <div class="invalid-feedback">
+          {{errors.languages}}
+        </div>
+      </div>
+
       <input type="submit" class="btn btn-primary" value="Save" />
       <a v-if="space.id" href="#" @click.prevent="remove()" class="delete">Delete</a>
     </form>

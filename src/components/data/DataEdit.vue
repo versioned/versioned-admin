@@ -70,7 +70,9 @@ export default {
           if (this.isPublished) params.versions = 1
           const url = api.getUrl(this.id, params)
           Api.getRequest(url).then(doc => {
-            this.doc = doc
+            const translatedProperties = u.keys(u.filter(this.schema.properties, (p) => u.getIn(p, 'x-meta.translated')))
+            const translatedDoc = u.makeObj(translatedProperties, () => ({}))
+            this.doc = u.merge(translatedDoc, doc)
             if (!this.docOrig) this.docOrig = JSON.parse(JSON.stringify(doc))
             this.versions = u.getIn(doc, 'sys.versions', [])
             this.jsonData = u.prettyJson(this.doc)

@@ -37,6 +37,8 @@ export default {
         this.model = model.coll
         this.modelName = model.name
         this.schema = u.getIn(model, 'model.schema')
+        const translatedProperties = u.keys(u.filter(this.schema.properties, (p) => u.getIn(p, 'x-meta.translated')))
+        this.doc = u.makeObj(translatedProperties, () => ({}))
       } else {
         Alert.set('warning', `Could not find model ${this.$route.params.model}`)
       }

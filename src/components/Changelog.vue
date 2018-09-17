@@ -25,9 +25,9 @@
               <td>
                 <router-link v-if="editUrl(item)" :to="editUrl(item)">
                   <img :src="thumbnailUrl(item.doc)" v-if="thumbnailUrl(item.doc)" class="image-thumbnail">
-                  {{itemTitle(item)}}
+                  {{stringify(itemTitle(item))}}
                 </router-link>
-                <span v-else>{{itemTitle(item)}}</span>
+                <span v-else>{{stringify(itemTitle(item))}}</span>
               </td>
               <td>
                 <a href="#" @click.prevent="toggle('showData', item.id)">JSON Data</a>

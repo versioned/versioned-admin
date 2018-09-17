@@ -114,6 +114,11 @@
           </select>
         </div>
 
+        <div v-show="showTranslateWarning(field)" class="form-group alert alert-warning">
+          To use translated fields you also need to select languages to translate in the
+          <router-link :to="spaceUrl()" target="_blank">Space Config</router-link>
+        </div>
+
         <div v-if="field.category === 'data'" class="form-group">
           <div class="form-check">
             <input v-model="field.titleProperty" class="form-check-input" type="checkbox" @change="updateTitleProperty(index)">
@@ -287,8 +292,16 @@ const FIELD_TYPES = [
     key: 'string'
   },
   {
+    name: 'Translated String (256 characters)',
+    key: 'translated_string'
+  },
+  {
     name: 'Text (50k characters)',
     key: 'text'
+  },
+  {
+    name: 'Translated Text (50k characters)',
+    key: 'translated_text'
   },
   {
     name: 'Integer Number',
@@ -313,9 +326,13 @@ const FIELD_LENGTH = 30
 const KEY_LENGTH = 20
 const COLL_LENGTH = 40
 const dbFriendly = name => u.dbFriendly(name, KEY_LENGTH)
+const STRING_PROPERTY = {type: 'string', maxLength: 256}
+const TEXT_PROPERTY = {type: 'string', maxLength: 50000}
 const FIELD_TYPES_PROPERTIES = {
-  string: {type: 'string', maxLength: 256},
-  text: {type: 'string', maxLength: 50000},
+  string: STRING_PROPERTY,
+  translated_string: {type: 'object', 'x-meta': {translated: STRING_PROPERTY}},
+  text: TEXT_PROPERTY,
+  translated_text: {type: 'object', 'x-meta': {translated: TEXT_PROPERTY}},
   integer: {type: 'integer'},
   number: {type: 'number'},
   boolean: {type: 'boolean'},
@@ -337,6 +354,8 @@ function fieldType (property) {
     return 'date'
   } else if (property.type === 'array') {
     return fieldType(property.items)
+  } else if (u.getIn(property, 'x-meta.translated')) {
+    return fieldType(u.getIn(property, 'x-meta.translated')) === 'text' ? 'translated_text' : 'translated_string'
   } else {
     return property.type
   }
@@ -490,6 +509,14 @@ export default {
         field.errors.pattern = 'regular expression is invalid'
       }
     },
+    showTranslateWarning (field) {
+      const space = u.getIn(session.get(), 'space')
+      return field.category === 'data' && (field.type === 'translated_string' || field.type === 'translated_text') && u.empty(space.languages)
+    },
+    spaceUrl () {
+      const space = u.getIn(session.get(), 'space')
+      return `/accounts/${space.accountId}/spaces/${space.id}/edit`
+    },
     toggleCollapsed (key) {
       this.collapsed = u.merge(this.collapsed, {[key]: !this.collapsed[key]})
     },
@@ -532,6 +559,7 @@ export default {
     fieldToProperty (field) {
       let isArray = field.array
       const fieldType = field.type || 'string'
+      const translated = fieldType.startsWith('translated_')
       let property = FIELD_TYPES_PROPERTIES[fieldType] || {}
       let writable = true
       if (field.category === 'data') {
@@ -556,7 +584,7 @@ export default {
         isArray = ['many-to-many', 'one-to-many'].includes(field.relationship.type)
       }
       const xMeta = u.compact({
-        unique: field.unique,
+        unique: (translated ? undefined : field.unique),
         writable: (writable ? undefined : false),
         field: {
           name: field.name

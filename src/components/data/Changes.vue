@@ -9,8 +9,8 @@
       <tbody>
         <tr v-for="(value, key) in changes" :key="key">
           <td>{{key}}</td>
-          <td>{{stringify(value.from)}}</td>
-          <td>{{stringify(value.to)}}</td>
+          <td>{{stringifyChange(value.from)}}</td>
+          <td>{{stringifyChange(value.to)}}</td>
         </tr>
       </tbody>
     </table>
@@ -34,7 +34,7 @@ export default {
     }
   },
   methods: {
-    stringify (value) {
+    stringifyChange (value) {
       return truncated(value)
     },
     toggle (objName, property) {
