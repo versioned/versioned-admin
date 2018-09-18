@@ -98,7 +98,7 @@ function canWriteProperty (propertySchema) {
 function attributes (schema, doc) {
   return propertiesOrder(schema).map((key, index) => {
     const propertySchema = schema.properties[key]
-    const meta = propertySchema['x-meta']
+    const meta = propertySchema['x-meta'] || {}
     const field = u.getIn(propertySchema, 'x-meta.field', {})
     const relationship = u.getIn(propertySchema, 'x-meta.relationship')
     const value = u.getIn(doc, key)
