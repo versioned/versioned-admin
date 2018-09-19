@@ -4,9 +4,8 @@
       <h1>Register</h1>
     </div>
 
-    <div class="alert alert-danger" role="alert">
-      WARNING: This service has not been launched yet.
-      Please use it for evaluation purposes only.
+    <div class="alert alert-warning" role="alert">
+      The Versioned service is currently in beta and is free of charge
     </div>
 
     <form class="register-form" @submit.prevent="register">
