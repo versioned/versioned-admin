@@ -5,7 +5,7 @@
     </div>
 
     <div class="alert alert-warning" role="alert">
-      The Versioned service is currently in beta and is free of charge
+      We are currently in beta and you can use the service free of charge
     </div>
 
     <form class="register-form" @submit.prevent="register">
