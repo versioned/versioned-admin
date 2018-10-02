@@ -4,7 +4,8 @@
       <h1>{{model.name}} Data</h1>
     </div>
 
-    <form class="page-form" @submit.prevent="formSubmit" role="form">
+    <!-- TODO: this dropdown is broken - data in the table doesn't update properly -->
+    <!-- <form class="page-form" @submit.prevent="formSubmit" role="form">
       <div class="form-group">
         <div class="form-input">
           <label name="site">Model</label>
@@ -15,7 +16,7 @@
           </select>
         </div>
       </div>
-    </form>
+    </form> -->
 
     <div class="create-new">
       <router-link v-if="canCreate()" class="btn btn-primary" :to="createUrl()">
@@ -34,7 +35,7 @@
         <thead>
           <tr>
             <th v-for="attribute in attributes">{{attribute.label}}</th>
-            <th>Publish Status</th>
+            <th v-if="published">Publish Status</th>
             <th>Updated</th>
             <th>By</th>
           </tr>
@@ -52,7 +53,7 @@
               </span>
             </td>
 
-            <td>
+            <td v-if="published">
               <publish-status :doc="doc"></publish-status>
             </td>
             <td>
