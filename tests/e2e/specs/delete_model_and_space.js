@@ -20,7 +20,7 @@ const article = {
   title: 'Trump Touts Success Of Singapore Summit After Securing $10 Billion Trade Deal To Sell Nuclear Warheads To North Korea'
 }
 
-describe('On Delete Cascade', () => {
+describe('Delete Model and Space', () => {
   it(`Register with email=${user.email} and account ${accountName}`, () => {
     cy.register(user.email, user.password, accountName)
   })

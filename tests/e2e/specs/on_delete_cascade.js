@@ -76,6 +76,7 @@ describe('On Delete Cascade', () => {
 
   it('Create an author', () => {
     cy.createData(Author, [author])
+    cy.wait(2000) // wait for author to land in Algolia search index
   })
 
   it('Create an article', () => {

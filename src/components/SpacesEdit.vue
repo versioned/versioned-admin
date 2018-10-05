@@ -3,8 +3,13 @@
     <h1>Space Config</h1>
 
     <form class="spaces-form" @submit.prevent="save">
-      <div class="form-group" v-if="!currentSpace(space)">
-        <a href="#" @click="makeCurrent()">Switch to this space</a>
+      <div class="form-group">
+        <template v-if="currentSpace(space)">
+          This is the current space
+        </template>
+        <template v-else>
+          <a href="#" @click="makeCurrentAndRedirect()">Make this the current space</a>
+        </template>
       </div>
 
       <div class="form-group">
@@ -94,8 +99,8 @@
         </div>
       </div>
 
-      <input type="submit" class="btn btn-primary" value="Save" />
-      <a v-if="space.id" href="#" @click.prevent="remove()" class="delete">Delete</a>
+      <input type="submit" class="btn btn-primary" value="Save" :disabled="!isAdmin(space.account)" />
+      <a v-if="space.id && isAdmin(space.account)" href="#" @click.prevent="remove()" class="delete">Delete</a>
     </form>
   </div>
 </template>
@@ -130,6 +135,10 @@ export default {
     makeCurrent () {
       session.set(u.merge(session.get(), {account: this.space.account}))
       session.set(u.merge(session.get(), {space: this.space}))
+    },
+    makeCurrentAndRedirect () {
+      this.makeCurrent()
+      router.push('/')
     },
     accountUrl () {
       return `/accounts/${this.space.accountId}/edit`

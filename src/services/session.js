@@ -120,10 +120,10 @@ function isLoggedIn () {
   return u.notEmpty(get('user'))
 }
 
-function isAdmin () {
+function isAdmin (account = null) {
   const userId = get('user.id')
-  const users = get('account.users')
-  return userId && users && users.find(u => u.id === userId && u.role === 'admin')
+  const users = u.getIn(account || get('account'), 'users')
+  return u.toBoolean(userId && users && users.find(u => u.id === userId && u.role === 'admin'))
 }
 
 export default {

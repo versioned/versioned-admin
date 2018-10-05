@@ -12,8 +12,8 @@ export function isLoggedIn () {
   return session.isLoggedIn()
 }
 
-export function isAdmin () {
-  return session.isAdmin()
+export function isAdmin (account = null) {
+  return session.isAdmin(account)
 }
 
 export function hasCurrentSpace () {

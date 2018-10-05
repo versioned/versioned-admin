@@ -1,3 +1,7 @@
+function toBoolean (value) {
+  return !!value
+}
+
 function toString (value) {
   return notNil(value) ? value.toString() : undefined
 }
@@ -476,6 +480,7 @@ function prettyJson (value) {
 }
 
 export default {
+  toBoolean,
   toString,
   isArray,
   isObject,

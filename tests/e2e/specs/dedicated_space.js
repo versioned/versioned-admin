@@ -65,6 +65,16 @@ describe('Dedicated Space', () => {
     cy.register(user.email, user.password, accountName)
   })
 
+  it('Click logout link and log back in again', () => {
+    cy.get('a.logout').click()
+    cy.location('href').should('match', /#\/login$/)
+
+    cy.get('form input#email').type(user.email)
+    cy.get('form input#password').type(user.password)
+    cy.get('form.login-form').submit()
+    cy.location('href').should('match', /#\/$/)
+  })
+
   it('Create Author model', () => {
     cy.createModel(Author)
   })
@@ -75,6 +85,7 @@ describe('Dedicated Space', () => {
 
   it('Create an author', () => {
     cy.createData(Author, [author])
+    cy.wait(2000) // wait for author to land in Algolia search index
   })
 
   it('Create an article', () => {
@@ -95,6 +106,7 @@ describe('Dedicated Space', () => {
 
   it('Create an author', () => {
     cy.createData(Author, [dedicatedAuthor])
+    cy.wait(2000) // wait for author to land in Algolia search index
   })
 
   it('Create an article', () => {

@@ -65,11 +65,7 @@ function saveModelForm () {
 function navigateToAccount (user) {
   cy.get('.user-profile').click()
   cy.get('input#email').should('have.value', user.email)
-  if (user.role === 'admin') {
-    cy.get('.account-link.current-account').click()
-  } else {
-    cy.get('.account-link').should('not.exist')
-  }
+  cy.get('.account-link.current-account').click()
 }
 
 function navigateToModelEdit (model) {
@@ -138,11 +134,15 @@ function createSpace (user, space) {
   cy.get('a.new-space').click()
   cy.get('.spaces-form input#name').type(space.name)
   cy.get('.spaces-form input[type=submit]').click()
+  cy.wait(2000) // TODO: is this needed?
   waitForSave()
   if (space.mongodbUrl) {
+    cy.log('before space input', space);
     ['mongodbUrl', 'algoliaApplicationId', 'algoliaApiKey'].forEach(key => {
+      cy.log('space input key', key)
       cy.get(`.spaces-form input#${key}`).type(space[key], {force: true})
     })
+    cy.log('after space input')
     cy.get('.spaces-form input[type=submit]').click()
     waitForSave()
   }

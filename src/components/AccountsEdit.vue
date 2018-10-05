@@ -3,8 +3,21 @@
     <h1>Account Config</h1>
 
     <form class="account-form" @submit.prevent="save">
-      <div class="form-group" v-if="!currentAccount(account)">
-        <a href="#" @click="makeCurrent()">Switch to this account</a>
+      <div class="form-group">
+        <template v-if="currentAccount(account)">
+          This is the current account
+        </template>
+        <template v-else>
+          <a href="#" @click="makeCurrent()">Make this the current account</a>
+        </template>
+      </div>
+
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" v-model="account.name" class="form-control" id="name" v-bind:class="{ 'is-invalid': errors.name}" v-autofocus/>
+        <div class="invalid-feedback">
+          {{errors.name}}
+        </div>
       </div>
 
       <div class="form-group">
@@ -22,7 +35,7 @@
           </li>
         </ul>
 
-        <p>
+        <p v-show="isAdmin(account)">
           <router-link :to="newSpaceUrl()" class="new-space">
             New Space
           </router-link>
@@ -40,7 +53,7 @@
                 {{role}}
               </option>
             </select>
-            <a href="#" @click.prevent="removeUser(user)" v-if="user.email !== sessionEmail" class="remove-user">
+            <a href="#" @click.prevent="removeUser(user)" v-if="user.email !== sessionEmail && isAdmin(account)" class="remove-user">
               [remove]
             </a>
           </li>
@@ -63,21 +76,13 @@
         </p>
 
         <p>
-          <router-link :to="newInviteUserUrl()" class="invite-user">
+          <router-link :to="newInviteUserUrl()" class="invite-user" v-if="isAdmin(account)">
             Invite User
           </router-link>
         </p>
       </div>
 
-      <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" v-model="account.name" class="form-control" id="name" v-bind:class="{ 'is-invalid': errors.name}" v-autofocus/>
-        <div class="invalid-feedback">
-          {{errors.name}}
-        </div>
-      </div>
-
-      <input type="submit" class="btn btn-primary" value="Save" />
+      <input type="submit" class="btn btn-primary" value="Save" :disabled="!isAdmin(account)" />
     </form>
   </div>
 </template>
@@ -89,6 +94,7 @@ import Account from '@/services/account'
 import Alert from '@/services/alert'
 import {ROLES} from '@/config'
 import FormUtil from '@/form_util'
+import router from '@/router'
 
 export default {
   data: () => {
@@ -127,6 +133,7 @@ export default {
       session.set(u.merge(session.get(), {account: this.account}))
       const space = this.account.spaces[0]
       session.set(u.merge(session.get(), {space}))
+      router.push('/')
     },
     currentSpace (space) {
       return space.id === session.get('space.id')
