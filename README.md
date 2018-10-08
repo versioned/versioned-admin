@@ -4,7 +4,7 @@ This is the Versioned admin web UI that talks to the [Versioned REST API](https:
 
 ## Documentation
 
-Documenation is available at [versioned-doc](https://github.com/versioned/versioned-doc)
+Documentation is available at [versioned-doc](https://github.com/versioned/versioned-doc)
 
 ## Hosted/Managed Service
 
