@@ -1,6 +1,14 @@
-# Versioned Admin
+# Versioned Admin UI
 
-This is the admin web UI that talks to the Versioned CMS REST API.
+This is the Versioned admin web UI that talks to the [Versioned REST API](https://github.com/versioned/versioned-api).
+
+## Documentation
+
+Documenation is available at [versioned-doc](https://github.com/versioned/versioned-doc)
+
+## Hosted/Managed Service
+
+A hosted and managed version of this UI is available at [versioned.io](http://versioned.io)
 
 ## Starting the Development Server
 
