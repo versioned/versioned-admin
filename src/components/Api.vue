@@ -20,7 +20,7 @@
           <pre>{{apiKey}}</pre>
         </li>
         <li>
-          <a :href="docsUrl" target="_blank">API Docs</a>
+          <a :href="apiDocsUrl" target="_blank">API Docs</a>
         </li>
       </ul>
 
@@ -45,6 +45,25 @@
           <pre>{{example.httpie}}</pre>
         </div>
       </div>
+
+      <div class="example-container">
+        <h2>Data Import</h2>
+
+        <p>
+          There is an import API endpoint (see the <a :href="apiDocsUrl" target="_blank">API Docs</a> for details)
+          that allows you to create 100 documents at a time for a model.
+          If you need to write a script to import data there is an
+          <a href="https://github.com/versioned/versioned-api/blob/master/examples/import-data.js">example script</a>
+          that you can use as inspiration.
+        </p>
+      </div>
+
+      <div v-if="docsUrl" class="example-container">
+        <h2>Documentation</h2>
+
+        To learn more about the core concepts of the API you should check out the
+        <a :href="docsUrl" target="_blank">documentation</a>.
+      </div>
   </div>
 </template>
 
@@ -63,11 +82,13 @@ export default {
     const spaceId = u.getIn(session.get(), 'space.id')
     const baseUrl = process.env.VUE_APP_API_URL
     const swaggerUrl = `${baseUrl}/data/${spaceId}/swagger.json`
-    const docsUrl = `${rootUrl(process.env.VUE_APP_API_URL)}/swagger-ui/index.html?url=${swaggerUrl}`
+    const apiDocsUrl = `${rootUrl(process.env.VUE_APP_API_URL)}/swagger-ui/index.html?url=${swaggerUrl}`
+    const docsUrl = process.env.VUE_APP_DOCS_URL
     return {
       accountId,
       spaceId,
       baseUrl,
+      apiDocsUrl,
       docsUrl,
       models: [],
       examples: []

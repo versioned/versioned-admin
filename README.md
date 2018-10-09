@@ -20,6 +20,16 @@ open http://localhost:8080
 
 To create a production build, run `yarn build`
 
+## Environment Variables
+
+```
+VUE_APP_ALGOLIASEARCH_APPLICATION_ID=...
+VUE_APP_API_URL=https://api.versioned.io/v1
+VUE_APP_DOCS_URL=https://github.com/versioned/versioned-doc
+VUE_APP_ENV=production
+VUE_APP_GOOGLE_API_KEY=...
+```
+
 ## Heroku Deploy
 
 ```
