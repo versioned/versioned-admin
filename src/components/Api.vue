@@ -32,7 +32,7 @@
           put a CDN (i.e. a service like <a href="https://www.fastly.com">Fastly</a>, <a href="https://www.cloudflare.com">Cloudflare</a>,
           or <a href="https://aws.amazon.com/cloudfront">CloudFront</a>) in between your clients and this API.
           Setting up such a CDN is straightforward and relatively cheap (i.e. <a href="https://elements.heroku.com/addons/fastly">Fastly offers</a> 10 million requests per month at 25 USD/month).
-          You can expect this API to be rate limited at around 5 requests per second.
+          If you are not using a CDN you can expect the Versioned REST API to be rate limited at around 5 requests per second.
         </p>
 
         <p>
@@ -51,7 +51,7 @@
 
         <p>
           There is an import API endpoint (see the <a :href="apiDocsUrl" target="_blank">API Docs</a> for details)
-          that allows you to create 100 documents at a time for a model.
+          that allows you to create many documents at a time for a model.
           If you need to write a script to import data there is an
           <a href="https://github.com/versioned/versioned-api/blob/master/examples/import-data.js">example script</a>
           that you can use as inspiration.
