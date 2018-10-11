@@ -102,7 +102,7 @@ function verifyModelCreated (model) {
       cy.get(`${scope} select.data-type option[value="${field.type}"]`).should('be.selected')
     }
     if (field.relationship) {
-      cy.get(`${scope} input.to-type`).should('have.value', field.relationship.toType)
+      cy.get(`${scope} input.to-type`).should('have.value', field.relationship.toTypes[0])
       cy.get(`${scope} input.to-field`).should('have.value', field.relationship.toField)
       cy.get(`${scope} input.${field.relationship.type}`).should('be.checked')
     }
@@ -119,8 +119,8 @@ function addModelField (field, index) {
     cy.get(`${scope} input.${field.category}`).click({force: true})
   }
   if (field.relationship) {
-    const {type, toType, toField} = field.relationship
-    if (toType) cy.get(`${scope} input.to-type`).clear({force: true}).type(toType, {force: true})
+    const {type, toTypes, toField} = field.relationship
+    if (toTypes) cy.get(`${scope} input.to-type`).clear({force: true}).type(toTypes[0], {force: true})
     if (toField) cy.get(`${scope} input.to-field`).clear({force: true}).type(toField, {force: true})
     cy.get(`${scope} input.${type}`).click({force: true})
   }

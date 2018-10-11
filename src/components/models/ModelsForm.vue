@@ -129,20 +129,25 @@
         </div>
 
         <div v-if="isRelationship(field)" class="form-group required to-type">
-          <label>Target model (key)</label>
-          <input type="text" v-model="field.relationship.toType" :maxlength="COLL_LENGTH" class="form-control to-type" required/>
+          <label v-if="field.category === 'oneWayRelationship'">
+            Target models (comma separated keys)
+          </label>
+          <label v-else>
+            Target model (key)
+          </label>
+          <input type="text" v-model="field.relationship.toTypes" class="form-control to-type" required/>
           <div v-show="toTypeWarning(field)">
             <p class="alert alert-warning">
               {{toTypeWarning(field)}}
             </p>
             <p>
               Existing models:
-            </p>
             <ul>
               <li v-for="coll in existingModels">
                 <a href="#" @click="selectModel(field, coll, index)">{{coll}}</a>
               </li>
             </ul>
+            </p>
           </div>
         </div>
 
@@ -318,6 +323,10 @@ const FIELD_TYPES = [
   {
     name: 'Date and time',
     key: 'date'
+  },
+  {
+    name: 'Date and time',
+    key: 'date'
   }
 ]
 
@@ -413,7 +422,7 @@ export default {
         type: 'string',
         required: false,
         titleProperty: false,
-        relationship: {type: 'one-to-many', toType: ''},
+        relationship: {type: 'one-to-many', toTypes: ''},
         validation: {},
         errors: {}
       }
@@ -447,7 +456,7 @@ export default {
     },
     fieldNameChange (field) {
       field.key = dbFriendly(field.name)
-      field.relationship.toType = field.key
+      field.relationship.toTypes = field.key
       field.relationship.toField = this.model.coll
     },
     showCascade (field) {
@@ -459,14 +468,20 @@ export default {
       return this.existingModels.includes(toType)
     },
     toTypeWarning (field) {
-      if (u.notEmpty(field.relationship.toType) && !this.toTypeExists(field.relationship.toType)) {
-        return `Model ${field.relationship.toType} does not exist yet. To create a relationship to an image or other file specify "assets" as target model.`
+      if (u.empty(field.relationship.toTypes)) return
+      const toTypes = u.splitCommas(field.relationship.toTypes)
+      if (field.category === 'twoWayRelationship' && toTypes.length > 1) {
+        return 'Two way relationships cannot have more than one target model'
+      }
+      const missingTypes = toTypes.filter(t => !this.toTypeExists(t))
+      if (u.notEmpty(missingTypes)) {
+        return `The following models do not exist yet: ${missingTypes.join(', ')}. To create a relationship to an image or other file specify "assets" as target model.`
       } else {
         return null
       }
     },
     selectModel (field, coll, index) {
-      field.relationship.toType = coll
+      field.relationship.toTypes = coll
     },
     makeDbFriendly (obj, prop) {
       obj[prop] = dbFriendly(obj[prop])
@@ -580,8 +595,23 @@ export default {
         field.unique = true
       } else {
         // Relationship
-        property.type = 'string'
+        property = {
+          type: 'object',
+          properties: {
+            id: {type: 'string'},
+            type: {type: 'string'}
+          },
+          additionalProperties: false,
+          required: ['id', 'type']
+        }
         isArray = ['many-to-many', 'one-to-many'].includes(field.relationship.type)
+      }
+      let relationship
+      if (this.isRelationship(field)) {
+        relationship = u.evolve(field.relationship, {
+          toTypes: u.splitCommas,
+          toField: (t) => (field.category === 'twoWayRelationship' ? t : undefined)
+        })
       }
       const xMeta = u.compact({
         unique: (translated ? undefined : field.unique),
@@ -589,7 +619,7 @@ export default {
         field: {
           name: field.name
         },
-        relationship: (this.isRelationship(field) ? field.relationship : undefined),
+        relationship,
         sequence: (field.category === 'sequence' ? true : undefined),
         slug: (field.category === 'slug' ? true : undefined)
       })
@@ -609,12 +639,12 @@ export default {
       let type = fieldType(property)
       const name = u.getIn(property, 'x-meta.field.name', capitalize(key))
       const defaults = FIELD_TYPES_PROPERTIES[type] || {}
-      const relationship = u.getIn(property, 'x-meta.relationship')
+      const relationship = u.evolve(u.getIn(property, 'x-meta.relationship'), {toTypes: u.joinCommas})
       const sequence = u.getIn(property, 'x-meta.sequence')
       const slug = u.getIn(property, 'x-meta.slug')
       const cascade = (u.getIn(property, 'x-meta.relationship.onDelete') === 'cascade')
       let category = 'data'
-      if (relationship) {
+      if (u.notEmpty(relationship)) {
         category = relationship.toField ? 'twoWayRelationship' : 'oneWayRelationship'
       } else if (sequence) {
         category = 'sequence'

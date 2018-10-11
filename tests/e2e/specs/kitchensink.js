@@ -23,7 +23,7 @@ const Article = Model({
       name: 'Author',
       category: 'two-way-relationship',
       relationship: {
-        toType: 'author',
+        toTypes: ['author'],
         toField: 'articles',
         type: 'many-to-one'
       }
@@ -32,7 +32,7 @@ const Article = Model({
       name: 'Slot',
       category: 'two-way-relationship',
       relationship: {
-        toType: 'slot',
+        toTypes: ['slot'],
         toField: 'article',
         type: 'one-to-one'
       }
@@ -41,7 +41,7 @@ const Article = Model({
       name: 'Categories',
       category: 'two-way-relationship',
       relationship: {
-        toType: 'category',
+        toTypes: ['category'],
         toField: 'articles',
         type: 'many-to-many'
       }
@@ -71,7 +71,7 @@ const Author = Model({
       category: 'two-way-relationship',
       relationship: {
         type: 'one-to-many',
-        toType: 'article',
+        toTypes: ['article'],
         toField: 'author'
       }
     }
@@ -92,7 +92,7 @@ const Slot = Model({
       category: 'two-way-relationship',
       relationship: {
         type: 'one-to-one',
-        toType: 'article',
+        toTypes: ['article'],
         toField: 'slot'
       }
     }
@@ -113,7 +113,7 @@ const Category = Model({
       category: 'two-way-relationship',
       relationship: {
         type: 'many-to-many',
-        toType: 'article',
+        toTypes: ['article'],
         toField: 'categories'
       }
     }

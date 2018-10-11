@@ -24,7 +24,7 @@ const Article = Model({
       name: 'Author',
       category: 'two-way-relationship',
       relationship: {
-        toType: 'author',
+        toTypes: ['author'],
         toField: 'articles',
         type: 'many-to-one'
       }

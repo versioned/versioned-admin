@@ -35,9 +35,9 @@ const DEBOUNCE_INTERVAL = 200
 export default {
   props: ['attribute', 'error'],
   data () {
-    const toType = u.getIn(this.attribute, 'schema.x-meta.relationship.toType')
+    const toTypes = u.getIn(this.attribute, 'schema.x-meta.relationship.toTypes')
     const selectedResults = u.array(this.attribute.value || [])
-    const placeholder = (this.isArray() ? `search ${toType} to add` : `search ${toType}`)
+    const placeholder = (this.isArray() ? `search to add ${toTypes.join(' or ')}` : `search ${toTypes.join(' or ')}`)
     return {
       results: [],
       placeholder,
@@ -62,8 +62,9 @@ export default {
     async search (query) {
       if (u.notEmpty(query)) {
         const space = u.getIn(session.get(), 'space')
-        const type = u.getIn(this.attribute, 'schema.x-meta.relationship.toType')
-        const options = {filters: `type:${type}`}
+        const types = u.getIn(this.attribute, 'schema.x-meta.relationship.toTypes', [])
+        const filters = types.map(type => `type:${type}`).join(' OR ')
+        const options = {filters}
         if (searchTimeout) clearTimeout(searchTimeout)
         searchTimeout = setTimeout(async () => {
           const result = await Search({space}).search(query, options)

@@ -237,6 +237,7 @@ function rename (obj, renames, options = {}) {
 // See: http://ramdajs.com/docs/#evolve
 // Only includes keys present in object
 function evolve (obj, transformations) {
+  if (empty(obj)) return {}
   return Object.keys(obj).reduce((result, key) => {
     const value = obj[key]
     const transform = transformations[key]
@@ -479,6 +480,16 @@ function prettyJson (value) {
   }
 }
 
+function splitCommas (value) {
+  if (empty(value)) return []
+  return value.split(',').map(t => t.trim())
+}
+
+function joinCommas (value) {
+  if (empty(value)) return ''
+  return value.join(',')
+}
+
 export default {
   toBoolean,
   toString,
@@ -540,5 +551,7 @@ export default {
   json,
   parseJson,
   safeJsonParse,
-  prettyJson
+  prettyJson,
+  splitCommas,
+  joinCommas
 }

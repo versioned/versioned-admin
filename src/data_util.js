@@ -3,7 +3,7 @@ import diff from '@/diff'
 
 function convertRelObjectsToIds (doc) {
   if (!doc) return doc
-  const convert = (value) => (typeof value === 'object' && value && value.id) ? value.id : value
+  const convert = (value) => (u.getIn(value, 'id') && u.getIn(value, 'type')) ? u.pick(value, ['id', 'type']) : value
   return Object.entries(doc).reduce((acc, [key, value]) => {
     acc[key] = u.isArray(value) ? value.map(convert) : convert(value)
     return acc
