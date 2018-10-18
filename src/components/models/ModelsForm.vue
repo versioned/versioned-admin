@@ -495,7 +495,7 @@ export default {
         this.model.model = {schema: this.getSchema(this.model.fields)}
         this.model.propertiesOrder = this.model.fields.map(u.property('key'))
       }
-      this.model.features = u.keys(u.filter(this.features, (v) => true))
+      this.model.features = u.keys(this.features).filter(key => this.features[key])
       this.$emit('submit', this.model)
     },
     remove () {

@@ -24,6 +24,22 @@
         </li>
       </ul>
 
+      <div>
+        <h2>GraphQL</h2>
+
+        <p>
+          The GraphQL endpoint allows read-only access of published data for clients with the API key.
+        </p>
+
+        <p>
+          Try out the GraphQL endpoint with the <a :href="graphiqlUrl" target="_blank">GraphiQL UI</a>.
+        </p>
+
+        <p class="alert alert-warning">
+          The GraphQL endpoint doesn't yet support multi-type relationships or filtering
+        </p>
+      </div>
+
       <div v-if="examples.length > 0" class="example-container">
         <h2>API Call Examples</h2>
 
@@ -61,8 +77,8 @@
       <div v-if="docsUrl" class="example-container">
         <h2>Documentation</h2>
 
-        To learn more about the core concepts of the API you should check out the
-        <a :href="docsUrl" target="_blank">documentation</a>.
+        Check out the <a :href="docsUrl" target="_blank">documentation</a>
+        to learn more about the core concepts of the API.
       </div>
   </div>
 </template>
@@ -81,14 +97,18 @@ export default {
     const accountId = u.getIn(session.get(), 'account.id')
     const spaceId = u.getIn(session.get(), 'space.id')
     const baseUrl = process.env.VUE_APP_API_URL
+    const apiKey = u.getIn(session.get(), 'space.apiKey')
     const swaggerUrl = `${baseUrl}/data/${spaceId}/swagger.json`
     const apiDocsUrl = `${rootUrl(process.env.VUE_APP_API_URL)}/swagger-ui/index.html?url=${swaggerUrl}`
+    const graphiqlUrl = `${rootUrl(process.env.VUE_APP_API_URL)}/graphiql.html?spaceId=${spaceId}&apiKey=${apiKey}`
     const docsUrl = process.env.VUE_APP_DOCS_URL
     return {
       accountId,
       spaceId,
       baseUrl,
+      apiKey,
       apiDocsUrl,
+      graphiqlUrl,
       docsUrl,
       models: [],
       examples: []
@@ -104,7 +124,6 @@ export default {
     async getData () {
       const spaceId = u.getIn(session.get(), 'space.id')
       const params = {sort: 'name'}
-      this.apiKey = u.getIn(session.get(), 'space.apiKey')
       this.models = (await Model(spaceId).list({params})).data
       this.dbStats = await DbStats(spaceId).get()
       this.examples = await this.getExamples()
