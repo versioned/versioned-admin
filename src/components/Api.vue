@@ -36,7 +36,7 @@
         </p>
 
         <p class="alert alert-warning">
-          The GraphQL endpoint doesn't yet support multi-type relationships or filtering
+          The GraphQL endpoint doesn't yet support multi-type relationships
         </p>
       </div>
 
