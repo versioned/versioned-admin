@@ -34,10 +34,6 @@
         <p>
           Try out the GraphQL endpoint with the <a :href="graphiqlUrl" target="_blank">GraphiQL UI</a>.
         </p>
-
-        <p class="alert alert-warning">
-          The GraphQL endpoint doesn't yet support multi-type relationships
-        </p>
       </div>
 
       <div v-if="examples.length > 0" class="example-container">
