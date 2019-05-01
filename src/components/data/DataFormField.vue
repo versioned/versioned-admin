@@ -74,7 +74,6 @@ import Vue from 'vue'
 import u from '@/util'
 import Swagger from '@/services/swagger'
 import session from '@/services/session'
-import JsonField from '@/components/form/JsonField'
 import DataRelField from '@/components/data/DataRelField'
 import {languageToCode} from '@/language_codes'
 
@@ -147,7 +146,6 @@ export default {
     }
   },
   components: {
-    JsonField,
     DataRelField
   }
 }

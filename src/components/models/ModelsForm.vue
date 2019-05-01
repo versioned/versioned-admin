@@ -288,7 +288,6 @@ import Alert from '@/services/alert'
 import Model from '@/services/model'
 import {capitalize} from '@/client_util'
 import {propertiesOrder} from '@/models_util'
-import JsonField from '@/components/form/JsonField'
 import FormUtil from '@/form_util'
 
 const FIELD_TYPES = [
@@ -670,9 +669,6 @@ export default {
         }
       })
     }
-  },
-  components: {
-    JsonField
   }
 }
 </script>

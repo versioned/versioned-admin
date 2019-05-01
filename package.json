@@ -1,46 +1,42 @@
 {
-  "name": "versioned-ui",
+  "name": "versioned-admin",
   "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": "8.11.1"
-  },
   "scripts": {
-    "serve": "bin/write-env && $(yarn bin)/vue-cli-service serve --open",
-    "build": "bin/write-env && $(yarn bin)/vue-cli-service build",
-    "lint": "$(yarn bin)/vue-cli-service lint",
-    "dev": "VUE_APP_API_URL=http://localhost:3000/v1 yarn serve",
+    "serve": "bin/write-env && $(npm bin)/vue-cli-service serve --open",
+    "build": "bin/write-env && $(npm bin)/vue-cli-service build",
+    "lint": "$(npm bin)/vue-cli-service lint",
+    "dev": "VUE_APP_API_URL=http://localhost:3000/v1 npm run serve",
     "start": "node server.js",
-    "heroku-postbuild": "yarn install --production=false && yarn build",
-    "test": "yarn test:unit && yarn test:e2e --headless",
+    "heroku-postbuild": "npm install --production=false && npm run build",
+    "test": "npm run test:unit && npm run test:e2e --headless",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e"
   },
   "dependencies": {
-    "@vue/eslint-config-standard": "3.0.0-beta.9",
+    "@vue/eslint-config-standard": "4.0.0",
     "axios": "0.17.1",
+    "core-js": "2.6.5",
     "express": "4.16.2",
-    "vue": "2.5.16",
-    "vue-router": "3.0.1",
+    "vue": "2.6.10",
+    "vue-router": "3.0.6",
     "vue-search-select": "2.6.1",
-    "vuex": "3.0.1"
+    "vuex": "3.1.0"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "3.0.0-beta.1",
-    "@vue/cli-plugin-e2e-cypress": "^3.0.0-rc.10",
-    "@vue/cli-plugin-eslint": "3.0.0-beta.1",
-    "@vue/cli-plugin-unit-jest": "3.0.0-beta.11",
-    "@vue/cli-service": "3.0.0-beta.1",
-    "@vue/test-utils": "1.0.0-beta.16",
+    "@vue/cli-plugin-babel": "3.7.0",
+    "@vue/cli-plugin-e2e-cypress": "3.7.0",
+    "@vue/cli-plugin-eslint": "3.7.0",
+    "@vue/cli-plugin-unit-jest": "^3.7.0",
+    "@vue/cli-service": "3.7.0",
+    "@vue/test-utils": "1.0.0-beta.29",
     "babel-core": "7.0.0-bridge.0",
-    "babel-jest": "22.4.3",
-    "cheerio": "1.0.0-rc.2",
-    "vue-template-compiler": "2.5.16"
-  },
-  "babel": {
-    "presets": [
-      "@vue/app"
-    ]
+    "babel-eslint": "10.0.1",
+    "babel-jest": "^23.6.0",
+    "cheerio": "1.0.0-rc.3",
+    "eslint": "5.16.0",
+    "eslint-plugin-vue": "5.0.0",
+    "vue-template-compiler": "2.6.10"
   },
   "eslintConfig": {
     "root": true,
@@ -55,6 +51,7 @@
     "rules": {
       "no-unneeded-ternary": 0,
       "no-throw-literal": 0,
+      "object-curly-spacing": 0,
       "vue/require-v-for-key": false
     },
     "globals": {
@@ -68,7 +65,9 @@
   },
   "browserslist": [
     "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ]
+    "last 2 versions"
+  ],
+  "engines": {
+    "node": "10.x"
+  }
 }

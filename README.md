@@ -12,17 +12,17 @@ A hosted and managed version of this UI is available at [versioned.io](http://ve
 
 ## Starting the Development Server
 
-```
-yarn install
-yarn run dev
+```sh
+npm install
+npm run dev
 open http://localhost:8080
 ```
 
-To create a production build, run `yarn build`
+To create a production build, run `npm run build`
 
 ## Environment Variables
 
-```
+```sh
 VUE_APP_ALGOLIASEARCH_APPLICATION_ID=...
 VUE_APP_API_URL=https://api.versioned.io/v1
 VUE_APP_DOCS_URL=https://github.com/versioned/versioned-doc
@@ -32,7 +32,7 @@ VUE_APP_GOOGLE_API_KEY=...
 
 ## Heroku Deploy
 
-```
+```sh
 heroku config:set VUE_APP_API_URL=https://name-of-versioned-api-app.herokuapp.com/v1
 ```
 
@@ -40,8 +40,8 @@ heroku config:set VUE_APP_API_URL=https://name-of-versioned-api-app.herokuapp.co
 
 Running:
 
-```
-yarn test:unit --watch
+```sh
+npm run test:unit --watch
 ```
 
 See [@vue/cli-plugin-unit-jest](https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-unit-jest)
@@ -50,7 +50,7 @@ See [@vue/cli-plugin-unit-jest](https://github.com/vuejs/vue-cli/tree/dev/packag
 
 The dedicated_space.js spec requires these environment variables:
 
-```
+```sh
   CYPRESS_MONGODB_URL
   CYPRESS_ALGOLIASEARCH_APPLICATION_ID
   CYPRESS_ALGOLIASEARCH_API_KEY
@@ -58,18 +58,18 @@ The dedicated_space.js spec requires these environment variables:
 
 Running in the browser (all specs or single spec):
 
-```
-yarn test:e2e
+```sh
+npm run test:e2e
 ```
 
 Running headless:
 
-```
-yarn test:e2e --headless
+```sh
+npm run test:e2e --headless
 ```
 
 Running single spec headless:
 
-```
-yarn test:e2e --headless --spec tests/e2e/specs/dedicated_space.js
+```sh
+npm run test:e2e --headless --spec tests/e2e/specs/dedicated_space.js
 ```
