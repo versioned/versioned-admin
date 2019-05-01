@@ -31,7 +31,29 @@
       </option>
     </select>
 
-    <json-field v-else-if="isJsonField()" :obj="doc[attribute.key]" @fieldInput="updateValue($event)"></json-field>
+    <template v-else-if="isNestedObject()">
+        <div class="row">
+          <div class="card card-body bg-light">
+              <!-- <json-field :obj="doc[attribute.key]" @fieldInput="updateValue($event)"></json-field> -->
+              <data-form-field v-for="nestedAttribute in nestedWriteAttributes(attribute, doc[attribute.key])" :doc="nestedDoc(doc, attribute.key, nestedAttribute)" :attribute="nestedAttribute" :model="model" :key="nestedAttribute.key"></data-form-field>
+          </div>
+        </div>
+    </template>
+
+    <template v-else-if="isNestedArray()">
+        <div class="row">
+          <div class="card card-body bg-light">
+              <ul>
+                <li v-for="(item, index) in doc[attribute.key]" :key="index">
+                  {{attribute.key}} #{{index + 1}}
+                  [<a href="#" @click="removeNestedItem(index)">remove</a>]
+                  <data-form-field v-for="nestedAttribute in nestedWriteAttributes(attribute, doc[attribute.key])" :doc="nestedDoc(doc[attribute.key], index, nestedAttribute)" :attribute="nestedAttribute" :model="model" :key="nestedAttribute.key"></data-form-field>
+                </li>
+              </ul>
+              <a href="#" @click="addNestedItem()">+ add {{attribute.key}}</a>
+          </div>
+        </div>
+    </template>
 
     <input v-else-if="attribute.schema.type === 'boolean'" type="checkbox" v-model="doc[attribute.key]" @input="updateValue($event.target.value)"/>
 
@@ -48,13 +70,16 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import u from '@/util'
+import Swagger from '@/services/swagger'
 import session from '@/services/session'
 import JsonField from '@/components/form/JsonField'
 import DataRelField from '@/components/data/DataRelField'
 import {languageToCode} from '@/language_codes'
 
 export default {
+  name: 'data-form-field',
   props: ['doc', 'attribute', 'model', 'isChanged', 'error'],
   data () {
     const space = u.getIn(session.get(), 'space')
@@ -71,11 +96,17 @@ export default {
     updateValue (value) {
       if (this.attribute.schema.type === 'boolean') {
         value = this.doc[this.attribute.key] ? false : true
+      } else if (this.attribute.schema.type === 'number') {
+        value = parseFloat(this.doc[this.attribute.key])
+        this.doc[this.attribute.key] = value
       }
       this.$emit('fieldChange', {[this.attribute.key]: value})
     },
-    isJsonField () {
-      return !this.attribute.relationship && (this.attribute.schema.type === 'object' || this.attribute.schema.type === 'array')
+    isNestedObject () {
+      return !this.attribute.relationship && this.attribute.schema.type === 'object'
+    },
+    isNestedArray () {
+      return !this.attribute.relationship && this.attribute.schema.type === 'array'
     },
     isTextAttribute (schema) {
       return schema.type === 'string' && schema.maxLength && schema.maxLength > 256
@@ -96,6 +127,23 @@ export default {
     spaceUrl () {
       const space = u.getIn(session.get(), 'space')
       return `/accounts/${space.accountId}/spaces/${space.id}/edit`
+    },
+    nestedWriteAttributes (attribute, value) {
+      const schema = attribute.schema.type === 'array' ? attribute.schema.items : attribute.schema
+      return Swagger.writeAttributes(schema, value)
+    },
+    nestedDoc (doc, key, nestedAttribute) {
+      if (!doc[key]) Vue.set(doc, key, {})
+      if (nestedAttribute.schema.type === 'array' && !doc[key][nestedAttribute.key]) {
+        Vue.set(doc[key], nestedAttribute.key, [])
+      }
+      return doc[key]
+    },
+    addNestedItem () {
+      this.doc[this.attribute.key] = this.doc[this.attribute.key].concat([{}])
+    },
+    removeNestedItem (index) {
+      this.doc[this.attribute.key] = this.doc[this.attribute.key].filter((_, i) => i !== index)
     }
   },
   components: {
@@ -106,4 +154,7 @@ export default {
 </script>
 
 <style lang="css">
+  label {
+    font-weight: bold;
+  }
 </style>

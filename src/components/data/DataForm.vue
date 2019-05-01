@@ -61,7 +61,11 @@
         </div>
       </div>
 
-      <data-form-field v-for="attribute in writeAttributes" :doc="doc" :attribute="attribute" :model="model" :key="attribute.key" :isChanged="fieldIsChanged(attribute.key)" @fieldChange="fieldChange($event)" :error="errors[attribute.key]"></data-form-field>
+      <div class="row">
+        <div class="card card-body bg-light">
+          <data-form-field v-for="attribute in writeAttributes" :doc="doc" :attribute="attribute" :model="model" :key="attribute.key" :isChanged="fieldIsChanged(attribute.key)" @fieldChange="fieldChange($event)" :error="errors[attribute.key]"></data-form-field>
+        </div>
+      </div>
 
       <a v-show="hasChanges()" class="text-warning" href="#" @click.prevent="showUnsavedChanges = !showUnsavedChanges">Unsaved Changes</a>
       <changes v-if="showUnsavedChanges" :from="docOrig" :to="doc"></changes>

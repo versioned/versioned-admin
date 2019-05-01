@@ -10,7 +10,8 @@
       <h3>{{alert.errors.title}}</h3>
       <ul>
         <li v-for="error in alert.errors.errors">
-          <span v-if="error.field">{{error.field}} -</span>
+          <span v-if="error.path">{{error.path}} -</span>
+          <span v-else-if="error.field">{{error.field}} -</span>
           <span v-if="error.message">{{error.message}}</span>
           <span v-else>{{error}}</span>
         </li>
