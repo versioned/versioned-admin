@@ -152,7 +152,4 @@ export default {
 </script>
 
 <style lang="css">
-  label {
-    font-weight: bold;
-  }
 </style>

@@ -63,4 +63,13 @@ export default {
     width: 100px;
     height: 100px;
   }
+  .form-group > label {
+    font-weight: bold;
+  }
+  .form-check-label {
+    margin-right: 10px;
+  }
+  input.btn {
+    margin-right: 5px;
+  }
 </style>

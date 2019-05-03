@@ -35,7 +35,7 @@ export default {
   },
   methods: {
     stringifyChange (value) {
-      return truncated(value)
+      return truncated(value, 1000)
     },
     toggle (objName, property) {
       this[objName] = u.evolveAll((this[objName] || {}), {[property]: (v) => !v})

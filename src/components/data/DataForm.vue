@@ -8,7 +8,9 @@
         <a v-if="doc.id && previewUrl" :href="formattedPreviewUrl()" target="preview" class="btn btn-secondary preview">Preview</a>
       </div>
 
-      <a v-show="hasChanges()" class="text-warning" href="#" @click.prevent="showUnsavedChanges = !showUnsavedChanges">Unsaved Changes</a>
+      <div class="form-group">
+        <a v-show="hasChanges()" class="text-warning" href="#" @click.prevent="showUnsavedChanges = !showUnsavedChanges">Unsaved Changes</a>
+      </div>
       <changes v-if="showUnsavedChanges" :from="docOrig" :to="doc"></changes>
 
       <div v-if="isPublished" class="form-group versions">
@@ -67,7 +69,9 @@
         </div>
       </div>
 
-      <a v-show="hasChanges()" class="text-warning" href="#" @click.prevent="showUnsavedChanges = !showUnsavedChanges">Unsaved Changes</a>
+      <div class="form-group">
+        <a v-show="hasChanges()" class="text-warning" href="#" @click.prevent="showUnsavedChanges = !showUnsavedChanges">Unsaved Changes</a>
+      </div>
       <changes v-if="showUnsavedChanges" :from="docOrig" :to="doc"></changes>
 
       <div class="form-group buttons">
