@@ -1,8 +1,8 @@
 // https://docs.cypress.io/api/introduction/api.html
 
-import u from '../support/util'
-import data from '../support/kitchensink_data'
-import {Model, TITLE_FIELD} from '../support/test_util'
+const u = require('../support/util')
+const data = require('../support/kitchensink_data')
+const {Model, TITLE_FIELD} = require('../support/test_util')
 
 const userId = u.uuid()
 const user = {

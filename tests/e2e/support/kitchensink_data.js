@@ -54,7 +54,7 @@ const Article = [
   }
 ]
 
-export default {
+module.exports = {
   Author,
   Slot,
   Category,

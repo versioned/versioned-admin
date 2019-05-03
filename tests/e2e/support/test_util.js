@@ -1,11 +1,11 @@
-import u from '../support/util'
+const u = require('./util')
 
-export const TITLE_FIELD = {
+const TITLE_FIELD = {
   name: 'Title',
   type: 'string'
 }
 
-export function Model (model) {
+function Model (model) {
   const modelDefaults = {
     coll: u.dbFriendly(model.name)
   }
@@ -25,7 +25,7 @@ export function Model (model) {
   })
 }
 
-export default {
+module.exports = {
   TITLE_FIELD,
   Model
 }

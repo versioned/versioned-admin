@@ -1,5 +1,5 @@
-import u from './util'
-import {truncated} from '../support/client_util'
+const u = require('./util')
+const {truncated} = require('./client_util')
 
 // ***********************************************
 // This example commands.js shows you how to
@@ -285,7 +285,7 @@ function login (email, password) {
   cy.location('href').should('match', /#\/$/)
 }
 
-const commands = [
+const commands = {
   register,
   login,
   waitForSave,
@@ -304,7 +304,7 @@ const commands = [
   deleteDoc,
   deleteModel,
   deleteCurrentSpace
-]
-for (let command of commands) {
-  Cypress.Commands.add(command.name, command)
+}
+for (let [name, command] of Object.entries(commands)) {
+  Cypress.Commands.add(name, command)
 }
