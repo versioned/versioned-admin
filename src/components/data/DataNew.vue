@@ -53,7 +53,7 @@ export default {
       Data(this.model).create(doc)
         .then(doc => {
           this.doc = doc
-          Alert.setNext('success', 'Saved')
+          Alert.setBoth('success', 'Saved', {when: 'next'})
           router.push(`/data/${this.model}/${doc.id}/edit`)
         })
         .catch(error => {

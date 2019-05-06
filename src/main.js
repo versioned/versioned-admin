@@ -6,6 +6,13 @@ import autofocus from '@/directives/autofocus'
 import {timeAgo} from '@/client_util'
 import mixins from '@/mixins'
 import store from './store'
+import VueCodemirror from 'vue-codemirror'
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/addon/display/autorefresh.js'
+import 'codemirror/addon/edit/closebrackets.js'
+import 'codemirror/addon/edit/matchbrackets.js'
+
+Vue.use(VueCodemirror)
 
 Vue.config.productionTip = false
 

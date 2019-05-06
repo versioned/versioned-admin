@@ -68,35 +68,35 @@
 
         <div class="form-group">
           <div class="form-check">
-            <input v-model="field.category" class="form-check-input" type="radio" value="data">
+            <input v-model="field.category" class="form-check-input" type="radio" value="data" @change="fieldChanged(field)">
             <label class="form-check-label">
               Data field
             </label>
           </div>
 
           <div class="form-check">
-            <input v-model="field.category" class="form-check-input one-way-relationship" type="radio" value="oneWayRelationship">
+            <input v-model="field.category" class="form-check-input one-way-relationship" type="radio" value="oneWayRelationship" @change="fieldChanged(field)">
             <label class="form-check-label">
               One-way Relationship
             </label>
           </div>
 
           <div class="form-check">
-            <input v-model="field.category" class="form-check-input two-way-relationship" type="radio" value="twoWayRelationship">
+            <input v-model="field.category" class="form-check-input two-way-relationship" type="radio" value="twoWayRelationship" @change="fieldChanged(field)">
             <label class="form-check-label">
               Two-way Relationship
             </label>
           </div>
 
           <div class="form-check">
-            <input v-model="field.category" class="form-check-input sequence" type="radio" value="sequence">
+            <input v-model="field.category" class="form-check-input sequence" type="radio" value="sequence" @change="fieldChanged(field)">
             <label class="form-check-label">
               Integer Sequence (1, 2, 3...)
             </label>
           </div>
 
           <div class="form-check">
-            <input v-model="field.category" class="form-check-input slug" type="radio" value="slug">
+            <input v-model="field.category" class="form-check-input slug" type="radio" value="slug" @change="fieldChanged(field)">
             <label class="form-check-label">
               Slug (for SEO-friendly URLs, generated from the title field)
             </label>
@@ -107,7 +107,7 @@
           <label class="form-check-label">
             Data type
           </label>
-          <select v-if="field.category === 'data'" v-model="field.type" class="data-type">
+          <select v-if="field.category === 'data'" v-model="field.type" class="data-type" @change="fieldChanged(field)">
             <option v-for="type in FIELD_TYPES" v-bind:value="type.key">
               {{type.name}}
             </option>
@@ -117,6 +117,17 @@
         <div v-show="showTranslateWarning(field)" class="form-group alert alert-warning">
           To use translated fields you also need to select languages to translate in the
           <router-link :to="spaceUrl()" target="_blank">Space Config</router-link>
+        </div>
+
+        <div v-if="field.category === 'data' && field.type === 'object'" class="form-group required">
+          <label>JSON Schema</label>
+          <div class="invalid-schema">
+            {{field.errors.schema}}
+          </div>
+          <codemirror ref="codemirror" v-model="field.schema" :options="codemirrorOptions" @input="validateSchema(field)" v-bind:class="{ 'is-invalid': field.errors.schema}"></codemirror>
+          <div class="invalid-schema">
+            {{field.errors.schema}}
+          </div>
         </div>
 
         <div v-if="field.category === 'data'" class="form-group">
@@ -289,6 +300,10 @@ import Model from '@/services/model'
 import {capitalize} from '@/client_util'
 import {propertiesOrder} from '@/models_util'
 import FormUtil from '@/form_util'
+import { codemirror } from 'vue-codemirror'
+import 'codemirror/lib/codemirror.css'
+import META_SCHEMA from '@/json_schema_meta'
+import jsonSchema from '@/json_schema'
 
 const FIELD_TYPES = [
   {
@@ -324,8 +339,8 @@ const FIELD_TYPES = [
     key: 'date'
   },
   {
-    name: 'Date and time',
-    key: 'date'
+    name: 'Nested JSON Object',
+    key: 'object'
   }
 ]
 
@@ -382,7 +397,17 @@ export default {
       FIELD_TYPES,
       errors: {},
       features: this.makeFeatures(this.model),
-      collapsed: this.getCollapsed(this.model.fields)
+      collapsed: this.getCollapsed(this.model.fields),
+      codemirrorOptions: {
+        autoRefresh: true,
+        matchBrackets: true,
+        autoCloseBrackets: true,
+        tabSize: 2,
+        mode: {name: 'javascript', json: true},
+        theme: 'base16-dark',
+        lineNumbers: false,
+        line: true
+      }
     }
   },
   created () {
@@ -515,12 +540,45 @@ export default {
         return field.category === 'data' && !textField(field)
       }
     },
+    fieldChanged (field) {
+      field.errors = {}
+      field.schema = u.prettyJson({
+        type: 'object',
+        properties: {},
+        required: [],
+        additionalProperties: false
+      })
+    },
     validatePattern (field) {
       try {
         // NOTE: does this make sense? Can we even validate the regex?
         if (field.pattern) new RegExp(field.pattern).test('foobar')
       } catch (err) {
         field.errors.pattern = 'regular expression is invalid'
+      }
+    },
+    validateSchema (field) {
+      console.log('pm debug validateSchema', field.schema, JSON.stringify(field.errors))
+      if (u.empty(field.schema)) {
+        Vue.set(field.errors, 'schema', 'please provide a JSON Schema object')
+        return
+      }
+      try {
+        const schema = JSON.parse(field.schema)
+        const schemaErrors = jsonSchema.validate(META_SCHEMA, schema)
+        if (schemaErrors) {
+          const message = schemaErrors.map(e => `${e.dataPath} - ${e.message}`).join(', ')
+          console.log('pm debug schemaErrors', schemaErrors, message)
+          Vue.set(field.errors, 'schema',   message)
+        } else if (schema.type !== 'object') {
+          Vue.set(field.errors, 'schema', 'must have "type": "object"')
+        } else if (u.empty(u.compact(schema.properties))) {
+          Vue.set(field.errors, 'schema', 'properties must contain at least one property')
+        } else {
+          Vue.set(field.errors, 'schema', undefined)
+        }
+      } catch (err) {
+        Vue.set(field.errors, 'schema', 'invalid JSON (check for matching quotation marks, curly braces, and trailing commas)')
       }
     },
     showTranslateWarning (field) {
@@ -575,6 +633,9 @@ export default {
       const fieldType = field.type || 'string'
       const translated = fieldType.startsWith('translated_')
       let property = FIELD_TYPES_PROPERTIES[fieldType] || {}
+      if (field.category === 'data' && field.type === 'object') {
+        property = u.safeJsonParse(field.schema) || {}
+      }
       let writable = true
       if (field.category === 'data') {
         if (field.hasValidation) {
@@ -666,15 +727,29 @@ export default {
           maxLength: (defaults.maxLength === property.maxLength ? undefined : property.maxLength),
           pattern: property.pattern,
           enum: (property.enum && property.enum.join(','))
-        }
+        },
+        schema: u.prettyJson(u.omit(property, ['x-meta']))
       })
     }
+  },
+  components: {
+    codemirror
   }
 }
 </script>
 
 <style media="screen">
+  .CodeMirror {
+         border: 1px solid rgb(223, 229, 233);
+         font-size: 1.2em;
+  }
   .field-heading a:hover {
     text-decoration: none;
+  }
+  .invalid-schema {
+    width: 100%;
+    margin-top: .25rem;
+    font-size: 80%;
+    color: #dc3545;
   }
 </style>

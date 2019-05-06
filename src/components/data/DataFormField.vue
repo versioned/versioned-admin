@@ -12,7 +12,7 @@
             ({{attribute.help}})
           </span>
         </label>
-        <textarea v-if="isTextAttribute(attribute.meta.translated)" type="text" v-model="doc[attribute.key][code]" class="form-control" rows="5"/>
+        <textarea v-if="isTextAttribute(attribute.meta.translated)" v-model="doc[attribute.key][code]" class="form-control" rows="5"/>
         <input v-else type="text" ref="textInput" v-model="doc[attribute.key][code]" class="form-control" :class="{ 'is-invalid': error}"/>
       </div>
     </div>
