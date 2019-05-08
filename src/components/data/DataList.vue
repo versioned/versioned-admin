@@ -48,6 +48,9 @@
               </router-link>
               <span v-else-if="attribute.meta && attribute.meta.relationship" v-html="relationshipLinks(attribute, doc)">
               </span>
+              <span v-else-if="attribute.schema.type === 'object'">
+                Object: {{'{' + Object.keys(doc[attribute.key]).join(', ') + '}'}}
+              </span>
               <span v-else>
                 {{stringify(doc[attribute.key], attribute.schema)}}
               </span>
@@ -173,7 +176,12 @@ export default {
       return links.join(', ')
     },
     getAttributes (schema) {
-      return Swagger.attributes(schema).slice(0, ATTRIBUTES_LIMIT)
+      const attributes = Swagger.attributes(schema).slice(0, ATTRIBUTES_LIMIT)
+      if (u.getIn(schema, 'x-meta.titleProperty')) {
+        return attributes
+      } else {
+        return [{label: 'ID', key: 'id'}, ...attributes]
+      }
     },
     editUrl (doc) {
       return `/data/${doc.type}/${doc.id}/edit`
