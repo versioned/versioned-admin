@@ -176,12 +176,7 @@ export default {
       return links.join(', ')
     },
     getAttributes (schema) {
-      const attributes = Swagger.attributes(schema).slice(0, ATTRIBUTES_LIMIT)
-      if (u.getIn(schema, 'x-meta.titleProperty')) {
-        return attributes
-      } else {
-        return [{label: 'ID', key: 'id'}, ...attributes]
-      }
+      return Swagger.attributes(schema).slice(0, ATTRIBUTES_LIMIT)
     },
     editUrl (doc) {
       return `/data/${doc.type}/${doc.id}/edit`

@@ -142,7 +142,7 @@ function stringify (value, propertySchema) {
   } else if (typeof value === 'object' && u.getIn(propertySchema, 'x-meta.relationship')) {
     return getTitle(value)
   } else if (typeof value === 'object') {
-    return JSON.stringify(value, null, 4)
+    return `Object: {'${Object.keys(value).join(', ')}}`
   } else {
     return value.toString()
   }
