@@ -86,6 +86,7 @@
 </template>
 
 <script>
+// import Vue from 'vue'
 import u from '@/util'
 import {urlWithQuery} from '@/services/api'
 import Alert from '@/services/alert'
@@ -190,8 +191,7 @@ export default {
       this.errors = FormUtil.handleError(error)
     },
     fieldIsChanged (key) {
-      const stripArrayIndex = (k) => k.replace(/\[\d+\]$/, '')
-      return u.keys(this.changes).map(stripArrayIndex).includes(key)
+      return u.keys(this.changes).map(key => key.split('.')[0]).includes(key)
     },
     hasChanges () {
       return u.notEmpty(u.compact(this.changes))

@@ -15,6 +15,7 @@ import 'codemirror/addon/edit/matchbrackets.js'
 Vue.use(VueCodemirror)
 
 Vue.config.productionTip = false
+Vue.config.devtools = process.env.NODE_ENV === 'development'
 
 Vue.filter('date', dateFilter)
 Vue.filter('timeAgo', timeAgo)

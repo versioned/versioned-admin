@@ -35,7 +35,7 @@
         <div class="row">
           <div class="card card-body bg-light">
               <!-- <json-field :obj="doc[attribute.key]" @fieldInput="updateValue($event)"></json-field> -->
-              <data-form-field v-for="nestedAttribute in nestedWriteAttributes(attribute, doc[attribute.key])" :doc="nestedDoc(doc, attribute.key, nestedAttribute)" :attribute="nestedAttribute" :model="model" :key="nestedAttribute.key"></data-form-field>
+              <data-form-field v-for="nestedAttribute in nestedObjectAttributes(attribute, doc[attribute.key])" :doc="nestedObjectDoc(doc, attribute.key)" :attribute="nestedAttribute" :model="model" :key="nestedAttribute.key"></data-form-field>
           </div>
         </div>
     </template>
@@ -46,11 +46,11 @@
               <ul>
                 <li v-for="(item, index) in doc[attribute.key]" :key="index">
                   {{attribute.key}} #{{index + 1}}
-                  [<a href="#" @click="removeNestedItem(index)">remove</a>]
-                  <data-form-field v-for="nestedAttribute in nestedWriteAttributes(attribute, doc[attribute.key])" :doc="nestedDoc(doc[attribute.key], index, nestedAttribute)" :attribute="nestedAttribute" :model="model" :key="nestedAttribute.key"></data-form-field>
+                  [<a href="#" @click="removeNestedItem(index, $event)">remove</a>]
+                  <data-form-field :doc="nestedArrayDoc(doc, attribute.key)" :attribute="nestedArrayAttribute(index, attribute, doc[attribute.key])" :model="model" :key="index"></data-form-field>
                 </li>
               </ul>
-              <a href="#" @click="addNestedItem()">+ add {{attribute.key}}</a>
+              <a href="#" @click="addNestedItem(attribute, $event)">+ add {{attribute.key}}</a>
           </div>
         </div>
     </template>
@@ -127,21 +127,35 @@ export default {
       const space = u.getIn(session.get(), 'space')
       return `/accounts/${space.accountId}/spaces/${space.id}/edit`
     },
-    nestedWriteAttributes (attribute, value) {
-      const schema = attribute.schema.type === 'array' ? attribute.schema.items : attribute.schema
-      return Swagger.writeAttributes(schema, value)
+    nestedObjectAttributes (attribute, value) {
+      return Swagger.writeAttributes(attribute.schema, value)
     },
-    nestedDoc (doc, key, nestedAttribute) {
-      if (!doc[key]) Vue.set(doc, key, {})
-      if (nestedAttribute.schema.type === 'array' && !doc[key][nestedAttribute.key]) {
-        Vue.set(doc[key], nestedAttribute.key, [])
+    nestedArrayAttribute (arrayIndex, attribute, value) {
+      return {
+        key: arrayIndex,
+        index: 0,
+        label: '',
+        field: {},
+        schema: attribute.schema.items,
+        meta: {},
+        value
       }
+    },
+    nestedObjectDoc (doc, key) {
+      if (!this.doc[key]) Vue.set(this.doc, key, {})
       return doc[key]
     },
-    addNestedItem () {
-      this.doc[this.attribute.key] = this.doc[this.attribute.key].concat([{}])
+    nestedArrayDoc (doc, key) {
+      return doc[key]
     },
-    removeNestedItem (index) {
+    addNestedItem (attribute, event) {
+      event.preventDefault()
+      const key = this.attribute.key
+      if (!this.doc[key]) Vue.set(this.doc, key, [])
+      this.doc[key] = this.doc[key].concat([''])
+    },
+    removeNestedItem (index, event) {
+      event.preventDefault()
       this.doc[this.attribute.key] = this.doc[this.attribute.key].filter((_, i) => i !== index)
     }
   },

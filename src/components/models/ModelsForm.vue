@@ -558,7 +558,6 @@ export default {
       }
     },
     validateSchema (field) {
-      console.log('pm debug validateSchema', field.schema, JSON.stringify(field.errors))
       if (u.empty(field.schema)) {
         Vue.set(field.errors, 'schema', 'please provide a JSON Schema object')
         return
@@ -568,8 +567,7 @@ export default {
         const schemaErrors = jsonSchema.validate(META_SCHEMA, schema)
         if (schemaErrors) {
           const message = schemaErrors.map(e => `${e.dataPath} - ${e.message}`).join(', ')
-          console.log('pm debug schemaErrors', schemaErrors, message)
-          Vue.set(field.errors, 'schema',   message)
+          Vue.set(field.errors, 'schema', message)
         } else if (schema.type !== 'object') {
           Vue.set(field.errors, 'schema', 'must have "type": "object"')
         } else if (u.empty(u.compact(schema.properties))) {
