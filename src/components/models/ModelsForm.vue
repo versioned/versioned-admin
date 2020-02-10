@@ -709,6 +709,7 @@ export default {
       } else if (slug) {
         category = 'slug'
       }
+      const schema = (property.type === 'array' && u.empty(relationship)) ? property.items : property
       return u.compact({
         name,
         key,
@@ -726,7 +727,7 @@ export default {
           pattern: property.pattern,
           enum: (property.enum && property.enum.join(','))
         },
-        schema: u.prettyJson(u.omit(property, ['x-meta']))
+        schema: u.prettyJson(u.omit(schema, ['x-meta']))
       })
     }
   },
