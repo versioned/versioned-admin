@@ -48,8 +48,8 @@
             {{field.name}}
           </span>
         </a>
-        <span v-if="field.category === 'data'" class="small">[{{field.type}}]</span>
         <span v-if="field.category === 'data' && field.array" class="small">[array]</span>
+        <span v-if="field.category === 'data'" class="small">[{{field.type}}]</span>
         <!-- <a href="#" class="small" v-show="field.key && collapsed[field.key]" @click.prevent="toggleCollapsed(field.key)">show</a>
         <a href="#" class="small" v-show="field.key && !collapsed[field.key]" @click.prevent="toggleCollapsed(field.key)">hide</a> -->
         <a href="#" class="small remove-field" v-show="index> 0" @click.prevent="removeField(index)">[remove]</a>
@@ -221,12 +221,12 @@
         </div> -->
 
         <div class="form-group">
-          <!-- <div v-if="enabledField('array', field)" class="form-check">
+          <div v-if="enabledField('array', field)" class="form-check">
             <input v-model="field.array" class="form-check-input" type="checkbox">
             <label class="form-check-label">
               Array (multiple {{field.type}} values)
             </label>
-          </div> -->
+          </div>
           <div v-if="field.category !== 'sequence'" class="form-check">
             <input v-model="field.required" class="form-check-input required" type="checkbox">
             <label class="form-check-label">
@@ -256,12 +256,12 @@
 
           <div v-if="enabledField('validation', field) && field.hasValidation" class="form-group">
             <div v-if="enabledField('validation.minLength', field)" class="form-group">
-              <label>Minimum Length</label>
+              <label>Minimum text length</label>
               <input type="number" v-model="field.validation.minLength" class="form-control"/>
             </div>
 
             <div v-if="enabledField('validation.maxLength', field)" class="form-group">
-              <label>Maximum Length</label>
+              <label>Maximum text length</label>
               <input type="number" v-model="field.validation.maxLength" class="form-control"/>
             </div>
 
@@ -537,7 +537,7 @@ export default {
       } else if (fieldName === 'validation.enum') {
         return field.category === 'data' && ['string', 'integer', 'number'].includes(field.type) && !textField(field)
       } else if (fieldName === 'array') {
-        return field.category === 'data' && !textField(field)
+        return field.category === 'data'
       }
     },
     fieldChanged (field) {
