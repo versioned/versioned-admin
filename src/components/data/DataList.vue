@@ -48,7 +48,7 @@
               </router-link>
               <span v-else-if="attribute.meta && attribute.meta.relationship" v-html="relationshipLinks(attribute, doc)">
               </span>
-              <span v-else-if="attribute.schema.type === 'object'">
+              <span v-else-if="attribute.schema.type === 'object' && doc[attribute.key]">
                 Object: {{'{' + Object.keys(doc[attribute.key]).join(', ') + '}'}}
               </span>
               <span v-else>
