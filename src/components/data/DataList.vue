@@ -28,13 +28,23 @@
       Number of documents: {{count}}
     </div>
 
+    <div class="form-input" v-if="attributes.length > 1">
+      Showing
+      <select class="nAttributes" v-model="nAttributes">
+        <option v-for="n in attributes.length" v-bind:value="n">
+          {{n}}
+        </option>
+      </select>
+      out of {{attributes.length}} columns
+    </div>
+
     <json-data :jsonData="jsonData" :jsonUrl="jsonUrl" :published="published"></json-data>
 
     <div class="row" v-if="count">
       <table class="table table-striped data-table">
         <thead>
           <tr>
-            <th v-for="attribute in attributes">{{attribute.label}}</th>
+            <th v-for="attribute in showAttributes">{{attribute.label}}</th>
             <th v-if="published">Publish Status</th>
             <th>Updated</th>
             <th>By</th>
@@ -42,7 +52,7 @@
         </thead>
         <tbody>
           <tr v-for="(doc, index) in docs" :class="rowClass(doc, index)">
-            <td v-for="(attribute, index) in attributes" :class="attributeClass(attribute)">
+            <td v-for="(attribute, index) in showAttributes" :class="attributeClass(attribute)">
               <router-link v-if="canUpdate() && index === 0" :to="editUrl(doc)" class="edit-data">
                 {{stringify(doc[attribute.key], attribute.schema) || '[edit]'}}
               </router-link>
@@ -91,6 +101,7 @@ import PublishStatus from '@/components/data/PublishStatus'
 const LIMIT = 100
 const ATTRIBUTES_LIMIT = 10
 const ARRAY_LIMIT = 10
+const DEFAULT_N_ATTRIBUTES = 4
 
 export default {
   data () {
@@ -105,7 +116,8 @@ export default {
       labels: [],
       docs: [],
       skip: 0,
-      count: 0
+      count: 0,
+      nAttributes: 0
     }
   },
   created () {
@@ -121,6 +133,9 @@ export default {
   computed: {
     model () {
       return this.lookupModel(this.coll) || {}
+    },
+    showAttributes () {
+      return this.attributes.slice(0, this.nAttributes)
     }
   },
   methods: {
@@ -138,6 +153,7 @@ export default {
       this.published = u.getIn(this.lookupModel(coll), 'features', []).includes('published')
       this.schema = u.getIn(this.lookupModel(coll), 'model.schema')
       this.attributes = this.getAttributes(this.schema)
+      this.nAttributes = Math.min(DEFAULT_N_ATTRIBUTES, this.attributes.length)
       const params = {relationshipLevels: 1, limit: LIMIT, skip: this.skip}
       const api = Data(coll)
       this.jsonUrl = api.listUrl(params)
