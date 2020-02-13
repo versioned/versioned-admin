@@ -53,6 +53,10 @@ function zip (arrays) {
   })
 }
 
+function unzip (tuples) {
+  return [tuples.map(t => t[0]), tuples.map(t => t[1])]
+}
+
 function zipObj (keys, values) {
   return zip([keys, values]).reduce(function (obj, tuple) {
     obj[tuple[0]] = tuple[1]
@@ -60,14 +64,21 @@ function zipObj (keys, values) {
   }, {})
 }
 
-function unzipObj (obj) {
+function tuplesToObj (tuples) {
+  return tuples.reduce(function (obj, tuple) {
+    obj[tuple[0]] = tuple[1]
+    return obj
+  }, {})
+}
+
+function objToTuples (obj) {
   if (!obj) return []
   const keys = Object.keys(obj)
   const values = keys.map(key => obj[key])
   return zip([keys, values])
 }
 
-const keyValues = unzipObj
+const keyValues = objToTuples
 
 function makeObj (keys, makeValue) {
   if (!keys) return {}
@@ -502,8 +513,10 @@ export default {
   set,
   append,
   zip,
+  unzip,
   zipObj,
-  unzipObj,
+  tuplesToObj,
+  objToTuples,
   keyValues,
   makeObj,
   reverse,

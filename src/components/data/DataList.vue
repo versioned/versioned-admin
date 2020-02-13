@@ -38,6 +38,50 @@
       out of {{attributes.length}} columns
     </div>
 
+    <div class="form query-form">
+      <form @submit.prevent="submitQuery" role="form" class="data-form">
+        <label name="query">
+          Query <a href="#" @click.prevent="showQueryHelp = !showQueryHelp">?</a>
+        </label>
+        <div class="queryHelp alert alert-warning" v-show="showQueryHelp">
+          <p>
+            You can sort and filter the list by entering a query in the field below and clicking enter to submit.
+          </p>
+          <p>
+            Available query fields: {{queryFields.join(', ')}}
+          </p>
+          <p>
+            Sort by most recently updated first (this is the default):
+            <pre>sort=-updatedAt</pre>
+          </p>
+          <p>
+            Sort by creation time chronologically (oldest first):
+            <pre>sort=createdAt</pre>
+          </p>
+          <p>
+            Sort by creation time reverse chronologically (newest first):
+            <pre>sort=-createdAt</pre>
+          </p>
+          <p>
+            Sort by creation time and filter out only published content (relevant if model is published):
+            <pre>sort=-createdAt&amp;filter.published=true</pre>
+          </p>
+          <p>
+            Filter out all documents where the body field includes the word travel:
+            <pre>filter.body[regex]=travel</pre>
+          </p>
+          <p>
+            Filter out all documents where the score field is greater than 5:
+            <pre>filter.score[gt]=5</pre>
+          </p>
+        </div>
+        <input type="text" class="form-control" v-model="query">
+        <div class="alert alert-danger" v-show="queryError">
+          {{queryError}}
+        </div>
+      </form>
+    </div>
+
     <json-data :jsonData="jsonData" :jsonUrl="jsonUrl" :published="published"></json-data>
 
     <div class="row" v-if="count">
@@ -117,7 +161,11 @@ export default {
       docs: [],
       skip: 0,
       count: 0,
-      nAttributes: 0
+      nAttributes: 0,
+      query: '',
+      queryError: '',
+      queryFields: [],
+      showQueryHelp: false
     }
   },
   created () {
@@ -147,21 +195,34 @@ export default {
       })
     },
     lookupModel (coll) {
+      this.docs = []
       return this.models.find(m => m.coll === coll)
+    },
+    submitQuery () {
+      this.queryError = ''
+      this.getData(this.coll)
     },
     getData (coll) {
       this.published = u.getIn(this.lookupModel(coll), 'features', []).includes('published')
       this.schema = u.getIn(this.lookupModel(coll), 'model.schema')
       this.attributes = this.getAttributes(this.schema)
+      this.queryFields = ['createdAt', 'updatedAt'].concat(this.attributes.map(a => a.key).join(', '))
       this.nAttributes = Math.min(DEFAULT_N_ATTRIBUTES, this.attributes.length)
-      const params = {relationshipLevels: 1, limit: LIMIT, skip: this.skip}
+      const params = u.merge(this.queryParams(), {relationshipLevels: 1, limit: LIMIT, skip: this.skip})
       const api = Data(coll)
       this.jsonUrl = api.listUrl(params)
       return Api.listRequest(this.jsonUrl).then(body => {
         this.docs = this.docs.concat(body.data)
         this.count = body.count
         this.jsonData = u.prettyJson(this.docs)
+      }).catch(error => {
+        if (error.response.status === 422) {
+          this.queryError = error.response.data.errors[0].message
+        }
       })
+    },
+    queryParams () {
+      return this.query ? u.tuplesToObj(this.query.split('&').map(q => q.split('='))) : {}
     },
     hasMoreRows () {
       return this.count > (this.skip + LIMIT)
@@ -230,5 +291,8 @@ export default {
   }
   table.table {
     margin-top: 20px;
+  }
+  .query-form {
+    margin-bottom: 10px;
   }
 </style>
