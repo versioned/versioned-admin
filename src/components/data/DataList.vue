@@ -25,7 +25,7 @@
     </div>
 
     <div class="rows-count" v-if="count">
-      Number of documents: {{count}}
+       Showing {{docs.length}} out of {{count}} documents
     </div>
 
     <div class="form-input" v-if="attributes.length > 1">
@@ -64,7 +64,7 @@
           </p>
           <p>
             Sort by creation time and filter out only published content (relevant if model is published):
-            <pre>sort=-createdAt&amp;filter.published=true</pre>
+            <pre>sort=-createdAt&amp;filter.publishedVersion[exists]=true</pre>
           </p>
           <p>
             Filter out all documents where the body field includes the word travel:
@@ -125,7 +125,7 @@
       </table>
 
       <p>
-        <a href="#" ref="loadMore" class="load-more" v-show="hasMoreRows()" @click="loadMoreRows()">Load more rows</a>
+        <a href="#" ref="loadMore" class="load-more" v-show="hasMoreRows()" @click.prevent="loadMoreDocs()">&raquo; Load more documents</a>
       </p>
     </div>
   </section>
@@ -195,11 +195,11 @@ export default {
       })
     },
     lookupModel (coll) {
-      this.docs = []
       return this.models.find(m => m.coll === coll)
     },
     submitQuery () {
       this.queryError = ''
+      this.docs = []
       this.getData(this.coll)
     },
     getData (coll) {
@@ -227,7 +227,7 @@ export default {
     hasMoreRows () {
       return this.count > (this.skip + LIMIT)
     },
-    async loadMoreRows () {
+    async loadMoreDocs () {
       this.skip += LIMIT
       await this.getData(this.coll)
       this.scrollToEnd()
