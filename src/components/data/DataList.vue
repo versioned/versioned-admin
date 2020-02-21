@@ -51,6 +51,10 @@
             Available query fields: {{queryFields.join(', ')}}
           </p>
           <p>
+            Search all string fields for the word "stockholm" (creates a regex filter for multiple columns):
+            <pre>stockholm</pre>
+          </p>
+          <p>
             Sort by most recently updated first (this is the default):
             <pre>sort=-updatedAt</pre>
           </p>
@@ -222,7 +226,13 @@ export default {
       })
     },
     queryParams () {
-      return this.query ? u.tuplesToObj(this.query.split('&').map(q => q.split('='))) : {}
+      if (this.query && this.query.includes('=')) {
+        return u.tuplesToObj(this.query.split('&').map(q => q.split('=')))
+      } else if (this.query) {
+        return {q: this.query}
+      } else {
+        return {}
+      }
     },
     hasMoreRows () {
       return this.count > (this.skip + LIMIT)
