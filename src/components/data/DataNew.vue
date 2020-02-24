@@ -3,7 +3,7 @@
     <div class="page-title">
         <h1>New {{modelName}}</h1>
     </div>
-    <data-form ref="dataForm" :doc="doc" :schema="schema" :model="model" @fieldChange="fieldChange($event)" @formSubmit="save($event)"></data-form>
+    <data-form ref="dataForm" :doc="doc" :schema="schema" :models="models" :model="model" @fieldChange="fieldChange($event)" @formSubmit="save($event)"></data-form>
   </section>
 </template>
 
@@ -20,6 +20,7 @@ export default {
   data: function () {
     return {
       model: null,
+      models: [],
       modelName: null,
       schema: null,
       doc: {}
@@ -30,11 +31,11 @@ export default {
   },
   created () {
     const spaceId = u.getIn(session.get(), 'space.id')
-    const params = {'filter.coll': this.$route.params.model}
-    Model(spaceId).list({params}).then(({data}) => {
+    Model(spaceId).list().then(({data}) => {
       if (data.length > 0) {
-        const model = data[0]
+        const model = data.find(model => model.coll === this.$route.params.model)
         this.model = model.coll
+        this.models = data
         this.modelName = model.name
         this.schema = u.getIn(model, 'model.schema')
         const translatedProperties = u.keys(u.filter(this.schema.properties, (p) => u.getIn(p, 'x-meta.translated')))

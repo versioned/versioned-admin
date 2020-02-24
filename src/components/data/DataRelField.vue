@@ -14,7 +14,7 @@
     <model-list-select v-show="showSelect()"
                        :list="results"
                        option-value="id"
-                       option-text="_title"
+                       option-text="title"
                        :custom-text="optionText"
                        v-model="selected"
                        :placeholder="placeholder"
@@ -26,6 +26,7 @@
 <script>
 import {ModelListSelect} from 'vue-search-select'
 import Search from '@/services/search'
+import Data from '@/services/data'
 import session from '@/services/session'
 import u from '@/util'
 
@@ -33,7 +34,7 @@ let searchTimeout = null
 const DEBOUNCE_INTERVAL = 200
 
 export default {
-  props: ['attribute', 'error'],
+  props: ['models', 'attribute', 'error'],
   data () {
     const toTypes = u.getIn(this.attribute, 'schema.x-meta.relationship.toTypes')
     const selectedResults = u.array(this.attribute.value || [])
@@ -61,21 +62,33 @@ export default {
   methods: {
     async search (query) {
       if (u.notEmpty(query)) {
+        if (searchTimeout) clearTimeout(searchTimeout)
         const space = u.getIn(session.get(), 'space')
         const types = u.getIn(this.attribute, 'schema.x-meta.relationship.toTypes', [])
-        const filters = types.map(type => `type:${type}`).join(' OR ')
-        const options = {filters}
-        if (searchTimeout) clearTimeout(searchTimeout)
-        searchTimeout = setTimeout(async () => {
-          const result = await Search({space}).search(query, options)
-          if (result) this.results = result.data.hits
-        }, DEBOUNCE_INTERVAL)
+        const externalTypes = types.filter(type => u.getIn(this.models.find(model => model.model.type === type), 'external'))
+        let searchFunction
+        if (types.length === 1 && externalTypes.length === 1) {
+          const api = Data(externalTypes[0])
+          searchFunction = async () => {
+            const result = await api.list({params: {q: query}})
+            if (result) this.results = result.data
+          }
+        } else {
+          const filters = types.map(type => `type:${type}`).join(' OR ')
+          const options = {filters}
+          searchFunction = async () => {
+            const result = await Search({space}).search(query, options)
+            if (result) this.results = result.data.hits
+          }
+        }
+        searchTimeout = setTimeout(searchFunction, DEBOUNCE_INTERVAL)
       } else {
         this.results = []
       }
     },
     itemTitle (item) {
-      return item._title || item.title || item.name || [item.type, item.id].join('-')
+      const title = item._title || item.title || item.name || [item.type, item.id].join('-')
+      return u.isObject(title) ? Object.values(title)[0] : title
     },
     itemUrl (item) {
       if (item.type === 'assets') {
@@ -94,7 +107,7 @@ export default {
       return this.isArray() || u.empty(this.selectedResults)
     },
     optionText (item) {
-      return item._title
+      return item._title || item.title
     },
     removeSelectedResult (result) {
       this.selectedResults = this.selectedResults.filter(r => r.id !== result.id)

@@ -41,7 +41,10 @@
             </td>
             <td>
               <router-link :to="dataUrl(model)" class="data-list">
-                {{model.name}} Data ({{documentCount(model)}})
+                {{model.name}} Data
+                <template v-if="documentCount(model)">
+                  <span>({{documentCount(model)}})</span>
+                </template>
               </router-link>
               <br/>
               <router-link :to="createDataUrl(model)" class="new-data">New {{model.name}}</router-link>

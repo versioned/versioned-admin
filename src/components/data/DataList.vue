@@ -85,9 +85,7 @@
         </div>
       </form>
     </div>
-
     <json-data :jsonData="jsonData" :jsonUrl="jsonUrl" :published="published"></json-data>
-
     <div class="row" v-if="count">
       <table class="table table-striped data-table">
         <thead>
@@ -118,11 +116,15 @@
               <publish-status :doc="doc"></publish-status>
             </td>
             <td>
-              {{doc.updatedAt | date('YYYY-MM-DD hh:mm') }}<br />
-              ({{doc.updatedAt | timeAgo}})
+              <template v-if="doc.updatedAt">
+                {{doc.updatedAt | date('YYYY-MM-DD hh:mm') }}<br />
+                ({{doc.updatedAt | timeAgo}})
+              </template>
             </td>
             <td>
-              {{doc.updatedBy.email}}
+              <template v-if="doc.updatedBy">
+                <span>{{doc.updatedBy.email}}</span>
+              </template>
             </td>
           </tr>
         </tbody>
@@ -253,7 +255,8 @@ export default {
       const value = doc[attribute.key]
       if (u.empty(value)) return undefined
       let links = u.array(value).map((doc) => {
-        const label = doc.title || doc.name || doc.id
+        let label = doc.title || doc.name || doc.id
+        if (typeof label === 'object') label = JSON.stringify(label)
         return `<a href="/#/data/${doc.type}/${doc.id}/edit">${label}</a>`
       })
       if (links.length > ARRAY_LIMIT) {

@@ -6,7 +6,7 @@
 
     <json-data :jsonData="jsonData" :jsonUrl="jsonUrl" :published="isPublished"></json-data>
 
-    <data-form ref="dataForm" :doc="doc" :docOrig="docOrig" :schema="schema" :model="model.coll" :isPublished="isPublished" :versions="versions" :previewUrl="model.previewUrl" @fieldChange="fieldChange($event)" @formSubmit="save($event)" @remove="remove($event)"></data-form>
+    <data-form ref="dataForm" :doc="doc" :docOrig="docOrig" :schema="schema" :models="models" :model="model.coll" :isPublished="isPublished" :versions="versions" :previewUrl="model.previewUrl" @fieldChange="fieldChange($event)" @formSubmit="save($event)" @remove="remove($event)"></data-form>
     <div>
       <router-link :to="listUrl()">Return to {{model.name}} Data</router-link>
     </div>
@@ -31,6 +31,7 @@ export default {
       jsonUrl: null,
       id: null,
       model: null,
+      models: [],
       isPublished: false,
       schema: null,
       doc: null,
@@ -58,10 +59,10 @@ export default {
     getData () {
       this.id = this.$route.params.id
       const spaceId = u.getIn(session.get(), 'space.id')
-      const params = {'filter.coll': this.$route.params.model}
-      Model(spaceId).list({params}).then(({data}) => {
+      Model(spaceId).list().then(({data}) => {
         if (data.length > 0) {
-          this.model = data[0]
+          this.model = data.find(model => model.coll === this.$route.params.model)
+          this.models = data
           this.isPublished = u.getIn(this.model, 'model.features', []).includes('published')
           this.schema = u.getIn(this.model, 'model.schema')
           const api = Data(this.model.coll)

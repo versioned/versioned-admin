@@ -65,7 +65,7 @@
 
       <div class="row">
         <div class="card card-body bg-light">
-          <data-form-field v-for="attribute in writeAttributes" :doc="doc" :attribute="attribute" :model="model" :key="attribute.key" :isChanged="fieldIsChanged(attribute.key)" @fieldChange="fieldChange($event)" :error="errors[attribute.key]"></data-form-field>
+          <data-form-field v-for="attribute in writeAttributes" :doc="doc" :attribute="attribute" :models="models" :model="model" :key="attribute.key" :isChanged="fieldIsChanged(attribute.key)" @fieldChange="fieldChange($event)" :error="errors[attribute.key]"></data-form-field>
         </div>
       </div>
 
@@ -98,7 +98,7 @@ import DataUtil from '@/data_util'
 import FormUtil from '@/form_util'
 
 export default {
-  props: ['model', 'doc', 'docOrig', 'schema', 'isPublished', 'versions', 'previewUrl'],
+  props: ['models', 'model', 'doc', 'docOrig', 'schema', 'isPublished', 'versions', 'previewUrl'],
   data: function () {
     return {
       errors: {},

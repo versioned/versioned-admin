@@ -59,7 +59,7 @@
 
     <textarea v-else-if="isTextAttribute(attribute.schema)" type="text" v-model="doc[attribute.key]" @input="updateValue($event.target.value)" class="form-control" rows="5"/>
 
-    <data-rel-field v-else-if="attribute.relationship" :attribute="attribute" @fieldInput="updateValue($event)" :error="error"></data-rel-field>
+    <data-rel-field v-else-if="attribute.relationship" :models="models" :attribute="attribute" @fieldInput="updateValue($event)" :error="error"></data-rel-field>
 
     <input v-else :type="inputType()" ref="textInput" v-model="doc[attribute.key]" class="form-control" :class="{ 'is-invalid': error}" @input="updateValue($event.target.value)"/>
 
@@ -79,7 +79,7 @@ import {languageToCode} from '@/language_codes'
 
 export default {
   name: 'data-form-field',
-  props: ['doc', 'attribute', 'model', 'isChanged', 'error'],
+  props: ['doc', 'attribute', 'models', 'model', 'isChanged', 'error'],
   data () {
     const space = u.getIn(session.get(), 'space')
     return {
