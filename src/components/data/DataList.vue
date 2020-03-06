@@ -79,7 +79,7 @@
             <pre>filter.score[gt]=5</pre>
           </p>
         </div>
-        <input type="text" class="form-control" v-model="query">
+        <input type="text" class="form-control" v-model="query" v-autofocus>
         <div class="alert alert-danger" v-show="queryError">
           {{queryError}}
         </div>
@@ -99,7 +99,7 @@
         <tbody>
           <tr v-for="(doc, index) in docs" :class="rowClass(doc, index)">
             <td v-for="(attribute, index) in showAttributes" :class="attributeClass(attribute)">
-              <router-link v-if="canUpdate() && index === 0" :to="editUrl(doc)" class="edit-data">
+              <router-link v-if="index === 0" :to="editUrl(doc)" class="edit-data">
                 {{stringify(doc[attribute.key], attribute.schema) || '[edit]'}}
               </router-link>
               <span v-else-if="attribute.meta && attribute.meta.relationship" v-html="relationshipLinks(attribute, doc)">
@@ -160,6 +160,7 @@ export default {
       jsonUrl: null,
       published: null,
       coll: null,
+      external: false,
       schema: null,
       attributes: [],
       models: [],
@@ -211,6 +212,7 @@ export default {
     getData (coll) {
       this.published = u.getIn(this.lookupModel(coll), 'features', []).includes('published')
       this.schema = u.getIn(this.lookupModel(coll), 'model.schema')
+      this.external = u.getIn(this.lookupModel(coll), 'external', false)
       this.attributes = this.getAttributes(this.schema)
       this.queryFields = ['createdAt', 'updatedAt'].concat(this.attributes.map(a => a.key).join(', '))
       this.nAttributes = Math.min(DEFAULT_N_ATTRIBUTES, this.attributes.length)
@@ -275,10 +277,7 @@ export default {
       return `/data/${this.coll}/new`
     },
     canCreate () {
-      return true
-    },
-    canUpdate () {
-      return true
+      return !this.external
     },
     rowClass (doc, index) {
       return `data-list-row ${doc.type}-${doc.id} row-${index}`

@@ -12,7 +12,7 @@
             ({{attribute.help}})
           </span>
         </label>
-        <textarea v-if="isTextAttribute(attribute.meta.translated)" v-model="doc[attribute.key][code]" class="form-control" rows="5"/>
+        <textarea v-if="isTextAttribute(attribute.meta.translated, doc[attribute.key][code])" v-model="doc[attribute.key][code]" class="form-control" rows="5"/>
         <input v-else type="text" ref="textInput" v-model="doc[attribute.key][code]" class="form-control" :class="{ 'is-invalid': error}"/>
       </div>
     </div>
@@ -57,7 +57,7 @@
 
     <input v-else-if="attribute.schema.type === 'boolean'" type="checkbox" v-model="doc[attribute.key]" @input="updateValue($event.target.value)"/>
 
-    <textarea v-else-if="isTextAttribute(attribute.schema)" type="text" v-model="doc[attribute.key]" @input="updateValue($event.target.value)" class="form-control" rows="5"/>
+    <textarea v-else-if="isTextAttribute(attribute.schema, doc[attribute.key])" type="text" v-model="doc[attribute.key]" @input="updateValue($event.target.value)" class="form-control" rows="5"/>
 
     <data-rel-field v-else-if="attribute.relationship" :models="models" :attribute="attribute" @fieldInput="updateValue($event)" :error="error"></data-rel-field>
 
@@ -107,8 +107,8 @@ export default {
     isNestedArray () {
       return !this.attribute.relationship && this.attribute.schema.type === 'array'
     },
-    isTextAttribute (schema) {
-      return schema.type === 'string' && schema.maxLength && schema.maxLength > 256
+    isTextAttribute (schema, value) {
+      return schema.type === 'string' && ((schema.maxLength && schema.maxLength > 256) || (value && value.length > 150))
     },
     enumOptions () {
       return u.concat([null], this.attribute.schema.enum)

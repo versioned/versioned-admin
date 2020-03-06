@@ -1,7 +1,7 @@
 <template lang="html">
   <form @submit.prevent="formSubmit" role="form" class="data-form">
     <div class="form-group">
-      <div class="form-group buttons">
+      <div v-if="canSave()" class="form-group buttons">
         <input type="submit" class="btn btn-primary" value="Save" />
         <button v-if="isPublished" class="btn btn-secondary" @click.prevent="saveAndPublish()">Save and Publish</button>
         <button v-if="isPublished && doc.publishedVersion" class="btn btn-secondary" @click.prevent="unpublish()">Unpublish</button>
@@ -74,12 +74,12 @@
       </div>
       <changes v-if="showUnsavedChanges" :from="docOrig" :to="doc"></changes>
 
-      <div class="form-group buttons">
+      <div v-if="canSave()" class="form-group buttons">
         <input type="submit" class="btn btn-primary save" value="Save" />
         <button v-if="isPublished" class="btn btn-secondary save-and-publish" @click.prevent="saveAndPublish()">Save and Publish</button>
         <button v-if="isPublished && doc.publishedVersion" class="btn btn-secondary unpublish" @click.prevent="unpublish()">Unpublish</button>
         <a v-if="doc.id && previewUrl" :href="formattedPreviewUrl()" target="preview" class="btn btn-secondary preview">Preview</a>
-        <a v-if="doc.id && !doc.publishedVersion" href="#" class="delete" @click.prevent="remove()">Delete</a>
+        <a v-if="canDelete()" href="#" class="delete" @click.prevent="remove()">Delete</a>
       </div>
     </div>
   </form>
@@ -195,12 +195,25 @@ export default {
     },
     hasChanges () {
       return u.notEmpty(u.compact(this.changes))
+    },
+    lookupModel (coll) {
+      return this.models.find(m => m.coll === coll)
+    },
+    canDelete () {
+      return this.doc.id && !this.doc.publishedVersion && !this.lookupModel(this.model).external
+    },
+    canSave () {
+      return !this.lookupModel(this.model).external
     }
   }
 }
 </script>
 
 <style lang="css">
+  button.btn {
+    margin-right: 5px;
+  }
+
   .versions ul {
     margin-top: 10px;
   }

@@ -119,11 +119,11 @@ export default {
       return `/data/${model.coll}/new`
     },
     canCreate () {
-      // TODO: check if user can create
+      // TODO: check if user can create model
       return true
     },
     canUpdate () {
-      // TODO :check if user can update
+      // TODO :check if user can update model
       return true
     },
     fieldName (model, property) {
