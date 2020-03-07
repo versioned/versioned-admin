@@ -19,7 +19,11 @@
   </div>
   <div v-else :class="fieldClass()">
     <label name="title" :class="{'text-warning': isChanged}">
-      {{attribute.label}}
+      <template v-if="isExpandable">
+        <a href="#" @click.prevent="expanded = !expanded" class="expand">{{attribute.label}}</a>
+        <span class="expanded-length">({{expandedLength()}})</span>
+      </template>
+      <span v-else>{{attribute.label}}</span>
       <span v-if="attribute.help" class="help">
         ({{attribute.help}})
       </span>
@@ -32,16 +36,16 @@
     </select>
 
     <template v-else-if="isNestedObject()">
-        <div class="row">
+        <div class="row" v-show="expanded">
           <div class="card card-body bg-light">
               <!-- <json-field :obj="doc[attribute.key]" @fieldInput="updateValue($event)"></json-field> -->
-              <data-form-field v-for="nestedAttribute in nestedObjectAttributes(attribute, doc[attribute.key])" :doc="nestedObjectDoc(doc, attribute.key)" :attribute="nestedAttribute" :model="model" :key="nestedAttribute.key"></data-form-field>
+              <data-form-field v-for="nestedAttribute in nestedObjectAttributes(attribute, doc[attribute.key])" :doc="nestedObjectDoc(doc, attribute.key)" :attribute="nestedAttribute" :models="models" :model="model" :key="nestedAttribute.key"></data-form-field>
           </div>
         </div>
     </template>
 
     <template v-else-if="isNestedArray()">
-        <div class="row">
+        <div class="row" v-show="expanded">
           <div class="card card-body bg-light">
               <ul>
                 <li v-for="(item, index) in doc[attribute.key]" :key="index">
@@ -79,11 +83,12 @@ import {languageToCode} from '@/language_codes'
 
 export default {
   name: 'data-form-field',
-  props: ['doc', 'attribute', 'models', 'model', 'isChanged', 'error'],
+  props: ['doc', 'attribute', 'models', 'model', 'isChanged', 'error', 'isExpandable', 'defaultExpanded'],
   data () {
     const space = u.getIn(session.get(), 'space')
     return {
-      languages: (space.languages || []).map((language) => [language, languageToCode(language)])
+      languages: (space.languages || []).map((language) => [language, languageToCode(language)]),
+      expanded: !this.isExpandable || this.defaultExpanded
     }
   },
   mounted () {
@@ -157,6 +162,10 @@ export default {
     removeNestedItem (index, event) {
       event.preventDefault()
       this.doc[this.attribute.key] = this.doc[this.attribute.key].filter((_, i) => i !== index)
+    },
+    expandedLength () {
+      const value = u.compact(this.attribute.value)
+      return u.empty(value) ? 0 : Object.keys(value).length
     }
   },
   components: {
@@ -166,4 +175,14 @@ export default {
 </script>
 
 <style lang="css">
+  a.expand {
+    color: #007bff;
+    text-decoration: underline;
+  }
+
+  .expanded-length {
+    margin-left: 5px;
+    font-weight: normal;
+    font-size: 11px;
+  }
 </style>

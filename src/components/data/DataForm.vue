@@ -65,7 +65,7 @@
 
       <div class="row">
         <div class="card card-body bg-light">
-          <data-form-field v-for="attribute in writeAttributes" :doc="doc" :attribute="attribute" :models="models" :model="model" :key="attribute.key" :isChanged="fieldIsChanged(attribute.key)" @fieldChange="fieldChange($event)" :error="errors[attribute.key]"></data-form-field>
+          <data-form-field v-for="attribute in writeAttributes" :doc="doc" :attribute="attribute" :models="models" :model="model" :key="attribute.key" :isChanged="fieldIsChanged(attribute.key)" @fieldChange="fieldChange($event)" :error="errors[attribute.key]" :isExpandable="isExpandable(attribute)" :defaultExpanded="defaultExpanded(attribute)"></data-form-field>
         </div>
       </div>
 
@@ -198,6 +198,12 @@ export default {
     },
     lookupModel (coll) {
       return this.models.find(m => m.coll === coll)
+    },
+    isExpandable (attribute) {
+      return this.writeAttributes.length > 1 && ['object', 'array'].includes(attribute.schema.type) && !u.getIn(attribute.schema, 'x-meta.relationship')
+    },
+    defaultExpanded (attribute) {
+      return u.getIn(attribute, 'schema.x-meta.field.defaultExpanded')
     },
     canDelete () {
       return this.doc.id && !this.doc.publishedVersion && !this.lookupModel(this.model).external
