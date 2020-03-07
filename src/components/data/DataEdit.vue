@@ -78,6 +78,7 @@ export default {
             if (!this.docOrig) this.docOrig = JSON.parse(JSON.stringify(doc))
             this.versions = u.getIn(doc, 'sys.versions', [])
             this.jsonData = u.prettyJson(this.doc)
+            setTimeout(() => window.scrollTo(0, 0), 10)
           }).catch(() => {
             Alert.set('warning', 'Could not find data')
           })
