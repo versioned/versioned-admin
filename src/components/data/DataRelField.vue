@@ -11,20 +11,22 @@
           <a href="#" class="remove-relationship" @click.prevent="removeSelectedResult(result)">[-]</a>
         </li>
     </ul>
-    <model-list-select v-show="showSelect()"
-                       :list="results"
-                       option-value="id"
-                       option-text="title"
-                       :custom-text="optionText"
-                       v-model="selected"
-                       :placeholder="placeholder"
-                       @searchchange="search">
-    </model-list-select>
+    <input type="text" class="search form-control" v-model="query" v-show="showSelect()" :placeholder="placeholder"/>
+    <div v-if="$store.state.loading" class="loader">
+      <img src="/ajax-loader.gif">
+    </div>
+    <ul class="search-results">
+      <li v-for="result in results">
+        <a href="#" v-if="!selectedResultsById[result.id]" @click.prevent="select(result)" :title="itemTooltip(result)">
+          {{optionText(result)}}
+        </a>
+        <span v-else>{{optionText(result)}}</span>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
-import {ModelListSelect} from 'vue-search-select'
 import Search from '@/services/search'
 import Data from '@/services/data'
 import session from '@/services/session'
@@ -33,35 +35,34 @@ import u from '@/util'
 let searchTimeout = null
 const DEBOUNCE_INTERVAL = 200
 
+function getSelectedResultsById (selectedResults) {
+  return u.makeObj(selectedResults.map(r => r.id), () => true)
+}
+
 export default {
   props: ['models', 'attribute', 'error'],
   data () {
     const toTypes = u.getIn(this.attribute, 'schema.x-meta.relationship.toTypes')
     const selectedResults = u.array(this.attribute.value || [])
+    const selectedResultsById = getSelectedResultsById(selectedResults)
     const placeholder = (this.isArray() ? `search to add ${toTypes.join(' or ')}` : `search ${toTypes.join(' or ')}`)
     return {
+      query: '',
       results: [],
       placeholder,
-      selected: null,
-      selectedResults
+      selectedResults,
+      selectedResultsById
     }
   },
   watch: {
-    selected (selected) {
-      if (u.notEmpty(selected)) {
-        const alreadySelected = this.selectedResults.map(r => r.id).includes(selected.id)
-        if (this.isArray() && !alreadySelected) {
-          this.selectedResults = this.selectedResults.concat([selected])
-        } else {
-          this.selectedResults = [selected]
-        }
-      }
-      this.$emit('fieldInput', this.fieldValue(this.selectedResults))
+    query: 'search',
+    selectedResults: function (selectedResults) {
+      this.selectedResultsById = getSelectedResultsById(selectedResults)
     }
   },
   methods: {
-    async search (query) {
-      if (u.notEmpty(query)) {
+    async search () {
+      if (u.notEmpty(this.query)) {
         if (searchTimeout) clearTimeout(searchTimeout)
         const space = u.getIn(session.get(), 'space')
         const types = u.getIn(this.attribute, 'schema.x-meta.relationship.toTypes', [])
@@ -69,15 +70,27 @@ export default {
         let searchFunction
         if (types.length === 1 && externalTypes.length === 1) {
           const api = Data(externalTypes[0])
-          searchFunction = async () => {
-            const result = await api.list({params: {q: query}})
-            if (result) this.results = result.data
+          const id = (this.query.match(/^\s*id:(\w+)\s*$/) || [])[1]
+          if (id) {
+            searchFunction = async () => {
+              const result = await api.get(id)
+              if (result) this.results = [result]
+            }
+          } else {
+            searchFunction = async () => {
+              const result = await api.list({params: {q: this.query}})
+              if (u.notEmpty(this.query) && result) {
+                this.results = result.data
+              } else {
+                this.results = []
+              }
+            }
           }
         } else {
           const filters = types.map(type => `type:${type}`).join(' OR ')
           const options = {filters}
           searchFunction = async () => {
-            const result = await Search({space}).search(query, options)
+            const result = await Search({space}).search(this.query, options)
             if (result) this.results = result.data.hits
           }
         }
@@ -85,6 +98,19 @@ export default {
       } else {
         this.results = []
       }
+    },
+    select (result) {
+      if (u.notEmpty(result)) {
+        const alreadySelected = this.selectedResults.map(r => r.id).includes(result.id)
+        if (this.isArray()) {
+          if (!alreadySelected) this.selectedResults = this.selectedResults.concat([result])
+        } else {
+          this.selectedResults = [result]
+        }
+      }
+      this.results = []
+      this.query = ''
+      this.$emit('fieldInput', this.fieldValue(this.selectedResults))
     },
     itemTitle (item) {
       const title = item._title || item.title || item.name || [item.type, item.id].join('-')
@@ -119,9 +145,6 @@ export default {
     selectedResultClass (result) {
       return `list-group-item ${result.type}-${result.id}`
     }
-  },
-  components: {
-    ModelListSelect
   }
 }
 </script>
@@ -129,5 +152,8 @@ export default {
 <style lang="css">
   ul.selected-results {
     margin-bottom: 10px;
+  }
+  ul.search-results {
+    margin-top: 10px;
   }
 </style>

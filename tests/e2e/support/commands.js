@@ -190,7 +190,7 @@ function createData (model, docs, options = {}) {
       } else if (field.relationship) {
         u.array(value).forEach((item) => {
           cy.get(`${scope} input.search`).clear().type(item, {force: true, delay: 1})
-          cy.get(`${scope} .menu .item`).first().click()
+          cy.get(`${scope} .search-results a`).first().click()
         })
       }
     })
