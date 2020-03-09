@@ -12,7 +12,7 @@
         </li>
     </ul>
     <input type="text" class="search form-control" v-model="query" v-show="showSelect()" :placeholder="placeholder"/>
-    <div v-if="$store.state.loading" class="loader">
+    <div v-if="loading" class="loader">
       <img src="/ajax-loader.gif">
     </div>
     <ul class="search-results">
@@ -47,6 +47,7 @@ export default {
     const selectedResultsById = getSelectedResultsById(selectedResults)
     const placeholder = (this.isArray() ? `search to add ${toTypes.join(' or ')}` : `search ${toTypes.join(' or ')}`)
     return {
+      loading: false,
       query: '',
       results: [],
       placeholder,
@@ -75,6 +76,7 @@ export default {
             searchFunction = async () => {
               const result = await api.get(id)
               if (result) this.results = [result]
+              this.loading = false
             }
           } else {
             searchFunction = async () => {
@@ -84,6 +86,7 @@ export default {
               } else {
                 this.results = []
               }
+              this.loading = false
             }
           }
         } else {
@@ -92,8 +95,10 @@ export default {
           searchFunction = async () => {
             const result = await Search({space}).search(this.query, options)
             if (result) this.results = result.data.hits
+            this.loading = false
           }
         }
+        this.loading = true
         searchTimeout = setTimeout(searchFunction, DEBOUNCE_INTERVAL)
       } else {
         this.results = []
