@@ -130,7 +130,7 @@
         </tbody>
       </table>
 
-      <p>
+      <p v-show="paginationEnabled()">
         <a href="#" ref="loadMore" class="load-more" v-show="hasMoreRows()" @click.prevent="loadMoreDocs()">&raquo; Load more documents</a>
       </p>
     </div>
@@ -237,6 +237,9 @@ export default {
       } else {
         return {}
       }
+    },
+    paginationEnabled () {
+      return !u.getIn(this.model, 'external')
     },
     hasMoreRows () {
       return this.count > (this.skip + LIMIT)
