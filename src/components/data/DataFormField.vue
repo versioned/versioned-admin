@@ -39,7 +39,7 @@
         <div class="row" v-show="expanded">
           <div class="card card-body bg-light">
               <!-- <json-field :obj="doc[attribute.key]" @fieldInput="updateValue($event)"></json-field> -->
-              <data-form-field v-for="nestedAttribute in nestedObjectAttributes(attribute, doc[attribute.key])" :doc="nestedObjectDoc(doc, attribute.key)" :attribute="nestedAttribute" :models="models" :model="model" :key="nestedAttribute.key"></data-form-field>
+              <data-form-field v-for="nestedAttribute in nestedObjectAttributes(attribute, doc[attribute.key])" :doc="nestedObjectDoc(doc, attribute.key)" :attribute="nestedAttribute" :models="models" :model="model" :key="nestedAttribute.key" @fieldChange="fieldChange($event)" ></data-form-field>
           </div>
         </div>
     </template>
@@ -51,7 +51,7 @@
                 <li v-for="(item, index) in doc[attribute.key]" :key="index">
                   {{attribute.key}} #{{index + 1}}
                   [<a href="#" @click="removeNestedItem(index, $event)">remove</a>]
-                  <data-form-field :doc="nestedArrayDoc(doc, attribute.key)" :attribute="nestedArrayAttribute(index, attribute, doc[attribute.key])" :model="model" :key="index"></data-form-field>
+                  <data-form-field :doc="nestedArrayDoc(doc, attribute.key)" :attribute="nestedArrayAttribute(index, attribute, doc[attribute.key])" :model="model" :key="index" @fieldChange="fieldChange($event)"></data-form-field>
                 </li>
               </ul>
               <a href="#" @click="addNestedItem(attribute, $event)">+ add {{attribute.key}}</a>
@@ -124,6 +124,10 @@ export default {
       } else {
         return 'text'
       }
+    },
+    fieldChange (field) {
+      const newValue = Array.isArray(this.attribute.value) ? this.attribute.value : u.merge(this.attribute.value, field)
+      this.$emit('fieldChange', {[this.attribute.key]: newValue})
     },
     fieldClass () {
       return `form-group data-field data-field-${this.attribute.key}`
