@@ -36,7 +36,7 @@
           <tr v-for="model in models" :class="modelRowClass(model)">
             <td>
               <router-link v-if="canUpdate()" :to="editUrl(model)" class="models-edit">
-                {{model.name}} Model
+                {{model.name}}
               </router-link>
             </td>
             <td>
@@ -46,8 +46,7 @@
                   <span>({{documentCount(model)}})</span>
                 </template>
               </router-link>
-              <br/>
-              <router-link :to="createDataUrl(model)" class="new-data">New {{model.name}}</router-link>
+              | <router-link :to="createDataUrl(model)" class="new-data">New</router-link>
             </td>
             <td class="fields">
               {{fields(model).join(', ')}}
