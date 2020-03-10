@@ -6,7 +6,7 @@
 
     <div class="row">
       <div class="create-new">
-        <router-link v-if="canCreate()" class="btn btn-primary new-model" :to="createUrl()">
+        <router-link v-if="canCreateModel()" class="btn btn-primary new-model" :to="createUrl()">
           New Model
         </router-link>
       </div>
@@ -35,7 +35,7 @@
         <tbody>
           <tr v-for="model in models" :class="modelRowClass(model)">
             <td>
-              <router-link v-if="canUpdate()" :to="editUrl(model)" class="models-edit">
+              <router-link v-if="canUpdateModel()" :to="editUrl(model)" class="models-edit">
                 {{model.name}}
               </router-link>
             </td>
@@ -46,7 +46,7 @@
                   <span>({{documentCount(model)}})</span>
                 </template>
               </router-link>
-              <br/><router-link :to="createDataUrl(model)" class="new-data">New</router-link>
+              <br/><router-link v-if="canCreate(model)" :to="createDataUrl(model)" class="new-data">+ New</router-link>
             </td>
             <td class="fields">
               {{fields(model).join(', ')}}
@@ -117,13 +117,16 @@ export default {
     createDataUrl (model) {
       return `/data/${model.coll}/new`
     },
-    canCreate () {
+    canCreateModel () {
       // TODO: check if user can create model
       return true
     },
-    canUpdate () {
+    canUpdateModel () {
       // TODO :check if user can update model
       return true
+    },
+    canCreate (model) {
+      return !model.external
     },
     fieldName (model, property) {
       const fieldPath = `model.schema.properties.${property}.x-meta.field`
