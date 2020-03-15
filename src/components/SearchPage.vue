@@ -2,8 +2,11 @@
   <div>
     <h1>Search</h1>
 
-    <div class="search-query">
+    <div v-if="enabled" class="search-query">
       <input type="text" ref="query" v-model="query"/>
+    </div>
+    <div v-else class="alert alert-warning" role="alert">
+      In order to enable full-text search across your data you need to install the Algolia service
     </div>
 
     <div class="row" v-if="results && results.length > 0">
@@ -52,14 +55,17 @@ export default {
   data () {
     return {
       query: '',
-      results: []
+      results: [],
+      enabled: true
     }
   },
   mounted () {
     const space = u.getIn(session.get(), 'space')
+    const search = Search({space})
+    this.enabled = search.enabled
     this.$refs.query.focus()
     this.$watch('query', () => {
-      Search({space}).search(this.query).then((data) => {
+      search.search(this.query).then((data) => {
         const results = u.getIn(data, 'data.hits')
         if (results) this.results = results
       })

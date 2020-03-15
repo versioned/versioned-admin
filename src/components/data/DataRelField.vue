@@ -68,9 +68,18 @@ export default {
         const space = u.getIn(session.get(), 'space')
         const types = u.getIn(this.attribute, 'schema.x-meta.relationship.toTypes', [])
         const externalTypes = types.filter(type => u.getIn(this.models.find(model => model.model.type === type), 'external'))
+        const search = Search({space})
         let searchFunction
-        if (types.length === 1 && externalTypes.length === 1) {
-          const api = Data(externalTypes[0])
+        if (search.enabled && !(types.length === 1 && externalTypes.length === 1)) {
+          const filters = types.map(type => `type:${type}`).join(' OR ')
+          const options = {filters}
+          searchFunction = async () => {
+            const result = await search.search(this.query, options)
+            if (result) this.results = result.data.hits
+            this.loading = false
+          }
+        } else {
+          const api = Data(types[0])
           const id = (this.query.match(/^\s*id:(\w+)\s*$/) || [])[1]
           if (id) {
             searchFunction = async () => {
@@ -88,14 +97,6 @@ export default {
               }
               this.loading = false
             }
-          }
-        } else {
-          const filters = types.map(type => `type:${type}`).join(' OR ')
-          const options = {filters}
-          searchFunction = async () => {
-            const result = await Search({space}).search(this.query, options)
-            if (result) this.results = result.data.hits
-            this.loading = false
           }
         }
         this.loading = true
@@ -155,10 +156,10 @@ export default {
 </script>
 
 <style lang="css">
-  ul.selected-results {
-    margin-bottom: 10px;
-  }
-  ul.search-results {
-    margin-top: 10px;
-  }
+ul.selected-results {
+  margin-bottom: 10px;
+}
+ul.search-results {
+  margin-top: 10px;
+}
 </style>

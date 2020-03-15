@@ -41,6 +41,7 @@ function create (options = {}) {
     applicationId,
     apiKey,
     indexName,
+    enabled,
     search
   }
 }
