@@ -22,6 +22,30 @@
 
     <div class="form-group">
       <div class="form-check">
+        <input v-model="model.external" class="form-check-input" type="checkbox">
+        <label class="form-check-label">
+          External
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group" v-show="model.external">
+      <label for="routes">Get Endpoint</label>
+      <codemirror ref="codemirror" id="routes" v-model="getEndpoint" :options="codemirrorOptions"></codemirror>
+    </div>
+
+    <div class="form-group" v-show="model.external">
+      <label for="routes">List Endpoint</label>
+      <codemirror ref="codemirror" id="routes" v-model="listEndpoint" :options="codemirrorOptions"></codemirror>
+    </div>
+
+    <div class="form-group" v-show="model.external">
+      <label for="routes">Search Endpoint</label>
+      <codemirror ref="codemirror" id="routes" v-model="searchEndpoint" :options="codemirrorOptions"></codemirror>
+    </div>
+
+    <div class="form-group" v-show="!model.external">
+      <div class="form-check">
         <input v-model="features.published" class="form-check-input" type="checkbox">
         <label class="form-check-label">
           Published and versioned
@@ -384,10 +408,36 @@ function fieldType (property) {
   }
 }
 
+const EMPTY_ROUTES = {
+  list: {
+    url: '',
+    dataPath: '',
+    countPath: '',
+    headers: {},
+    renameProperties: {}
+  },
+  get: {
+    url: '',
+    dataPath: '',
+    headers: {},
+    renameProperties: {}
+  },
+  search: {
+    url: '',
+    dataPath: '',
+    countPath: '',
+    headers: {},
+    renameProperties: {}
+  }
+}
+
 export default {
   props: ['model'],
   data: function () {
     return {
+      getEndpoint: '',
+      listEndpoint: '',
+      searchEndpoint: '',
       models: [],
       existingModels: [],
       NAME_LENGTH,
@@ -417,6 +467,7 @@ export default {
     model (model) {
       this.collapsed = this.getCollapsed(model.fields)
       this.features = this.makeFeatures(model)
+      this.setExternalEndpoints()
     }
   },
   methods: {
@@ -426,6 +477,18 @@ export default {
         this.models = data
         this.existingModels = ['assets'].concat(this.models.map(u.property('coll')))
       })
+    },
+    setExternalEndpoints () {
+      for (const key of Object.keys(EMPTY_ROUTES)) {
+        const value = u.merge(EMPTY_ROUTES[key], u.getIn(this.model, `model.routes.${key}`, {}))
+        Vue.set(this, `${key}Endpoint`, u.prettyJson(value))
+      }
+    },
+    getRoutes () {
+      return Object.keys(EMPTY_ROUTES).reduce((acc, key) => {
+        acc[key] = u.safeJsonParse(this[`${key}Endpoint`])
+        return acc
+      }, {})
     },
     makeFeatures (model) {
       return u.makeObj(model.features || [], () => true)
@@ -520,6 +583,7 @@ export default {
         this.model.propertiesOrder = this.model.fields.map(u.property('key'))
       }
       this.model.features = u.keys(this.features).filter(key => this.features[key])
+      this.model.model.routes = this.getRoutes()
       this.$emit('submit', this.model)
     },
     remove () {
