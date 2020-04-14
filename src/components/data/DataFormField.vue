@@ -103,6 +103,8 @@ export default {
       } else if (this.attribute.schema.type === 'number') {
         value = parseFloat(this.doc[this.attribute.key])
         this.doc[this.attribute.key] = value
+      } else {
+        this.doc[this.attribute.key] = value
       }
       this.$emit('fieldChange', {[this.attribute.key]: value})
     },

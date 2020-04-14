@@ -786,10 +786,10 @@ export default {
         required,
         cascade,
         validation: {
-          minLength: property.minLength,
-          maxLength: (defaults.maxLength === property.maxLength ? undefined : property.maxLength),
-          pattern: property.pattern,
-          enum: (property.enum && property.enum.join(','))
+          minLength: schema.minLength,
+          maxLength: (defaults.maxLength === schema.maxLength ? undefined : schema.maxLength),
+          pattern: schema.pattern,
+          enum: (schema.enum && schema.enum.join(','))
         },
         schema: u.prettyJson(u.omit(schema, ['x-meta']))
       })
