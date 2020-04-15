@@ -45,8 +45,10 @@
                 <template v-if="documentCount(model)">
                   <span>({{documentCount(model)}})</span>
                 </template>
+                <span v-if="model.external">(external)</span>
               </router-link>
-              <br/><router-link v-if="canCreate(model)" :to="createDataUrl(model)" class="new-data">+ New</router-link>
+              <br/>
+              <router-link v-if="canCreate(model)" :to="createDataUrl(model)" class="new-data">+ New</router-link>
             </td>
             <td class="fields">
               {{fields(model).join(', ')}}
@@ -99,7 +101,7 @@ export default {
     getModels () {
       const spaceId = u.getIn(session.get(), 'space.id')
       Model(spaceId).list().then(({data}) => {
-        this.models = data
+        this.models = data.filter(m => !m.external).concat(data.filter(m => m.external))
         DbStats(spaceId).get().then((data) => {
           this.dbStats = data
         })
