@@ -18,7 +18,7 @@
     "ajv": "^6.4.0",
     "axios": "0.17.1",
     "core-js": "2.6.5",
-    "express": "4.16.2",
+    "express": "4.17.3",
     "vue": "2.6.10",
     "vue-codemirror": "^4.0.6",
     "vue-router": "3.0.6",
