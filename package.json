@@ -16,7 +16,7 @@
   "dependencies": {
     "@vue/eslint-config-standard": "4.0.0",
     "ajv": "^6.4.0",
-    "axios": "0.17.1",
+    "axios": "0.21.1",
     "core-js": "2.6.5",
     "express": "4.16.2",
     "vue": "2.6.10",
